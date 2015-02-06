@@ -1,0 +1,11 @@
+# Configuration file for goplay
+# https://github.com/JamesClonk/goplay
+
+# Forces recompilation every time
+ForceCompile yes
+
+# Use "go build" for building complete binary out of script directory
+CompleteBuild yes
+
+# Goplay directory for storing created binary files
+GoplayDirectory /tmp/.goplay_bin
