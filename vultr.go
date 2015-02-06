@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	app := cmd.NewApp()
-	app.RegisterCommands()
-	app.Run(os.Args)
+	cli := cmd.NewCLI()
+	cli.RegisterCommands()
+	cli.Run(os.Args)
 }
