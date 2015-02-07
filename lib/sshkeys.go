@@ -2,17 +2,19 @@ package lib
 
 import "net/url"
 
-type SshKey struct {
-	Id      string `json:"SSHKEYID"`
+// SSHKey on Vultr account
+type SSHKey struct {
+	ID      string `json:"SSHKEYID"`
 	Name    string `json:"name"`
 	Key     string `json:"ssh_key"`
 	Created string `json:"date_created"`
 }
 
-type SshKeys []SshKey
+// SSHKeys on Vultr account
+type SSHKeys []SSHKey
 
-func (c *Client) GetSshKeys() (keys SshKeys, err error) {
-	var vultrKeys map[string]SshKey
+func (c *Client) GetSSHKeys() (keys SSHKeys, err error) {
+	var vultrKeys map[string]SSHKey
 	if err := c.get(`/sshkey/list`, &vultrKeys); err != nil {
 		return nil, err
 	}
@@ -24,15 +26,15 @@ func (c *Client) GetSshKeys() (keys SshKeys, err error) {
 	return keys, nil
 }
 
-func (c *Client) CreateSshKey(name, key string) (SshKey, error) {
+func (c *Client) CreateSSHKey(name, key string) (SSHKey, error) {
 	values := url.Values{
 		"name":    {name},
 		"ssh_key": {key},
 	}
 
-	var sshKey SshKey
+	var sshKey SSHKey
 	if err := c.post(`/sshkey/create`, values, &sshKey); err != nil {
-		return SshKey{}, err
+		return SSHKey{}, err
 	}
 	sshKey.Name = name
 	sshKey.Key = key

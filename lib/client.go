@@ -27,12 +27,12 @@ type Client struct {
 	Endpoint *url.URL
 
 	// API key for accessing the Vultr API
-	ApiKey string
+	APIKey string
 }
 
 type Options struct {
 	// HTTP client for communication with the Vultr API
-	HttpClient *http.Client
+	HTTPClient *http.Client
 
 	// User agent for HTTP client
 	UserAgent string
@@ -50,8 +50,8 @@ func NewClient(apiKey string, options *Options) (*Client, error) {
 	}
 
 	if options != nil {
-		if options.HttpClient != nil {
-			client = options.HttpClient
+		if options.HTTPClient != nil {
+			client = options.HTTPClient
 		}
 		if options.UserAgent != "" {
 			userAgent = options.UserAgent
@@ -68,7 +68,7 @@ func NewClient(apiKey string, options *Options) (*Client, error) {
 		UserAgent: userAgent,
 		client:    client,
 		Endpoint:  endpoint,
-		ApiKey:    apiKey,
+		APIKey:    apiKey,
 	}, nil
 }
 
@@ -120,7 +120,7 @@ func (c *Client) do(req *http.Request, data interface{}) error {
 }
 
 func (c *Client) newRequest(method string, path string, body io.Reader) (*http.Request, error) {
-	relPath, err := url.Parse(path + "?api_key=" + c.ApiKey)
+	relPath, err := url.Parse(path + "?api_key=" + c.APIKey)
 	if err != nil {
 		return nil, err
 	}
