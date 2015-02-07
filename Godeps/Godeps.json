@@ -1,0 +1,10 @@
+{
+	"ImportPath": "github.com/JamesClonk/vultr",
+	"GoVersion": "go1.4.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/jawher/mow.cli",
+			"Rev": "33e2f99c7beda006afee6bb2e39e31e4ba4e9946"
+		}
+	]
+}
