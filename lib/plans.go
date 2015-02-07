@@ -1,5 +1,7 @@
 package lib
 
+import "fmt"
+
 // Plan on Vultr
 type Plan struct {
 	ID        int    `json:"VPSPLANID,string"`
@@ -22,4 +24,11 @@ func (c *Client) GetPlans() ([]Plan, error) {
 		planList = append(planList, plan)
 	}
 	return planList, nil
+}
+
+func (c *Client) GetAvailablePlansForRegion(id int) (planIDs []int, err error) {
+	if err := c.get(fmt.Sprintf(`regions/availability?DCID=%v`, id), &planIDs); err != nil {
+		return nil, err
+	}
+	return
 }

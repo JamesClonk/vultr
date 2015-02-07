@@ -60,3 +60,38 @@ func Test_Plans_GetPlans_OK(t *testing.T) {
 		}
 	}
 }
+
+func Test_Plans_GetAvailablePlansForRegion_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	plans, err := client.GetAvailablePlansForRegion(1)
+	assert.Nil(t, plans)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Plans_GetAvailablePlansForRegion_NoPlans(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	plans, err := client.GetAvailablePlansForRegion(2)
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, plans)
+}
+
+func Test_Plans_GetAvailablePlansForRegion_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[29,30,3,27,28,11,13,81]`)
+	defer server.Close()
+
+	plans, err := client.GetAvailablePlansForRegion(3)
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, plans) {
+		assert.Equal(t, 8, len(plans))
+	}
+}
