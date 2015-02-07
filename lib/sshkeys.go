@@ -15,7 +15,7 @@ type SSHKeys []SSHKey
 
 func (c *Client) GetSSHKeys() (keys SSHKeys, err error) {
 	var vultrKeys map[string]SSHKey
-	if err := c.get(`/sshkey/list`, &vultrKeys); err != nil {
+	if err := c.get(`sshkey/list`, &vultrKeys); err != nil {
 		return nil, err
 	}
 
@@ -33,11 +33,41 @@ func (c *Client) CreateSSHKey(name, key string) (SSHKey, error) {
 	}
 
 	var sshKey SSHKey
-	if err := c.post(`/sshkey/create`, values, &sshKey); err != nil {
+	if err := c.post(`sshkey/create`, values, &sshKey); err != nil {
 		return SSHKey{}, err
 	}
 	sshKey.Name = name
 	sshKey.Key = key
 
 	return sshKey, nil
+}
+
+func (c *Client) UpdateSSHKey(key SSHKey) error {
+	values := url.Values{
+		"SSHKEYID": {key.ID},
+	}
+	if key.Name != "" {
+		values.Add("name", key.Name)
+	}
+	if key.Key != "" {
+		values.Add("ssh_key", key.Key)
+	}
+
+	if err := c.post(`sshkey/update`, values, nil); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteSSHKey(id string) error {
+	values := url.Values{
+		"SSHKEYID": {id},
+	}
+
+	if err := c.post(`sshkey/destroy`, values, nil); err != nil {
+		return err
+	}
+
+	return nil
 }

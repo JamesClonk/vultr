@@ -3,6 +3,7 @@ package lib
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,9 +12,16 @@ import (
 )
 
 const (
-	version         = "0.0.1"
-	mediaType       = "application/json"
-	defaultEndpoint = "https://api.vultr.com/"
+	// Version of this libary
+	Version = "v0.1"
+
+	// APIVersion of Vultr
+	APIVersion = "v1"
+
+	// DefaultEndpoint to be used
+	DefaultEndpoint = "https://api.vultr.com/"
+
+	mediaType = "application/json"
 )
 
 type Client struct {
@@ -41,13 +49,11 @@ type Options struct {
 	Endpoint string
 }
 
-func NewClient(apiKey string, options *Options) (*Client, error) {
-	userAgent := "vultr-go/" + version
+// NewClient creates new Vultr API client. Options are optional and can be nil.
+func NewClient(apiKey string, options *Options) *Client {
+	userAgent := "vultr-go/" + Version
 	client := http.DefaultClient
-	endpoint, err := url.Parse(defaultEndpoint)
-	if err != nil {
-		return nil, err
-	}
+	endpoint, _ := url.Parse(DefaultEndpoint)
 
 	if options != nil {
 		if options.HTTPClient != nil {
@@ -57,10 +63,7 @@ func NewClient(apiKey string, options *Options) (*Client, error) {
 			userAgent = options.UserAgent
 		}
 		if options.Endpoint != "" {
-			endpoint, err = url.Parse(options.Endpoint)
-			if err != nil {
-				return nil, err
-			}
+			endpoint, _ = url.Parse(options.Endpoint)
 		}
 	}
 
@@ -69,11 +72,15 @@ func NewClient(apiKey string, options *Options) (*Client, error) {
 		client:    client,
 		Endpoint:  endpoint,
 		APIKey:    apiKey,
-	}, nil
+	}
+}
+
+func apiPath(path string) string {
+	return fmt.Sprintf("/%s/%s", APIVersion, path)
 }
 
 func (c *Client) get(path string, data interface{}) error {
-	req, err := c.newRequest("GET", path, nil)
+	req, err := c.newRequest("GET", apiPath(path), nil)
 	if err != nil {
 		return err
 	}
@@ -82,7 +89,7 @@ func (c *Client) get(path string, data interface{}) error {
 }
 
 func (c *Client) post(path string, values url.Values, data interface{}) error {
-	req, err := c.newRequest("POST", path, strings.NewReader(values.Encode()))
+	req, err := c.newRequest("POST", apiPath(path), strings.NewReader(values.Encode()))
 	if err != nil {
 		return err
 	}

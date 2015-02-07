@@ -12,8 +12,7 @@ func NewCLI() *CLI {
 	c := &CLI{cli.App("vultr", "A Vultr CLI")}
 
 	apiKey = c.String(cli.StringOpt{
-		Name: "k api-key",
-		//Value:  "xyz1234567890abc",
+		Name:   "k api-key",
 		Desc:   "Vultr API-Key",
 		EnvVar: "VULTR_KEY",
 	})
