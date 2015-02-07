@@ -13,10 +13,10 @@ func (c *CLI) RegisterCommands() {
 	c.Command("info", "display account information", accountInfo)
 
 	// os
-	c.Command("os", "list all available operating systems", printAPIKey)
+	c.Command("os", "list all available operating systems", osList)
 
 	// iso
-	c.Command("iso", "list all ISOs currently available on account", printAPIKey)
+	c.Command("iso", "list all ISOs currently available on account", isoList)
 
 	// plans
 	c.Command("plans", "list all active plans", printAPIKey)
@@ -34,7 +34,7 @@ func (c *CLI) RegisterCommands() {
 	c.Command("sshkeys", "list all existing SSH public keys", sshKeysList)
 
 	// ssh
-	c.Command("ssh", "ssh to Vultr server", printAPIKey)
+	c.Command("ssh", "ssh into a virtual machine", printAPIKey)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {

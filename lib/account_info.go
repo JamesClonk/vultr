@@ -1,6 +1,6 @@
 package lib
 
-// why does Vultr return only the Balance as a json number? Beats me..
+// why does Vultr return only the balance as a json number? Beats me..
 
 // AccountInfo of Vultr account
 type AccountInfo struct {

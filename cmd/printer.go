@@ -13,17 +13,19 @@ func init() {
 	tw.Init(os.Stdout, 0, 8, 2, '\t', 0)
 }
 
-func printTabbedLine(values []string, lengths []int) {
+type Columns []interface{}
+
+func printTabbedLine(values Columns, lengths []int) {
 	if len(values) != len(lengths) {
 		log.Fatalf("Internal error! Mismatch during tabbed line print. Values: %d, Lengths: %d\n", len(values), len(lengths))
 	}
 
-	for i := range values {
+	for i, value := range values {
 		format := "\t%s"
 		if i == 0 {
 			format = "%s"
 		}
-		fmt.Fprintf(tw, format, max(values[i], lengths[i]))
+		fmt.Fprintf(tw, format, max(fmt.Sprintf("%v", value), lengths[i]))
 	}
 	fmt.Fprintf(tw, "\n")
 }

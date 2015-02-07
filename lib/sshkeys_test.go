@@ -54,7 +54,7 @@ func Test_SSHKeys_GetSSHKeys_OK(t *testing.T) {
 			case "3":
 				assert.Equal(t, "cccc", key.Key)
 			default:
-				t.Error("Unknown Key ID")
+				t.Error("Unknown SSHKEYID")
 			}
 		}
 	}

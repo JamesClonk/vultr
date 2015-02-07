@@ -14,12 +14,12 @@ type SSHKey struct {
 type SSHKeys []SSHKey
 
 func (c *Client) GetSSHKeys() (keys SSHKeys, err error) {
-	var vultrKeys map[string]SSHKey
-	if err := c.get(`sshkey/list`, &vultrKeys); err != nil {
+	var keyMap map[string]SSHKey
+	if err := c.get(`sshkey/list`, &keyMap); err != nil {
 		return nil, err
 	}
 
-	for _, key := range vultrKeys {
+	for _, key := range keyMap {
 		keys = append(keys, key)
 	}
 

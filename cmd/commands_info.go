@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/jawher/mow.cli"
@@ -15,10 +14,8 @@ func accountInfo(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{16, 16, 24, 24}
-		printTabbedLine([]string{"BALANCE", "PENDING CHARGES", "LAST PAYMENT DATE", "LAST PAYMENT AMOUNT"}, lengths)
-		printTabbedLine([]string{
-			fmt.Sprintf("%v", info.Balance),
-			info.PendingCharges, info.LastPaymentDate, info.LastPaymentAmount}, lengths)
+		printTabbedLine(Columns{"BALANCE", "PENDING CHARGES", "LAST PAYMENT DATE", "LAST PAYMENT AMOUNT"}, lengths)
+		printTabbedLine(Columns{info.Balance, info.PendingCharges, info.LastPaymentDate, info.LastPaymentAmount}, lengths)
 		tabsFlush()
 	}
 }
