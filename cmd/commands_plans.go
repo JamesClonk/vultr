@@ -19,11 +19,6 @@ func planList(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		if len(plans) == 0 {
-			fmt.Println()
-			return
-		}
-
 		if *id != 0 {
 			ids, err := GetClient().GetAvailablePlansForRegion(*id)
 			if err != nil {
@@ -42,6 +37,11 @@ func planList(cmd *cli.Cmd) {
 				}
 			}
 			plans = filteredPlans
+		}
+
+		if len(plans) == 0 {
+			fmt.Println()
+			return
 		}
 
 		lengths := []int{12, 48, 8, 8, 8, 12, 8}
