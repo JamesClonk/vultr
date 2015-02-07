@@ -19,10 +19,10 @@ func (c *CLI) RegisterCommands() {
 	c.Command("iso", "list all ISOs currently available on account", isoList)
 
 	// plans
-	c.Command("plans", "list all active plans", printAPIKey)
+	c.Command("plans", "list all active plans", planList)
 
 	// regions
-	c.Command("regions", "list all active regions", printAPIKey)
+	c.Command("regions", "list all active regions", regionList)
 
 	// sshkeys
 	c.Command("sshkey", "control SSH public keys", func(cmd *cli.Cmd) {
