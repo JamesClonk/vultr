@@ -9,13 +9,32 @@ import (
 )
 
 func (c *CLI) RegisterCommands() {
+	// info
+	c.Command("info", "display account information", accountInfo)
+
+	// os
+	c.Command("os", "list all available operating systems", printAPIKey)
+
+	// iso
+	c.Command("iso", "list all ISOs currently available on account", printAPIKey)
+
+	// plans
+	c.Command("plans", "list all active plans", printAPIKey)
+
+	// regions
+	c.Command("regions", "list all active regions", printAPIKey)
+
 	// sshkeys
-	c.Command("sshkey", "control SSH public keys on your Vultr account", func(cmd *cli.Cmd) {
-		cmd.Command("create", "upload and add new SSH public key to your Vultr account", sshKeysCreate)
-		cmd.Command("update", "update an existing SSH public key in your Vultr account", sshKeysUpdate)
-		cmd.Command("delete", "remove an existing SSH public key from your Vultr account", sshKeysDelete)
-		cmd.Command("list", "list all existing SSH public keys from your Vultr account", sshKeysList)
+	c.Command("sshkey", "control SSH public keys", func(cmd *cli.Cmd) {
+		cmd.Command("create", "upload and add new SSH public key", sshKeysCreate)
+		cmd.Command("update", "update an existing SSH public key", sshKeysUpdate)
+		cmd.Command("delete", "remove an existing SSH public key", sshKeysDelete)
+		cmd.Command("list", "list all existing SSH public keys", sshKeysList)
 	})
+	c.Command("sshkeys", "list all existing SSH public keys", sshKeysList)
+
+	// ssh
+	c.Command("ssh", "ssh to Vultr server", printAPIKey)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
