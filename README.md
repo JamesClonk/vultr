@@ -39,12 +39,12 @@ Run 'vultr snapshot COMMAND --help' for more information on a command
 $ vultr plans -r 9
 ```
 ```
-VPSPLANID       NAME                                    VCPU    RAM     DISK    BANDWIDTH       PRICE
-30              1024 MB RAM,20 GB SSD,2.00 TB BW        1       1024    20      2.00            7.00
-29              768 MB RAM,15 GB SSD,1.00 TB BW         1       768     15      1.00            5.00
-3               2048 MB RAM,40 GB SSD,3.00 TB BW        2       2048    40      3.00            15.00
-28              8192 MB RAM,120 GB SSD,5.00 TB BW       4       8192    120     5.00            70.00
-27              4096 MB RAM,65 GB SSD,4.00 TB BW        2       4096    65      4.00            35.00
+VPSPLANID NAME                                VCPU  RAM   DISK  BANDWIDTH PRICE
+30        1024 MB RAM,20 GB SSD,2.00 TB BW    1     1024  20    2.00      7.00
+29        768 MB RAM,15 GB SSD,1.00 TB BW     1     768   15    1.00      5.00
+3         2048 MB RAM,40 GB SSD,3.00 TB BW    2     2048  40    3.00      15.00
+28        8192 MB RAM,120 GB SSD,5.00 TB BW   4     8192  120   5.00      70.00
+27        4096 MB RAM,65 GB SSD,4.00 TB BW    2     4096  65    4.00      35.00
 ```
 
 ---
@@ -56,8 +56,8 @@ $ vultr sshkey create -n sampleKey --key="$(cat ~/.ssh/id_rsa.pub)"
 ```
 SSH key create success!
 
-SSHKEYID        NAME            KEY
-24c81f53be692   sampleKey       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClpHdZYgsNAM+huOfB2dmpxM..
+SSHKEYID        NAME        KEY
+24c81f53be692   sampleKey   ssh-rsa AAAB3NzaC1yc2EQABAQClpsNAM+huOB2dpxM..
 ```
 
 ---
@@ -105,7 +105,7 @@ IPv6 Network Size:      0
 Created date:           2015-02-08 12:36:36
 Default password:       sbiecxo8yk!5
 Auto backups:           no
-KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=IZMGGZRLNNVXS..
+KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 ```
 
 ---
