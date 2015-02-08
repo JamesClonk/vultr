@@ -38,17 +38,18 @@ func (c *CLI) RegisterCommands() {
 
 	// servers
 	c.Command("server", "modify virtual machines", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a new virtual machine", printAPIKey)
+		cmd.Command("create", "create a new virtual machine", serversCreate)
 		cmd.Command("start", "start a virtual machine (restart if already running)", printAPIKey)
 		cmd.Command("halt", "halt a virtual machine (hard power off)", printAPIKey)
 		cmd.Command("reboot", "reboot a virtual machine (hard reboot)", printAPIKey)
 		cmd.Command("reinstall", "reinstall OS on a virtual machine (all data will be lost)", printAPIKey)
 		cmd.Command("change-os", "change OS on a virtual machine (all data will be lost)", printAPIKey)
-		cmd.Command("delete", "delete a virtual machine", printAPIKey)
+		cmd.Command("delete", "delete a virtual machine", serversDelete)
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", printAPIKey)
-		cmd.Command("list", "list all active or pending virtual machines on the current account", printAPIKey)
+		cmd.Command("list", "list all active or pending virtual machines on the current account", serversList)
+		cmd.Command("show", "list detailed information of a virtual machine", serversShow)
 	})
-	c.Command("servers", "list all active or pending virtual machines on the current account", printAPIKey)
+	c.Command("servers", "list all active or pending virtual machines on the current account", serversList)
 
 	// snapshots
 	c.Command("snapshot", "modify snapshots", func(cmd *cli.Cmd) {

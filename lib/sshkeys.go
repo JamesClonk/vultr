@@ -10,10 +10,7 @@ type SSHKey struct {
 	Created string `json:"date_created"`
 }
 
-// SSHKeys on Vultr account
-type SSHKeys []SSHKey
-
-func (c *Client) GetSSHKeys() (keys SSHKeys, err error) {
+func (c *Client) GetSSHKeys() (keys []SSHKey, err error) {
 	var keyMap map[string]SSHKey
 	if err := c.get(`sshkey/list`, &keyMap); err != nil {
 		return nil, err
