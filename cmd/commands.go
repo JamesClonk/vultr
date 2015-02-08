@@ -46,27 +46,27 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("change-os", "change OS on a virtual machine (all data will be lost)", printAPIKey)
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", printAPIKey)
-		cmd.Command("list", "list all active or pending virtual machines on the current account", serversList)
+		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
 		cmd.Command("show", "list detailed information of a virtual machine", serversShow)
 	})
-	c.Command("servers", "list all active or pending virtual machines on the current account", serversList)
+	c.Command("servers", "list all active or pending virtual machines on current account", serversList)
 
 	// snapshots
 	c.Command("snapshot", "modify snapshots", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create a snapshot from an existing virtual machine", printAPIKey)
 		cmd.Command("delete", "delete a snapshot", printAPIKey)
-		cmd.Command("list", "list all snapshots on the current account", printAPIKey)
+		cmd.Command("list", "list all snapshots on current account", printAPIKey)
 	})
-	c.Command("snapshots", "list all snapshots on the current account", printAPIKey)
+	c.Command("snapshots", "list all snapshots on current account", printAPIKey)
 
 	// startup scripts
 	c.Command("script", "modify startup scripts", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create a new startup script", printAPIKey)
 		cmd.Command("update", "update an existing startup script", printAPIKey)
 		cmd.Command("delete", "remove an existing startup script", printAPIKey)
-		cmd.Command("list", "list all startup scripts on the current account", printAPIKey)
+		cmd.Command("list", "list all startup scripts on current account", printAPIKey)
 	})
-	c.Command("scripts", "list all startup scripts on the current account", printAPIKey)
+	c.Command("scripts", "list all startup scripts on current account", printAPIKey)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
