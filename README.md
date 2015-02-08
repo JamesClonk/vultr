@@ -3,7 +3,7 @@ Vultr CLI and client library, written in [Go](https://golang.org)
 
 [![GoDoc](https://godoc.org/github.com/JamesClonk/vultr/lib?status.png)](https://godoc.org/github.com/JamesClonk/vultr/lib) [![Build Status](https://travis-ci.org/JamesClonk/vultr.png?branch=master)](https://travis-ci.org/JamesClonk/vultr)
 
-#### Screenshot
+### Screenshot
 
 ![Screenshot](https://github.com/JamesClonk/vultr/raw/master/screenshot.png "Screenshot")
 
@@ -17,7 +17,7 @@ Here a some usage examples:
 
 ##### show help text for a command
 ```sh
-    $ vultr snapshot --help
+$ vultr snapshot --help
 ```
 ```
 Usage: vultr snapshot  COMMAND [arg...]
@@ -36,7 +36,7 @@ Run 'vultr snapshot COMMAND --help' for more information on a command
 
 ##### list available plans for region
 ```sh
- $ vultr plans -r 9
+$ vultr plans -r 9
 ```
 ```
 VPSPLANID       NAME                                    VCPU    RAM     DISK    BANDWIDTH       PRICE
@@ -51,7 +51,7 @@ VPSPLANID       NAME                                    VCPU    RAM     DISK    
 
 ##### add SSH public key
 ```sh
- $ vultr sshkey create -n sampleKey --key="$(cat ~/.ssh/id_rsa.pub)"
+$ vultr sshkey create -n sampleKey --key="$(cat ~/.ssh/id_rsa.pub)"
 ```
 ```
 SSH key create success!
@@ -64,7 +64,7 @@ SSHKEYID        NAME            KEY
 
 ##### create new virtual machine
 ```sh
- $ vultr server create -n "test-server" -r 9 -p 29 -o 127
+$ vultr server create -n "test-server" -r 9 -p 29 -o 127
 ```
 ```
 Virtual machine create success!
@@ -77,7 +77,7 @@ SUBID           NAME            DCID    VPSPLANID       OSID
 
 ##### show information about virtual machine
 ```sh
- $ vultr server show 1685097
+$ vultr server show 1685097
 ```
 ```
 Id (SUBID):             1685097
@@ -112,9 +112,12 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=IZMGGZR
 
 #### TODO
 
-- [ ] add options (ServerOption struct) to server command
+:scream:
+- [ ] add options (ServerOption struct) to server create command
+- [ ] implement all server subcommands
+- [ ] implement ssh command
+- [ ] implement snapshot commands
+- [ ] implement script commands
 - [ ] add usage guide for command line tool
 - [ ] add documentation on how to use library in other projects
-
-
-
+- [ ] create github.io page
