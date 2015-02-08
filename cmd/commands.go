@@ -71,11 +71,13 @@ func (c *CLI) RegisterCommands() {
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
 		cmd.Action = func() {
-			fmt.Printf("Client version: %s\n", vultr.Version)
-			fmt.Printf("Vultr API version: %s\n", vultr.APIVersion)
-			fmt.Printf("Vultr API endpoint: %s\n", vultr.DefaultEndpoint)
-			fmt.Printf("OS/Arch (client): %s/%s\n", runtime.GOOS, runtime.GOARCH)
-			fmt.Printf("Go version: %s\n", runtime.Version())
+			lengths := []int{24, 48}
+			printTabbedLine(Columns{"Client version:", vultr.Version}, lengths)
+			printTabbedLine(Columns{"Vultr API endpoint:", vultr.DefaultEndpoint}, lengths)
+			printTabbedLine(Columns{"Vultr API version:", vultr.APIVersion}, lengths)
+			printTabbedLine(Columns{"OS/Arch (client):", fmt.Sprintf("%v/%v", runtime.GOOS, runtime.GOARCH)}, lengths)
+			printTabbedLine(Columns{"Go version:", runtime.Version()}, lengths)
+			tabsFlush()
 		}
 	})
 }

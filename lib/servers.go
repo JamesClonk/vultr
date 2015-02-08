@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-// Virtual machine on Vultr account
+// Server (virtual machine) on Vultr account
 type Server struct {
 	ID               string  `json:"SUBID"`
 	Name             string  `json:"label"`
@@ -36,7 +36,7 @@ type Server struct {
 }
 
 type ServerOptions struct {
-	IPXEChainUrl      string
+	IPXEChainURL      string
 	ISO               int
 	Script            int
 	Snapshot          string
@@ -66,17 +66,17 @@ func (c *Client) GetServer(id string) (server Server, err error) {
 	return server, nil
 }
 
-func (c *Client) CreateServer(name string, regionId, planId, osId int, options *ServerOptions) (Server, error) {
+func (c *Client) CreateServer(name string, regionID, planID, osID int, options *ServerOptions) (Server, error) {
 	values := url.Values{
 		"label":     {name},
-		"DCID":      {fmt.Sprintf("%v", regionId)},
-		"VPSPLANID": {fmt.Sprintf("%v", planId)},
-		"OSID":      {fmt.Sprintf("%v", osId)},
+		"DCID":      {fmt.Sprintf("%v", regionID)},
+		"VPSPLANID": {fmt.Sprintf("%v", planID)},
+		"OSID":      {fmt.Sprintf("%v", osID)},
 	}
 
 	if options != nil {
-		if options.IPXEChainUrl != "" {
-			values.Add("ipxe_chain_url", options.IPXEChainUrl)
+		if options.IPXEChainURL != "" {
+			values.Add("ipxe_chain_url", options.IPXEChainURL)
 		}
 
 		if options.ISO != 0 {
@@ -116,8 +116,8 @@ func (c *Client) CreateServer(name string, regionId, planId, osId int, options *
 		return Server{}, err
 	}
 	server.Name = name
-	server.RegionID = regionId
-	server.PlanID = planId
+	server.RegionID = regionID
+	server.PlanID = planID
 
 	return server, nil
 }
