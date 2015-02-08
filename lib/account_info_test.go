@@ -30,13 +30,13 @@ func Test_AccountInfo_GetAccountInfo_NoInfo(t *testing.T) {
 		assert.Equal(t, 0.00, info.Balance)
 		assert.Equal(t, 0.00, info.PendingCharges)
 		assert.Equal(t, "", info.LastPaymentDate)
-		assert.Equal(t, "", info.LastPaymentAmount)
+		assert.Equal(t, 0.00, info.LastPaymentAmount)
 	}
 }
 
 func Test_AccountInfo_GetAccountInfo_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
-		"balance":-15.97,"pending_charges":2.34,
+		"balance":-15.97,"pending_charges":"2.34",
 		"last_payment_date":"2015-01-29 05:06:27","last_payment_amount":"-5.00"}`)
 	defer server.Close()
 
@@ -48,6 +48,6 @@ func Test_AccountInfo_GetAccountInfo_OK(t *testing.T) {
 		assert.Equal(t, -15.97, info.Balance)
 		assert.Equal(t, 2.34, info.PendingCharges)
 		assert.Equal(t, "2015-01-29 05:06:27", info.LastPaymentDate)
-		assert.Equal(t, "-5.00", info.LastPaymentAmount)
+		assert.Equal(t, -5.00, info.LastPaymentAmount)
 	}
 }
