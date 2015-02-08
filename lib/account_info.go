@@ -5,7 +5,7 @@ package lib
 // AccountInfo of Vultr account
 type AccountInfo struct {
 	Balance           float64 `json:"balance"`
-	PendingCharges    string  `json:"pending_charges"`
+	PendingCharges    float64 `json:"pending_charges"`
 	LastPaymentDate   string  `json:"last_payment_date"`
 	LastPaymentAmount string  `json:"last_payment_amount"`
 }
