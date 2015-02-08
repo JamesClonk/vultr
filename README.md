@@ -1,5 +1,5 @@
 # vultr
-Vultr CLI and client library, written in [Go](https://golang.org)
+[Vultr](https://www.vultr.com) CLI and client library, written in [Go](https://golang.org)
 
 [![GoDoc](https://godoc.org/github.com/JamesClonk/vultr/lib?status.png)](https://godoc.org/github.com/JamesClonk/vultr/lib) [![Build Status](https://travis-ci.org/JamesClonk/vultr.png?branch=master)](https://travis-ci.org/JamesClonk/vultr)
 

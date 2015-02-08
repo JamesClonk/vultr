@@ -22,7 +22,7 @@ func (c *Client) GetAccountInfo() (info AccountInfo, err error) {
 	return
 }
 
-// UnmarshalJSON implements json.Unmarshaller
+// UnmarshalJSON implements json.Unmarshaller.
 // This is needed because the Vultr API is inconsistent in it's JSON responses for account info.
 // Some fields can changed type, from JSON number to JSON string and vice-versa.
 func (a *AccountInfo) UnmarshalJSON(data []byte) (err error) {
