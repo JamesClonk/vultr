@@ -19,7 +19,7 @@ func serversCreate(cmd *cli.Cmd) {
 	// options
 	ipxe := cmd.StringOpt("ipxe", "", "Chainload the specified URL on bootup, via iPXE, for custom OS")
 	iso := cmd.IntOpt("iso", 0, "ISOID of a specific ISO to mount during the deployment, for custom OS")
-	script := cmd.IntOpt("s script", 0, "SCRIPTID of a startup script to execute on boot.  See v1/startupscript/list")
+	script := cmd.IntOpt("s script", 0, "SCRIPTID of a startup script to execute on boot (see <scripts>)")
 	snapshot := cmd.StringOpt("snapshot", "", "SNAPSHOTID (see <snapshots>) to restore for the initial installation")
 	sshkey := cmd.StringOpt("k sshkey", "", "SSHKEYID (see <sshkeys>) of SSH key to apply to this server on install")
 	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
@@ -43,7 +43,7 @@ func serversCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Virtual machine create success!\n")
+		fmt.Println("Virtual machine created\n")
 		lengths := []int{12, 32, 8, 12, 8}
 		printTabbedLine(Columns{"SUBID", "NAME", "DCID", "VPSPLANID", "OSID"}, lengths)
 		printTabbedLine(Columns{server.ID, server.Name, server.RegionID, server.PlanID, *osID}, lengths)
@@ -51,14 +51,55 @@ func serversCreate(cmd *cli.Cmd) {
 	}
 }
 
+func serversRename(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -n"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	name := cmd.StringOpt("n name", "", "new name of virtual machine")
+	cmd.Action = func() {
+		if err := GetClient().RenameServer(*id, *name); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine renamed to: %v\n", *name)
+	}
+}
+
+func serversStart(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		if err := GetClient().StartServer(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Virtual machine (re)started")
+	}
+}
+
+func serversHalt(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		if err := GetClient().HaltServer(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Virtual machine halted")
+	}
+}
+
+func serversReboot(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		if err := GetClient().RebootServer(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Virtual machine rebooted")
+	}
+}
+
 func serversDelete(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
-
 	cmd.Action = func() {
 		if err := GetClient().DeleteServer(*id); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("Virtual machine delete success!")
+		fmt.Println("Virtual machine deleted")
 	}
 }
 

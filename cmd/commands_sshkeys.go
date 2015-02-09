@@ -20,7 +20,7 @@ func sshKeysCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		fmt.Println("SSH key create success!\n")
+		fmt.Println("SSH key created\n")
 		lengths := []int{24, 32, 64}
 		printTabbedLine(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
 		printTabbedLine(Columns{key.ID, key.Name, key.Key}, lengths)
@@ -44,18 +44,17 @@ func sshKeysUpdate(cmd *cli.Cmd) {
 		if err := GetClient().UpdateSSHKey(sshkey); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("SSH key update success!")
+		fmt.Println("SSH key updated")
 	}
 }
 
 func sshKeysDelete(cmd *cli.Cmd) {
 	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to delete (see <sshkeys>)")
-
 	cmd.Action = func() {
 		if err := GetClient().DeleteSSHKey(*id); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("SSH key delete success!")
+		fmt.Println("SSH key deleted")
 	}
 }
 

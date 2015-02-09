@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"runtime"
 
 	vultr "github.com/JamesClonk/vultr/lib"
@@ -34,18 +35,19 @@ func (c *CLI) RegisterCommands() {
 	c.Command("sshkeys", "list all existing SSH public keys", sshKeysList)
 
 	// ssh
-	c.Command("ssh", "ssh into a virtual machine", printAPIKey)
+	c.Command("ssh", "ssh into a virtual machine", unimplemented)
 
 	// servers
 	c.Command("server", "modify virtual machines", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create a new virtual machine", serversCreate)
-		cmd.Command("start", "start a virtual machine (restart if already running)", printAPIKey)
-		cmd.Command("halt", "halt a virtual machine (hard power off)", printAPIKey)
-		cmd.Command("reboot", "reboot a virtual machine (hard reboot)", printAPIKey)
-		cmd.Command("reinstall", "reinstall OS on a virtual machine (all data will be lost)", printAPIKey)
-		cmd.Command("change-os", "change OS on a virtual machine (all data will be lost)", printAPIKey)
+		cmd.Command("rename", "rename a virtual machine", serversRename)
+		cmd.Command("start", "start a virtual machine (restart if already running)", serversStart)
+		cmd.Command("halt", "halt a virtual machine (hard power off)", serversHalt)
+		cmd.Command("reboot", "reboot a virtual machine (hard reboot)", serversReboot)
+		cmd.Command("reinstall", "reinstall OS on a virtual machine (all data will be lost)", unimplemented)
+		cmd.Command("change-os", "change OS on a virtual machine (all data will be lost)", unimplemented)
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
-		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", printAPIKey)
+		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", unimplemented)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
 		cmd.Command("show", "list detailed information of a virtual machine", serversShow)
 	})
@@ -53,20 +55,20 @@ func (c *CLI) RegisterCommands() {
 
 	// snapshots
 	c.Command("snapshot", "modify snapshots", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a snapshot from an existing virtual machine", printAPIKey)
-		cmd.Command("delete", "delete a snapshot", printAPIKey)
-		cmd.Command("list", "list all snapshots on current account", printAPIKey)
+		cmd.Command("create", "create a snapshot from an existing virtual machine", unimplemented)
+		cmd.Command("delete", "delete a snapshot", unimplemented)
+		cmd.Command("list", "list all snapshots on current account", unimplemented)
 	})
-	c.Command("snapshots", "list all snapshots on current account", printAPIKey)
+	c.Command("snapshots", "list all snapshots on current account", unimplemented)
 
 	// startup scripts
 	c.Command("script", "modify startup scripts", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a new startup script", printAPIKey)
-		cmd.Command("update", "update an existing startup script", printAPIKey)
-		cmd.Command("delete", "remove an existing startup script", printAPIKey)
-		cmd.Command("list", "list all startup scripts on current account", printAPIKey)
+		cmd.Command("create", "create a new startup script", unimplemented)
+		cmd.Command("update", "update an existing startup script", unimplemented)
+		cmd.Command("delete", "remove an existing startup script", unimplemented)
+		cmd.Command("list", "list all startup scripts on current account", unimplemented)
 	})
-	c.Command("scripts", "list all startup scripts on current account", printAPIKey)
+	c.Command("scripts", "list all startup scripts on current account", unimplemented)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
@@ -82,9 +84,8 @@ func (c *CLI) RegisterCommands() {
 	})
 }
 
-// for debugging..
-func printAPIKey(cmd *cli.Cmd) {
+func unimplemented(cmd *cli.Cmd) {
 	cmd.Action = func() {
-		fmt.Println(*apiKey)
+		log.Fatal("Command not yet implemented!")
 	}
 }

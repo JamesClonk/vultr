@@ -213,6 +213,74 @@ func Test_Servers_CreateServer_OK(t *testing.T) {
 
 }
 
+func Test_Servers_RenameServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.RenameServer("123456789", "new-name")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_RenameServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.RenameServer("123456789", "new-name"))
+}
+
+func Test_Servers_StartServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.StartServer("123456789")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_StartServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.StartServer("123456789"))
+}
+
+func Test_Servers_HaltServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.HaltServer("123456789")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_HaltServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.HaltServer("123456789"))
+}
+
+func Test_Servers_RebootServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.RebootServer("123456789")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_RebootServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.RebootServer("123456789"))
+}
+
 func Test_Servers_DeleteServer_Error(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
 	defer server.Close()

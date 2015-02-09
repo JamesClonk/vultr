@@ -91,7 +91,6 @@ func (c *Client) get(path string, data interface{}) error {
 	if err != nil {
 		return err
 	}
-
 	return c.do(req, data)
 }
 
@@ -100,7 +99,6 @@ func (c *Client) post(path string, values url.Values, data interface{}) error {
 	if err != nil {
 		return err
 	}
-
 	return c.do(req, data)
 }
 
@@ -152,7 +150,6 @@ func (c *Client) newRequest(method string, path string, body io.Reader) (*http.R
 	if req.Method == "POST" {
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
-
 	return req, nil
 }
 
@@ -166,6 +163,5 @@ func checkResponse(resp *http.Response) error {
 	if err != nil {
 		return err
 	}
-
 	return errors.New(string(data))
 }

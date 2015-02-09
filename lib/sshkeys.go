@@ -19,7 +19,6 @@ func (c *Client) GetSSHKeys() (keys []SSHKey, err error) {
 	for _, key := range keyMap {
 		keys = append(keys, key)
 	}
-
 	return keys, nil
 }
 
@@ -53,7 +52,6 @@ func (c *Client) UpdateSSHKey(key SSHKey) error {
 	if err := c.post(`sshkey/update`, values, nil); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -65,6 +63,5 @@ func (c *Client) DeleteSSHKey(id string) error {
 	if err := c.post(`sshkey/destroy`, values, nil); err != nil {
 		return err
 	}
-
 	return nil
 }

@@ -55,7 +55,6 @@ func (c *Client) GetServers() (servers []Server, err error) {
 	for _, server := range serverMap {
 		servers = append(servers, server)
 	}
-
 	return servers, nil
 }
 
@@ -122,6 +121,51 @@ func (c *Client) CreateServer(name string, regionID, planID, osID int, options *
 	return server, nil
 }
 
+func (c *Client) RenameServer(id, name string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"label": {name},
+	}
+
+	if err := c.post(`server/label_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) StartServer(id string) error {
+	values := url.Values{
+		"SUBID": {id},
+	}
+
+	if err := c.post(`server/start`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) HaltServer(id string) error {
+	values := url.Values{
+		"SUBID": {id},
+	}
+
+	if err := c.post(`server/halt`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) RebootServer(id string) error {
+	values := url.Values{
+		"SUBID": {id},
+	}
+
+	if err := c.post(`server/reboot`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Client) DeleteServer(id string) error {
 	values := url.Values{
 		"SUBID": {id},
@@ -130,6 +174,5 @@ func (c *Client) DeleteServer(id string) error {
 	if err := c.post(`server/destroy`, values, nil); err != nil {
 		return err
 	}
-
 	return nil
 }
