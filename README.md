@@ -118,6 +118,10 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 - [ ] implement ssh command
 - [ ] implement snapshot commands
 - [ ] implement script commands
+- [ ] Vultr auth
+  - [ ] read apiKey (and other stuff like default OS image, default region, etc..) from ~/.vultr.json file if present
+  - [ ] command line arguments like --api-key take precendence over values from ~/.vultr.json though!
+  - [ ] add "vultr auth" command, which prompts for apiKey, then stores it into ~/.vultr.json
 - [ ] add usage guide for command line tool
 - [ ] add documentation on how to use library in other projects
 - [ ] create github.io page
