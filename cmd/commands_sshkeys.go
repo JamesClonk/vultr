@@ -31,7 +31,7 @@ func sshKeysCreate(cmd *cli.Cmd) {
 func sshKeysUpdate(cmd *cli.Cmd) {
 	cmd.Spec = "SSHKEYID [-n | --name] [-k | --key]"
 
-	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to update (see <sshkey list>)")
+	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to update (see <sshkeys>)")
 	name := cmd.StringOpt("n name", "", "New name for the SSH key")
 	key := cmd.StringOpt("k key", "", "New SSH key contents")
 
@@ -49,7 +49,7 @@ func sshKeysUpdate(cmd *cli.Cmd) {
 }
 
 func sshKeysDelete(cmd *cli.Cmd) {
-	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to delete (see <sshkey list>)")
+	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to delete (see <sshkeys>)")
 
 	cmd.Action = func() {
 		if err := GetClient().DeleteSSHKey(*id); err != nil {

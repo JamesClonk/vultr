@@ -113,7 +113,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 #### TODO
 
 :scream:
-- [ ] add options (ServerOption struct) to server create command
+- [x] add options (ServerOption struct) to server create command
 - [ ] implement all server subcommands
 - [ ] implement ssh command
 - [ ] implement snapshot commands

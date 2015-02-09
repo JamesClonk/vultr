@@ -4,19 +4,41 @@ import (
 	"fmt"
 	"log"
 
+	vultr "github.com/JamesClonk/vultr/lib"
 	"github.com/jawher/mow.cli"
 )
 
 func serversCreate(cmd *cli.Cmd) {
-	cmd.Spec = "-n | --name -r | --region -p | --plan -o | --os"
+	cmd.Spec = "-n -r -p -o [OPTIONS]"
 
 	name := cmd.StringOpt("n name", "", "Name of new virtual machine")
 	regionID := cmd.IntOpt("r region", 0, "Region (DCID)")
 	planID := cmd.IntOpt("p plan", 0, "Plan (VPSPLANID)")
 	osID := cmd.IntOpt("o os", 0, "Operating system (OSID)")
 
+	// options
+	ipxe := cmd.StringOpt("ipxe", "", "Chainload the specified URL on bootup, via iPXE, for custom OS")
+	iso := cmd.IntOpt("iso", 0, "ISOID of a specific ISO to mount during the deployment, for custom OS")
+	script := cmd.IntOpt("s script", 0, "SCRIPTID of a startup script to execute on boot.  See v1/startupscript/list")
+	snapshot := cmd.StringOpt("snapshot", "", "SNAPSHOTID (see <snapshots>) to restore for the initial installation")
+	sshkey := cmd.StringOpt("k sshkey", "", "SSHKEYID (see <sshkeys>) of SSH key to apply to this server on install")
+	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
+	privateNetworking := cmd.BoolOpt("private-networking", false, "Add private networking support for this virtual machine")
+	autoBackups := cmd.BoolOpt("autobackups", false, "Enable automatic backups for this virtual machine")
+
 	cmd.Action = func() {
-		server, err := GetClient().CreateServer(*name, *regionID, *planID, *osID, nil)
+		options := &vultr.ServerOptions{
+			IPXEChainURL:      *ipxe,
+			ISO:               *iso,
+			Script:            *script,
+			Snapshot:          *snapshot,
+			SSHKey:            *sshkey,
+			IPV6:              *ipv6,
+			PrivateNetworking: *privateNetworking,
+			AutoBackups:       *autoBackups,
+		}
+
+		server, err := GetClient().CreateServer(*name, *regionID, *planID, *osID, options)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -30,7 +52,7 @@ func serversCreate(cmd *cli.Cmd) {
 }
 
 func serversDelete(cmd *cli.Cmd) {
-	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <server list>)")
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 
 	cmd.Action = func() {
 		if err := GetClient().DeleteServer(*id); err != nil {
@@ -87,7 +109,7 @@ func serversList(cmd *cli.Cmd) {
 func serversShow(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID [-f | --full]"
 
-	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <server list>)")
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	full := cmd.BoolOpt("f full", false, "Display full length of KVM URL")
 
 	cmd.Action = func() {
