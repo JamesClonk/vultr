@@ -114,7 +114,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 
 :scream:
 - [x] ~~add options (ServerOption struct) to server create command~~
-- [ ] implement all server subcommands
+- [x] ~~implement all server subcommands~~
   - [x] ~~server rename~~
   - [x] ~~server start~~
   - [x] ~~server halt~~
@@ -122,7 +122,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
   - [x] ~~server reinstall~~
   - [x] ~~server change-os~~
     - [x] ~~server change-os --list (to show possible choices)~~
-  - [ ] server bandwidth
+  - [x] ~~server bandwidth~~
 - [ ] implement ssh command
 - [ ] implement snapshot commands
 - [ ] implement script commands

@@ -391,3 +391,52 @@ func Test_Servers_DeleteServer_OK(t *testing.T) {
 
 	assert.Nil(t, client.DeleteServer("123456789"))
 }
+
+func Test_Servers_BandwidthOfServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	bandwidth, err := client.BandwidthOfServer("123456789")
+	assert.Nil(t, bandwidth)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_BandwidthOfServer_NoOS(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	bandwidth, err := client.BandwidthOfServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, bandwidth)
+}
+
+func Test_Servers_BandwidthOfServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{
+    "incoming_bytes": [
+        ["2014-06-10","81072581"],["2014-06-11","222387466"],
+        ["2014-06-12","216885232"],["2014-06-13","117262318"]
+    ],
+    "outgoing_bytes": [
+        ["2014-06-10","4059610"],["2014-06-11","13432380"],
+        ["2014-06-12","2455005"],["2014-06-13","1106963"]
+    ]}`)
+	defer server.Close()
+
+	bandwidth, err := client.BandwidthOfServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, bandwidth) {
+		assert.Equal(t, 4, len(bandwidth))
+		assert.Equal(t, "2014-06-10", bandwidth[0]["date"])
+		assert.Equal(t, "81072581", bandwidth[0]["incoming"])
+		assert.Equal(t, "4059610", bandwidth[0]["outgoing"])
+		assert.Equal(t, "2014-06-12", bandwidth[2]["date"])
+		assert.Equal(t, "216885232", bandwidth[2]["incoming"])
+		assert.Equal(t, "2455005", bandwidth[2]["outgoing"])
+	}
+}

@@ -211,3 +211,30 @@ func (c *Client) DeleteServer(id string) error {
 	}
 	return nil
 }
+
+func (c *Client) BandwidthOfServer(id string) (bandwidth []map[string]string, err error) {
+	var bandwidthMap map[string][][]string
+	if err := c.get(`server/bandwidth?SUBID=`+id, &bandwidthMap); err != nil {
+		return nil, err
+	}
+
+	// parse incoming bytes
+	for _, b := range bandwidthMap["incoming_bytes"] {
+		bMap := make(map[string]string)
+		bMap["date"] = b[0]
+		bMap["incoming"] = b[1]
+		bandwidth = append(bandwidth, bMap)
+	}
+
+	// parse outgoing bytes (we'll assume that incoming and outgoing dates are always a match)
+	for _, b := range bandwidthMap["outgoing_bytes"] {
+		for i := range bandwidth {
+			if bandwidth[i]["date"] == b[0] {
+				bandwidth[i]["outgoing"] = b[1]
+				break
+			}
+		}
+	}
+
+	return bandwidth, nil
+}

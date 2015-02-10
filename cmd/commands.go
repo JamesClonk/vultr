@@ -50,7 +50,7 @@ func (c *CLI) RegisterCommands() {
 			cmd.Command("list", "show a list of operating systems to which can be changed to", serversListOS)
 		})
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
-		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", unimplemented)
+		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", serversBandwidth)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
 		cmd.Command("show", "list detailed information of a virtual machine", serversShow)
 	})

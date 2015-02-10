@@ -147,6 +147,28 @@ func serversDelete(cmd *cli.Cmd) {
 	}
 }
 
+func serversBandwidth(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		bandwidth, err := GetClient().BandwidthOfServer(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(bandwidth) == 0 {
+			fmt.Println()
+			return
+		}
+
+		lengths := []int{24, 24, 24}
+		printTabbedLine(Columns{"DATE", "INCOMING", "OUTGOING"}, lengths)
+		for _, b := range bandwidth {
+			printTabbedLine(Columns{b["date"], b["incoming"], b["outgoing"]}, lengths)
+		}
+		tabsFlush()
+	}
+}
+
 func serversList(cmd *cli.Cmd) {
 	cmd.Action = func() {
 		servers, err := GetClient().GetServers()
