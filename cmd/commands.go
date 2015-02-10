@@ -35,7 +35,7 @@ func (c *CLI) RegisterCommands() {
 	c.Command("sshkeys", "list all existing SSH public keys", sshKeysList)
 
 	// ssh
-	c.Command("ssh", "ssh into a virtual machine", unimplemented)
+	c.Command("ssh", "ssh into a virtual machine", sshServer)
 
 	// servers
 	c.Command("server", "modify virtual machines", func(cmd *cli.Cmd) {
