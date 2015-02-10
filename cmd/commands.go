@@ -44,8 +44,11 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("start", "start a virtual machine (restart if already running)", serversStart)
 		cmd.Command("halt", "halt a virtual machine (hard power off)", serversHalt)
 		cmd.Command("reboot", "reboot a virtual machine (hard reboot)", serversReboot)
-		cmd.Command("reinstall", "reinstall OS on a virtual machine (all data will be lost)", unimplemented)
-		cmd.Command("change-os", "change OS on a virtual machine (all data will be lost)", unimplemented)
+		cmd.Command("reinstall", "reinstall OS on a virtual machine (all data will be lost)", serversReinstall)
+		cmd.Command("os", "show and change OS on a virtual machine", func(cmd *cli.Cmd) {
+			cmd.Command("change", "change operating system of virtual machine (all data will be lost)", serversChangeOS)
+			cmd.Command("list", "show a list of operating systems to which can be changed to", serversListOS)
+		})
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", unimplemented)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)

@@ -281,6 +281,23 @@ func Test_Servers_RebootServer_OK(t *testing.T) {
 	assert.Nil(t, client.RebootServer("123456789"))
 }
 
+func Test_Servers_ReinstallServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.ReinstallServer("123456789")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ReinstallServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.ReinstallServer("123456789"))
+}
+
 func Test_Servers_DeleteServer_Error(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
 	defer server.Close()
@@ -288,6 +305,83 @@ func Test_Servers_DeleteServer_Error(t *testing.T) {
 	err := client.DeleteServer("123456789")
 	if assert.NotNil(t, err) {
 		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ChangeOSofServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.ChangeOSofServer("123456789", 160)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ChangeOSofServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.ChangeOSofServer("123456789", 160))
+}
+
+func Test_Servers_ListOSforServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	os, err := client.ListOSforServer("123456789")
+	assert.Nil(t, os)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ListOSforServer_NoOS(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	os, err := client.ListOSforServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, os)
+}
+
+func Test_Servers_ListOSforServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{
+"127":{"OSID":127,"name":"CentOS 6 x64","arch":"x64","family":"centos","windows":false,"surcharge":"0.00"},
+"179":{"OSID":179,"name":"CoreOS Stable","arch":"x64","family":"coreos","windows":false,"surcharge":"1.25"},
+"124":{"OSID":124,"name":"Windows 2012 R2 x64","arch":"x64","family":"windows","windows":true,"surcharge":"5.99"}}`)
+	defer server.Close()
+
+	os, err := client.ListOSforServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, os) {
+		assert.Equal(t, 3, len(os))
+		// OS could be in random order
+		for _, os := range os {
+			switch os.ID {
+			case 127:
+				assert.Equal(t, "CentOS 6 x64", os.Name)
+				assert.Equal(t, "x64", os.Arch)
+				assert.Equal(t, "centos", os.Family)
+				assert.Equal(t, "0.00", os.Surcharge)
+			case 179:
+				assert.Equal(t, "coreos", os.Family)
+				assert.Equal(t, "CoreOS Stable", os.Name)
+				assert.Equal(t, false, os.Windows)
+				assert.Equal(t, "1.25", os.Surcharge)
+			case 124:
+				assert.Equal(t, "windows", os.Family)
+				assert.Equal(t, "Windows 2012 R2 x64", os.Name)
+				assert.Equal(t, true, os.Windows)
+				assert.Equal(t, "5.99", os.Surcharge)
+			default:
+				t.Error("Unknown OSID")
+			}
+		}
 	}
 }
 

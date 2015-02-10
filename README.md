@@ -1,5 +1,5 @@
 # vultr
-[Vultr](https://www.vultr.com) CLI and client library, written in [Go](https://golang.org)
+[Vultr](https://www.vultr.com) CLI and API client library, written in [Go](https://golang.org)
 
 [![GoDoc](https://godoc.org/github.com/JamesClonk/vultr/lib?status.png)](https://godoc.org/github.com/JamesClonk/vultr/lib) [![Build Status](https://travis-ci.org/JamesClonk/vultr.png?branch=master)](https://travis-ci.org/JamesClonk/vultr)
 
@@ -119,9 +119,9 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
   - [x] ~~server start~~
   - [x] ~~server halt~~
   - [x] ~~server reboot~~
-  - [ ] server reinstall
-  - [ ] server change-os
-    - [ ] server change-os --list (to show possible choices)
+  - [x] ~~server reinstall~~
+  - [x] ~~server change-os~~
+    - [x] ~~server change-os --list (to show possible choices)~~
   - [ ] server bandwidth
 - [ ] implement ssh command
 - [ ] implement snapshot commands

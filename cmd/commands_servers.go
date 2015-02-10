@@ -93,6 +93,50 @@ func serversReboot(cmd *cli.Cmd) {
 	}
 }
 
+func serversReinstall(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		if err := GetClient().ReinstallServer(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Virtual machine reinstalled")
+	}
+}
+
+func serversChangeOS(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -o"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	osID := cmd.IntOpt("o os", 0, "Operating system (OSID)")
+	cmd.Action = func() {
+		if err := GetClient().ChangeOSofServer(*id, *osID); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine operating system changed to: %v\n", *osID)
+	}
+}
+
+func serversListOS(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		os, err := GetClient().ListOSforServer(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(os) == 0 {
+			fmt.Println()
+			return
+		}
+
+		lengths := []int{8, 32, 8, 16, 8, 12}
+		printTabbedLine(Columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS", "SURCHARGE"}, lengths)
+		for _, os := range os {
+			printTabbedLine(Columns{os.ID, os.Name, os.Arch, os.Family, os.Windows, os.Surcharge}, lengths)
+		}
+		tabsFlush()
+	}
+}
+
 func serversDelete(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cmd.Action = func() {

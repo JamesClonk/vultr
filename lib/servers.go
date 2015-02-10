@@ -166,6 +166,41 @@ func (c *Client) RebootServer(id string) error {
 	return nil
 }
 
+func (c *Client) ReinstallServer(id string) error {
+	values := url.Values{
+		"SUBID": {id},
+	}
+
+	if err := c.post(`server/reinstall`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) ChangeOSofServer(id string, osID int) error {
+	values := url.Values{
+		"SUBID": {id},
+		"OSID":  {fmt.Sprintf("%v", osID)},
+	}
+
+	if err := c.post(`server/os_change`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) ListOSforServer(id string) (os []OS, err error) {
+	var osMap map[string]OS
+	if err := c.get(`server/os_change_list?SUBID=`+id, &osMap); err != nil {
+		return nil, err
+	}
+
+	for _, o := range osMap {
+		os = append(os, o)
+	}
+	return os, nil
+}
+
 func (c *Client) DeleteServer(id string) error {
 	values := url.Values{
 		"SUBID": {id},

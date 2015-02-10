@@ -2,11 +2,12 @@ package lib
 
 // OS image on Vultr
 type OS struct {
-	ID      int    `json:"OSID"`
-	Name    string `json:"name"`
-	Arch    string `json:"arch"`
-	Family  string `json:"family"`
-	Windows bool   `json:"windows"`
+	ID        int    `json:"OSID"`
+	Name      string `json:"name"`
+	Arch      string `json:"arch"`
+	Family    string `json:"family"`
+	Windows   bool   `json:"windows"`
+	Surcharge string `json:"surcharge"`
 }
 
 func (c *Client) GetOS() ([]OS, error) {
