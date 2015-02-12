@@ -113,6 +113,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 #### TODO
 
 :scream:
+##### v1.0
 - [x] ~~add options (ServerOption struct) to server create command~~
 - [x] ~~implement all server subcommands~~
   - [x] ~~server rename~~
@@ -126,11 +127,13 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 - [x] ~~implement ssh command~~
 - [ ] implement snapshot commands
 - [x] ~~implement script commands~~
-- [ ] Vultr auth
+- [ ] add usage guide for command line tool
+- [ ] add documentation on how to use library in other projects
+- [ ] create binary releases (darwin, linux, freebsd, windows. tagged with v1.0)
+- [ ] create github.io page
+
+##### v1.1
+- [ ] Vultr auth (command?)
   - [ ] read apiKey (and other stuff like default OS image, default region, etc..) from ~/.vultr.json file if present
   - [ ] command line arguments like --api-key take precendence over values from ~/.vultr.json though!
   - [ ] add "vultr auth" command, which prompts for apiKey, then stores it into ~/.vultr.json
-- [ ] add usage guide for command line tool
-- [ ] add documentation on how to use library in other projects
-- [ ] create github.io page
-
