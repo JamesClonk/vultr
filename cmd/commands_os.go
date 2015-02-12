@@ -20,9 +20,9 @@ func osList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{8, 32, 8, 16, 8}
-		printTabbedLine(Columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS"}, lengths)
+		tabsPrint(Columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS"}, lengths)
 		for _, os := range os {
-			printTabbedLine(Columns{os.ID, os.Name, os.Arch, os.Family, os.Windows}, lengths)
+			tabsPrint(Columns{os.ID, os.Name, os.Arch, os.Family, os.Windows}, lengths)
 		}
 		tabsFlush()
 	}

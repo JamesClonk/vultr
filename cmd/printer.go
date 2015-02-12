@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -15,7 +16,7 @@ func init() {
 
 type Columns []interface{}
 
-func printTabbedLine(values Columns, lengths []int) {
+func tabsPrint(values Columns, lengths []int) {
 	if len(values) != len(lengths) {
 		log.Fatalf("Internal error! Mismatch during tabbed line print. Values: %d, Lengths: %d\n", len(values), len(lengths))
 	}
@@ -25,7 +26,7 @@ func printTabbedLine(values Columns, lengths []int) {
 		if i == 0 {
 			format = "%s"
 		}
-		fmt.Fprintf(tw, format, max(fmt.Sprintf("%v", value), lengths[i]))
+		fmt.Fprintf(tw, format, replaceCharacters(maxCharacters(fmt.Sprintf("%v", value), lengths[i])))
 	}
 	fmt.Fprintf(tw, "\n")
 }
@@ -34,7 +35,14 @@ func tabsFlush() {
 	tw.Flush()
 }
 
-func max(input string, maxLength int) string {
+func replaceCharacters(s string) string {
+	s = strings.Replace(s, "\n", `\n`, -1)
+	s = strings.Replace(s, "\r", `\r`, -1)
+	s = strings.Replace(s, "\t", `\t`, -1)
+	return s
+}
+
+func maxCharacters(input string, maxLength int) string {
 	if len(input) > maxLength {
 		input = input[:maxLength-2] + ".."
 	}

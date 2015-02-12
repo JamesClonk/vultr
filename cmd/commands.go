@@ -52,7 +52,7 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", serversBandwidth)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
-		cmd.Command("show", "list detailed information of a virtual machine", serversShow)
+		cmd.Command("show", "show detailed information of a virtual machine", serversShow)
 	})
 	c.Command("servers", "list all active or pending virtual machines on current account", serversList)
 
@@ -66,22 +66,23 @@ func (c *CLI) RegisterCommands() {
 
 	// startup scripts
 	c.Command("script", "modify startup scripts", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a new startup script", unimplemented)
-		cmd.Command("update", "update an existing startup script", unimplemented)
-		cmd.Command("delete", "remove an existing startup script", unimplemented)
-		cmd.Command("list", "list all startup scripts on current account", unimplemented)
+		cmd.Command("create", "create a new startup script", scriptsCreate)
+		cmd.Command("update", "update an existing startup script", scriptsUpdate)
+		cmd.Command("delete", "remove an existing startup script", scriptsDelete)
+		cmd.Command("list", "list all startup scripts on current account", scriptsList)
+		cmd.Command("show", "show complete startup script", scriptsShow)
 	})
-	c.Command("scripts", "list all startup scripts on current account", unimplemented)
+	c.Command("scripts", "list all startup scripts on current account", scriptsList)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
 		cmd.Action = func() {
 			lengths := []int{24, 48}
-			printTabbedLine(Columns{"Client version:", vultr.Version}, lengths)
-			printTabbedLine(Columns{"Vultr API endpoint:", vultr.DefaultEndpoint}, lengths)
-			printTabbedLine(Columns{"Vultr API version:", vultr.APIVersion}, lengths)
-			printTabbedLine(Columns{"OS/Arch (client):", fmt.Sprintf("%v/%v", runtime.GOOS, runtime.GOARCH)}, lengths)
-			printTabbedLine(Columns{"Go version:", runtime.Version()}, lengths)
+			tabsPrint(Columns{"Client version:", vultr.Version}, lengths)
+			tabsPrint(Columns{"Vultr API endpoint:", vultr.DefaultEndpoint}, lengths)
+			tabsPrint(Columns{"Vultr API version:", vultr.APIVersion}, lengths)
+			tabsPrint(Columns{"OS/Arch (client):", fmt.Sprintf("%v/%v", runtime.GOOS, runtime.GOARCH)}, lengths)
+			tabsPrint(Columns{"Go version:", runtime.Version()}, lengths)
 			tabsFlush()
 		}
 	})

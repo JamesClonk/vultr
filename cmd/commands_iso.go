@@ -20,9 +20,9 @@ func isoList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{8, 48, 16, 48, 24}
-		printTabbedLine(Columns{"ISOID", "FILENAME", "SIZE", "MD5SUM", "CREATED DATE"}, lengths)
+		tabsPrint(Columns{"ISOID", "FILENAME", "SIZE", "MD5SUM", "CREATED DATE"}, lengths)
 		for _, iso := range iso {
-			printTabbedLine(Columns{iso.ID, iso.Filename, iso.Size, iso.MD5sum, iso.Created}, lengths)
+			tabsPrint(Columns{iso.ID, iso.Filename, iso.Size, iso.MD5sum, iso.Created}, lengths)
 		}
 		tabsFlush()
 	}

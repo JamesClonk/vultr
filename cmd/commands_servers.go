@@ -45,8 +45,8 @@ func serversCreate(cmd *cli.Cmd) {
 
 		fmt.Println("Virtual machine created\n")
 		lengths := []int{12, 32, 8, 12, 8}
-		printTabbedLine(Columns{"SUBID", "NAME", "DCID", "VPSPLANID", "OSID"}, lengths)
-		printTabbedLine(Columns{server.ID, server.Name, server.RegionID, server.PlanID, *osID}, lengths)
+		tabsPrint(Columns{"SUBID", "NAME", "DCID", "VPSPLANID", "OSID"}, lengths)
+		tabsPrint(Columns{server.ID, server.Name, server.RegionID, server.PlanID, *osID}, lengths)
 		tabsFlush()
 	}
 }
@@ -129,9 +129,9 @@ func serversListOS(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{8, 32, 8, 16, 8, 12}
-		printTabbedLine(Columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS", "SURCHARGE"}, lengths)
+		tabsPrint(Columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS", "SURCHARGE"}, lengths)
 		for _, os := range os {
-			printTabbedLine(Columns{os.ID, os.Name, os.Arch, os.Family, os.Windows, os.Surcharge}, lengths)
+			tabsPrint(Columns{os.ID, os.Name, os.Arch, os.Family, os.Windows, os.Surcharge}, lengths)
 		}
 		tabsFlush()
 	}
@@ -161,9 +161,9 @@ func serversBandwidth(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{24, 24, 24}
-		printTabbedLine(Columns{"DATE", "INCOMING", "OUTGOING"}, lengths)
+		tabsPrint(Columns{"DATE", "INCOMING", "OUTGOING"}, lengths)
 		for _, b := range bandwidth {
-			printTabbedLine(Columns{b["date"], b["incoming"], b["outgoing"]}, lengths)
+			tabsPrint(Columns{b["date"], b["incoming"], b["outgoing"]}, lengths)
 		}
 		tabsFlush()
 	}
@@ -182,7 +182,7 @@ func serversList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 16, 24, 32, 32, 32, 8, 8, 24, 12, 8}
-		printTabbedLine(Columns{
+		tabsPrint(Columns{
 			"SUBID",
 			"STATUS",
 			"IP",
@@ -195,7 +195,7 @@ func serversList(cmd *cli.Cmd) {
 			"BANDWIDTH",
 			"COST"}, lengths)
 		for _, server := range servers {
-			printTabbedLine(Columns{
+			tabsPrint(Columns{
 				server.ID,
 				server.Status,
 				server.MainIP,
@@ -214,7 +214,7 @@ func serversList(cmd *cli.Cmd) {
 }
 
 func serversShow(cmd *cli.Cmd) {
-	cmd.Spec = "SUBID [-f | --full]"
+	cmd.Spec = "SUBID [-f]"
 
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	full := cmd.BoolOpt("f full", false, "Display full length of KVM URL")
@@ -236,32 +236,32 @@ func serversShow(cmd *cli.Cmd) {
 		}
 		lengths := []int{24, keyLength}
 
-		printTabbedLine(Columns{"Id (SUBID):", server.ID}, lengths)
-		printTabbedLine(Columns{"Name:", server.Name}, lengths)
-		printTabbedLine(Columns{"Operating system:", server.OS}, lengths)
-		printTabbedLine(Columns{"Status:", server.Status}, lengths)
-		printTabbedLine(Columns{"Power status:", server.PowerStatus}, lengths)
-		printTabbedLine(Columns{"Location:", server.Location}, lengths)
-		printTabbedLine(Columns{"Region (DCID):", server.RegionID}, lengths)
-		printTabbedLine(Columns{"VCPU count:", server.VCpus}, lengths)
-		printTabbedLine(Columns{"RAM:", server.RAM}, lengths)
-		printTabbedLine(Columns{"Disk:", server.Disk}, lengths)
-		printTabbedLine(Columns{"Allowed bandwidth:", server.AllowedBandwidth}, lengths)
-		printTabbedLine(Columns{"Current bandwidth:", server.CurrentBandwidth}, lengths)
-		printTabbedLine(Columns{"Cost per month:", server.Cost}, lengths)
-		printTabbedLine(Columns{"Pending charges:", server.PendingCharges}, lengths)
-		printTabbedLine(Columns{"Plan (VPSPLANID):", server.PlanID}, lengths)
-		printTabbedLine(Columns{"IP:", server.MainIP}, lengths)
-		printTabbedLine(Columns{"Netmask:", server.NetmaskV4}, lengths)
-		printTabbedLine(Columns{"Gateway:", server.GatewayV4}, lengths)
-		printTabbedLine(Columns{"Internal IP:", server.InternalIP}, lengths)
-		printTabbedLine(Columns{"IPv6 IP:", server.MainIPV6}, lengths)
-		printTabbedLine(Columns{"IPv6 Network:", server.NetworkV6}, lengths)
-		printTabbedLine(Columns{"IPv6 Network Size:", server.NetworkSizeV6}, lengths)
-		printTabbedLine(Columns{"Created date:", server.Created}, lengths)
-		printTabbedLine(Columns{"Default password:", server.DefaultPassword}, lengths)
-		printTabbedLine(Columns{"Auto backups:", server.AutoBackups}, lengths)
-		printTabbedLine(Columns{"KVM URL:", server.KVMUrl}, lengths)
+		tabsPrint(Columns{"Id (SUBID):", server.ID}, lengths)
+		tabsPrint(Columns{"Name:", server.Name}, lengths)
+		tabsPrint(Columns{"Operating system:", server.OS}, lengths)
+		tabsPrint(Columns{"Status:", server.Status}, lengths)
+		tabsPrint(Columns{"Power status:", server.PowerStatus}, lengths)
+		tabsPrint(Columns{"Location:", server.Location}, lengths)
+		tabsPrint(Columns{"Region (DCID):", server.RegionID}, lengths)
+		tabsPrint(Columns{"VCPU count:", server.VCpus}, lengths)
+		tabsPrint(Columns{"RAM:", server.RAM}, lengths)
+		tabsPrint(Columns{"Disk:", server.Disk}, lengths)
+		tabsPrint(Columns{"Allowed bandwidth:", server.AllowedBandwidth}, lengths)
+		tabsPrint(Columns{"Current bandwidth:", server.CurrentBandwidth}, lengths)
+		tabsPrint(Columns{"Cost per month:", server.Cost}, lengths)
+		tabsPrint(Columns{"Pending charges:", server.PendingCharges}, lengths)
+		tabsPrint(Columns{"Plan (VPSPLANID):", server.PlanID}, lengths)
+		tabsPrint(Columns{"IP:", server.MainIP}, lengths)
+		tabsPrint(Columns{"Netmask:", server.NetmaskV4}, lengths)
+		tabsPrint(Columns{"Gateway:", server.GatewayV4}, lengths)
+		tabsPrint(Columns{"Internal IP:", server.InternalIP}, lengths)
+		tabsPrint(Columns{"IPv6 IP:", server.MainIPV6}, lengths)
+		tabsPrint(Columns{"IPv6 Network:", server.NetworkV6}, lengths)
+		tabsPrint(Columns{"IPv6 Network Size:", server.NetworkSizeV6}, lengths)
+		tabsPrint(Columns{"Created date:", server.Created}, lengths)
+		tabsPrint(Columns{"Default password:", server.DefaultPassword}, lengths)
+		tabsPrint(Columns{"Auto backups:", server.AutoBackups}, lengths)
+		tabsPrint(Columns{"KVM URL:", server.KVMUrl}, lengths)
 		tabsFlush()
 	}
 }

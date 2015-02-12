@@ -9,7 +9,7 @@ import (
 )
 
 func sshKeysCreate(cmd *cli.Cmd) {
-	cmd.Spec = "-n | --name -k | --key"
+	cmd.Spec = "-n -k"
 
 	name := cmd.StringOpt("n name", "", "Name of the SSH key")
 	sshkey := cmd.StringOpt("k key", "", "SSH public key (in authorized_keys format)")
@@ -22,14 +22,14 @@ func sshKeysCreate(cmd *cli.Cmd) {
 
 		fmt.Println("SSH key created\n")
 		lengths := []int{24, 32, 64}
-		printTabbedLine(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
-		printTabbedLine(Columns{key.ID, key.Name, key.Key}, lengths)
+		tabsPrint(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
+		tabsPrint(Columns{key.ID, key.Name, key.Key}, lengths)
 		tabsFlush()
 	}
 }
 
 func sshKeysUpdate(cmd *cli.Cmd) {
-	cmd.Spec = "SSHKEYID [-n | --name] [-k | --key]"
+	cmd.Spec = "SSHKEYID [-n] [-k]"
 
 	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to update (see <sshkeys>)")
 	name := cmd.StringOpt("n name", "", "New name for the SSH key")
@@ -59,7 +59,7 @@ func sshKeysDelete(cmd *cli.Cmd) {
 }
 
 func sshKeysList(cmd *cli.Cmd) {
-	cmd.Spec = "[-f | --full]"
+	cmd.Spec = "[-f]"
 
 	full := cmd.BoolOpt("f full", false, "Display full length of SSH key")
 
@@ -80,9 +80,9 @@ func sshKeysList(cmd *cli.Cmd) {
 		}
 		lengths := []int{24, 32, keyLength}
 
-		printTabbedLine(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
+		tabsPrint(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
 		for _, key := range keys {
-			printTabbedLine(Columns{key.ID, key.Name, key.Key}, lengths)
+			tabsPrint(Columns{key.ID, key.Name, key.Key}, lengths)
 		}
 		tabsFlush()
 	}

@@ -20,9 +20,9 @@ func regionList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{8, 48, 24, 8, 8}
-		printTabbedLine(Columns{"DCID", "NAME", "CONTINENT", "COUNTRY", "STATE"}, lengths)
+		tabsPrint(Columns{"DCID", "NAME", "CONTINENT", "COUNTRY", "STATE"}, lengths)
 		for _, region := range regions {
-			printTabbedLine(Columns{region.ID, region.Name, region.Continent, region.Country, region.State}, lengths)
+			tabsPrint(Columns{region.ID, region.Name, region.Continent, region.Country, region.State}, lengths)
 		}
 		tabsFlush()
 	}

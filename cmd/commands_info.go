@@ -14,8 +14,8 @@ func accountInfo(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{16, 16, 24, 24}
-		printTabbedLine(Columns{"BALANCE", "PENDING CHARGES", "LAST PAYMENT DATE", "LAST PAYMENT AMOUNT"}, lengths)
-		printTabbedLine(Columns{info.Balance, info.PendingCharges, info.LastPaymentDate, info.LastPaymentAmount}, lengths)
+		tabsPrint(Columns{"BALANCE", "PENDING CHARGES", "LAST PAYMENT DATE", "LAST PAYMENT AMOUNT"}, lengths)
+		tabsPrint(Columns{info.Balance, info.PendingCharges, info.LastPaymentDate, info.LastPaymentAmount}, lengths)
 		tabsFlush()
 	}
 }

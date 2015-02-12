@@ -125,7 +125,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
   - [x] ~~server bandwidth~~
 - [x] ~~implement ssh command~~
 - [ ] implement snapshot commands
-- [ ] implement script commands
+- [x] ~~implement script commands~~
 - [ ] Vultr auth
   - [ ] read apiKey (and other stuff like default OS image, default region, etc..) from ~/.vultr.json file if present
   - [ ] command line arguments like --api-key take precendence over values from ~/.vultr.json though!

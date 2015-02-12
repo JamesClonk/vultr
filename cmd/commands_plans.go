@@ -9,7 +9,7 @@ import (
 )
 
 func planList(cmd *cli.Cmd) {
-	cmd.Spec = "[ -r | --region ]"
+	cmd.Spec = "[-r]"
 
 	id := cmd.IntOpt("r region", 0, "list only available plans for region (DCID)")
 
@@ -45,9 +45,9 @@ func planList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 48, 8, 8, 8, 12, 8}
-		printTabbedLine(Columns{"VPSPLANID", "NAME", "VCPU", "RAM", "DISK", "BANDWIDTH", "PRICE"}, lengths)
+		tabsPrint(Columns{"VPSPLANID", "NAME", "VCPU", "RAM", "DISK", "BANDWIDTH", "PRICE"}, lengths)
 		for _, plan := range plans {
-			printTabbedLine(Columns{plan.ID, plan.Name, plan.VCpus, plan.RAM, plan.Disk, plan.Bandwidth, plan.Price}, lengths)
+			tabsPrint(Columns{plan.ID, plan.Name, plan.VCpus, plan.RAM, plan.Disk, plan.Bandwidth, plan.Price}, lengths)
 		}
 		tabsFlush()
 	}
