@@ -1,4 +1,5 @@
 // +build darwin dragonfly freebsd linux netbsd openbsd solaris
+
 package cmd
 
 import (

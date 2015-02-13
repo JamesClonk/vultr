@@ -9,7 +9,57 @@
 
 Everybody likes screenshots, even of command line tools.. :smile:
 
+### Installation
+
+* Download the latest release for your OS: https://github.com/JamesClonk/vultr/releases
+* Unzip the file
+* Place the **vultr** binary somewhere into your PATH
+* Export your Vultr API key into a VULTR_API_KEY env variable. You can get the API key from the [admin panel](https://my.vultr.com/settings)
+```sh
+$ export VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS
+```
+* Run it
+```sh
+$ vultr version
+Client version:         v1.0
+Vultr API endpoint:     https://api.vultr.com/
+Vultr API version:      v1
+OS/Arch (client):       linux/amd64
+Go version:             go1.4.1
+```
+
+---
+
+### Installation from source
+
+* Install the latest version of [Go](https://golang.org)
+* Make sure your GOPATH is set
+* Add $GOPATH/bin to your PATH
+* Use "go get" to download, compile and install the source
+```sh
+$ go get github.com/JamesClonk/vultr
+```
+* Export your Vultr API key into a VULTR_API_KEY env variable. You can get the API key from the [admin panel](https://my.vultr.com/settings)
+```sh
+$ export VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS
+```
+* Run it
+```sh
+$ vultr version
+Client version:         v1.0
+Vultr API endpoint:     https://api.vultr.com/
+Vultr API version:      v1
+OS/Arch (client):       linux/amd64
+Go version:             go1.4.1
+```
+
+---
+
 ### Usage
+
+Vultr CLI is a command line tool for using the Vultr API.
+It allows you to create and manage your virtual machines, SSH public keys, snapshots and startup scripts on your Vultr account.
+You can also use it to directly SSH into a Vultr virtual machine through the *vultr ssh* command.
 
 Here a some usage examples:
 
@@ -110,30 +160,17 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 
 ---
 
-#### TODO
+##### SSH into virtual machine
+```sh
+$ vultr ssh 1685097
+```
+```
+Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-37-generic x86_64)
 
-:scream:
-##### v1.0
-- [x] ~~add options (ServerOption struct) to server create command~~
-- [x] ~~implement all server subcommands~~
-  - [x] ~~server rename~~
-  - [x] ~~server start~~
-  - [x] ~~server halt~~
-  - [x] ~~server reboot~~
-  - [x] ~~server reinstall~~
-  - [x] ~~server change-os~~
-    - [x] ~~server change-os --list (to show possible choices)~~
-  - [x] ~~server bandwidth~~
-- [x] ~~implement ssh command~~
-- [x] ~~implement snapshot commands~~
-- [x] ~~implement script commands~~
-- [ ] add usage guide for command line tool
-- [ ] add documentation on how to use library in other projects
-- [x] ~~create binary releases (darwin, linux, freebsd, windows. tagged with v1.0)~~
-- [ ] create github.io page
+ * Documentation:  https://help.ubuntu.com/
+Last login: Thu Oct 16 21:49:35 2014 from 10.0.2.2
+root@vultr:~# 
 
-##### v1.1
-- [ ] Vultr auth (command?)
-  - [ ] read apiKey (and other stuff like default OS image, default region, etc..) from ~/.vultr.json file if present
-  - [ ] command line arguments like --api-key take precendence over values from ~/.vultr.json though!
-  - [ ] add "vultr auth" command, which prompts for apiKey, then stores it into ~/.vultr.json
+```
+
+---
