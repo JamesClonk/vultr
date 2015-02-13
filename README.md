@@ -125,7 +125,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
     - [x] ~~server change-os --list (to show possible choices)~~
   - [x] ~~server bandwidth~~
 - [x] ~~implement ssh command~~
-- [ ] implement snapshot commands
+- [x] ~~implement snapshot commands~~
 - [x] ~~implement script commands~~
 - [ ] add usage guide for command line tool
 - [ ] add documentation on how to use library in other projects

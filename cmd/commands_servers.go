@@ -12,9 +12,9 @@ func serversCreate(cmd *cli.Cmd) {
 	cmd.Spec = "-n -r -p -o [OPTIONS]"
 
 	name := cmd.StringOpt("n name", "", "Name of new virtual machine")
-	regionID := cmd.IntOpt("r region", 0, "Region (DCID)")
-	planID := cmd.IntOpt("p plan", 0, "Plan (VPSPLANID)")
-	osID := cmd.IntOpt("o os", 0, "Operating system (OSID)")
+	regionID := cmd.IntOpt("r region", 1, "Region (DCID)")
+	planID := cmd.IntOpt("p plan", 29, "Plan (VPSPLANID)")
+	osID := cmd.IntOpt("o os", 160, "Operating system (OSID)")
 
 	// options
 	ipxe := cmd.StringOpt("ipxe", "", "Chainload the specified URL on bootup, via iPXE, for custom OS")

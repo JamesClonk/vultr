@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	vultr "github.com/JamesClonk/vultr/lib"
@@ -9,13 +10,22 @@ import (
 )
 
 func sshKeysCreate(cmd *cli.Cmd) {
-	cmd.Spec = "-n -k"
+	cmd.Spec = "-n (-k | -f)"
 
 	name := cmd.StringOpt("n name", "", "Name of the SSH key")
-	sshkey := cmd.StringOpt("k key", "", "SSH public key (in authorized_keys format)")
+	key := cmd.StringOpt("k key", "", "SSH public key (in authorized_keys format)")
+	file := cmd.StringOpt("f file", "", "SSH public key file to upload")
 
 	cmd.Action = func() {
-		key, err := GetClient().CreateSSHKey(*name, *sshkey)
+		if *file != "" {
+			data, err := ioutil.ReadFile(*file)
+			if err != nil {
+				log.Fatal(err)
+			}
+			*key = string(data)
+		}
+
+		sshkey, err := GetClient().CreateSSHKey(*name, *key)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -23,19 +33,28 @@ func sshKeysCreate(cmd *cli.Cmd) {
 		fmt.Println("SSH key created\n")
 		lengths := []int{24, 32, 64}
 		tabsPrint(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
-		tabsPrint(Columns{key.ID, key.Name, key.Key}, lengths)
+		tabsPrint(Columns{sshkey.ID, sshkey.Name, sshkey.Key}, lengths)
 		tabsFlush()
 	}
 }
 
 func sshKeysUpdate(cmd *cli.Cmd) {
-	cmd.Spec = "SSHKEYID [-n] [-k]"
+	cmd.Spec = "SSHKEYID [-n] [(-k | -f)]"
 
 	id := cmd.StringArg("SSHKEYID", "", "SSHKEYID of key to update (see <sshkeys>)")
 	name := cmd.StringOpt("n name", "", "New name for the SSH key")
 	key := cmd.StringOpt("k key", "", "New SSH key contents")
+	file := cmd.StringOpt("f file", "", "New SSH public key file to upload")
 
 	cmd.Action = func() {
+		if *file != "" {
+			data, err := ioutil.ReadFile(*file)
+			if err != nil {
+				log.Fatal(err)
+			}
+			*key = string(data)
+		}
+
 		sshkey := vultr.SSHKey{
 			ID:   *id,
 			Name: *name,

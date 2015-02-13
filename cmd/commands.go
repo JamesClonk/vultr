@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"runtime"
 
 	vultr "github.com/JamesClonk/vultr/lib"
@@ -58,11 +57,11 @@ func (c *CLI) RegisterCommands() {
 
 	// snapshots
 	c.Command("snapshot", "modify snapshots", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a snapshot from an existing virtual machine", unimplemented)
-		cmd.Command("delete", "delete a snapshot", unimplemented)
-		cmd.Command("list", "list all snapshots on current account", unimplemented)
+		cmd.Command("create", "create a snapshot from an existing virtual machine", snapshotsCreate)
+		cmd.Command("delete", "delete a snapshot", snapshotsDelete)
+		cmd.Command("list", "list all snapshots on current account", snapshotsList)
 	})
-	c.Command("snapshots", "list all snapshots on current account", unimplemented)
+	c.Command("snapshots", "list all snapshots on current account", snapshotsList)
 
 	// startup scripts
 	c.Command("script", "modify startup scripts", func(cmd *cli.Cmd) {
@@ -86,10 +85,4 @@ func (c *CLI) RegisterCommands() {
 			tabsFlush()
 		}
 	})
-}
-
-func unimplemented(cmd *cli.Cmd) {
-	cmd.Action = func() {
-		log.Fatal("Command not yet implemented!")
-	}
 }
