@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Vultr by JamesClonk</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Vultr</h1>
+        <h2>Vultr CLI and API client library</h2>
+        <a href="https://github.com/JamesClonk/vultr" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="vultr" class="anchor" href="#vultr" aria-hidden="true"><span class="octicon octicon-link"></span></a>vultr</h1>
+
+<p><a href="https://www.vultr.com">Vultr</a> CLI and API client library, written in <a href="https://golang.org">Go</a></p>
+
+<p><a href="https://godoc.org/github.com/JamesClonk/vultr/lib"><img src="https://godoc.org/github.com/JamesClonk/vultr/lib?status.png" alt="GoDoc"></a> <a href="https://travis-ci.org/JamesClonk/vultr"><img src="https://travis-ci.org/JamesClonk/vultr.png?branch=master" alt="Build Status"></a></p>
+
+<h3>
+<a id="screenshot" class="anchor" href="#screenshot" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshot</h3>
+
+<p><img src="https://github.com/JamesClonk/vultr/raw/master/screenshot.png" alt="Screenshot" title="Screenshot"></p>
+
+<p>Everybody likes screenshots, even of command line tools.. <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle"></p>
+
+<h3>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<ul>
+<li>Download the latest release for your OS: <a href="https://github.com/JamesClonk/vultr/releases">https://github.com/JamesClonk/vultr/releases</a>
+</li>
+<li>Unzip the file</li>
+<li>Place the <strong>vultr</strong> binary somewhere into your PATH</li>
+<li>Export your Vultr API key into a VULTR_API_KEY env variable. You can get the API key from the <a href="https://my.vultr.com/settings">admin panel</a>
+</li>
+</ul>
+
+<div class="highlight highlight-sh"><pre>$ <span class="pl-s">export</span> VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS</pre></div>
+
+<ul>
+<li>Run it</li>
+</ul>
+
+<div class="highlight highlight-sh"><pre>$ vultr version
+Client version:         v1.0
+Vultr API endpoint:     https://api.vultr.com/
+Vultr API version:      v1
+OS/Arch (client):       linux/amd64
+Go version:             go1.4.1</pre></div>
+
+<hr>
+
+<h3>
+<a id="installation-from-source" class="anchor" href="#installation-from-source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation from source</h3>
+
+<ul>
+<li>Install the latest version of <a href="https://golang.org">Go</a>
+</li>
+<li>Make sure your GOPATH is set</li>
+<li>Add $GOPATH/bin to your PATH</li>
+<li>Use "go get" to download, compile and install the source</li>
+</ul>
+
+<div class="highlight highlight-sh"><pre>$ go get github.com/JamesClonk/vultr</pre></div>
+
+<ul>
+<li>Export your Vultr API key into a VULTR_API_KEY env variable. You can get the API key from the <a href="https://my.vultr.com/settings">admin panel</a>
+</li>
+</ul>
+
+<div class="highlight highlight-sh"><pre>$ <span class="pl-s">export</span> VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS</pre></div>
+
+<ul>
+<li>Run it</li>
+</ul>
+
+<div class="highlight highlight-sh"><pre>$ vultr version
+Client version:         v1.0
+Vultr API endpoint:     https://api.vultr.com/
+Vultr API version:      v1
+OS/Arch (client):       linux/amd64
+Go version:             go1.4.1</pre></div>
+
+<hr>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>Vultr CLI is a command line tool for using the Vultr API.
+It allows you to create and manage your virtual machines, SSH public keys, snapshots and startup scripts on your Vultr account.
+You can also use it to directly SSH into a Vultr virtual machine through the <em>vultr ssh</em> command.</p>
+
+<p>Here a some usage examples:</p>
+
+<hr>
+
+<h5>
+<a id="show-help-text-for-a-command" class="anchor" href="#show-help-text-for-a-command" aria-hidden="true"><span class="octicon octicon-link"></span></a>show help text for a command</h5>
+
+<div class="highlight highlight-sh"><pre>$ vultr snapshot --help</pre></div>
+
+<pre><code>Usage: vultr snapshot  COMMAND [arg...]
+
+modify snapshots
+
+Commands:
+  create       create a snapshot from an existing virtual machine
+  delete       delete a snapshot
+  list         list all snapshots on current account
+
+Run 'vultr snapshot COMMAND --help' for more information on a command
+</code></pre>
+
+<hr>
+
+<h5>
+<a id="list-available-plans-for-region" class="anchor" href="#list-available-plans-for-region" aria-hidden="true"><span class="octicon octicon-link"></span></a>list available plans for region</h5>
+
+<div class="highlight highlight-sh"><pre>$ vultr plans -r 9</pre></div>
+
+<pre><code>VPSPLANID NAME                                VCPU  RAM   DISK  BANDWIDTH PRICE
+30        1024 MB RAM,20 GB SSD,2.00 TB BW    1     1024  20    2.00      7.00
+29        768 MB RAM,15 GB SSD,1.00 TB BW     1     768   15    1.00      5.00
+3         2048 MB RAM,40 GB SSD,3.00 TB BW    2     2048  40    3.00      15.00
+28        8192 MB RAM,120 GB SSD,5.00 TB BW   4     8192  120   5.00      70.00
+27        4096 MB RAM,65 GB SSD,4.00 TB BW    2     4096  65    4.00      35.00
+</code></pre>
+
+<hr>
+
+<h5>
+<a id="add-ssh-public-key" class="anchor" href="#add-ssh-public-key" aria-hidden="true"><span class="octicon octicon-link"></span></a>add SSH public key</h5>
+
+<div class="highlight highlight-sh"><pre>$ vultr sshkey create -n sampleKey --key=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-s1"><span class="pl-pds">$(</span>cat <span class="pl-k">~</span>/.ssh/id_rsa.pub<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span></pre></div>
+
+<pre><code>SSH key create success!
+
+SSHKEYID        NAME        KEY
+24c81f53be692   sampleKey   ssh-rsa AAAB3NzaC1yc2EQABAQClpsNAM+huOB2dpxM..
+</code></pre>
+
+<hr>
+
+<h5>
+<a id="create-new-virtual-machine" class="anchor" href="#create-new-virtual-machine" aria-hidden="true"><span class="octicon octicon-link"></span></a>create new virtual machine</h5>
+
+<div class="highlight highlight-sh"><pre>$ vultr server create -n <span class="pl-s1"><span class="pl-pds">"</span>test-server<span class="pl-pds">"</span></span> -r 9 -p 29 -o 127</pre></div>
+
+<pre><code>Virtual machine create success!
+
+SUBID           NAME            DCID    VPSPLANID       OSID
+1685097         test-server     9       29              127
+</code></pre>
+
+<hr>
+
+<h5>
+<a id="show-information-about-virtual-machine" class="anchor" href="#show-information-about-virtual-machine" aria-hidden="true"><span class="octicon octicon-link"></span></a>show information about virtual machine</h5>
+
+<div class="highlight highlight-sh"><pre>$ vultr server show 1685097</pre></div>
+
+<pre><code>Id (SUBID):             1685097
+Name:                   test-server
+Operating system:       CentOS 6 x64
+Status:                 active
+Power status:           running
+Location:               Frankfurt
+Region (DCID):          9
+VCPU count:             1
+RAM:                    768 MB
+Disk:                   Virtual 15 GB
+Allowed bandwidth:      1000
+Current bandwidth:      0
+Cost per month:         5.00
+Pending charges:        0.01
+Plan (VPSPLANID):       29
+IP:                     107.62.131.240
+Netmask:                255.255.254.0
+Gateway:                107.62.131.1
+Internal IP:
+IPv6 IP:
+IPv6 Network:           ::
+IPv6 Network Size:      0
+Created date:           2015-02-08 12:36:36
+Default password:       sbiecxo8yk!5
+Auto backups:           no
+KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
+</code></pre>
+
+<hr>
+
+<h5>
+<a id="ssh-into-virtual-machine" class="anchor" href="#ssh-into-virtual-machine" aria-hidden="true"><span class="octicon octicon-link"></span></a>SSH into virtual machine</h5>
+
+<div class="highlight highlight-sh"><pre>$ vultr ssh 1685097</pre></div>
+
+<pre><code>Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-37-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+Last login: Thu Oct 16 21:49:35 2014 from 10.0.2.2
+root@vultr:~# 
+
+</code></pre>
+
+<hr>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/JamesClonk/vultr/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/JamesClonk/vultr/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/JamesClonk/vultr"></a> is maintained by <a href="https://github.com/JamesClonk">JamesClonk</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
