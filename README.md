@@ -129,7 +129,7 @@ KVM URL:                https://my.vultr.com/subs/vps/novnc/api.php?data=ILXS..
 - [x] ~~implement script commands~~
 - [ ] add usage guide for command line tool
 - [ ] add documentation on how to use library in other projects
-- [ ] create binary releases (darwin, linux, freebsd, windows. tagged with v1.0)
+- [x] ~~create binary releases (darwin, linux, freebsd, windows. tagged with v1.0)~~
 - [ ] create github.io page
 
 ##### v1.1
