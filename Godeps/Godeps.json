@@ -12,6 +12,10 @@
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
 			"Rev": "e897f97d666c44ddbc131f4121c2961034b4c1b4"
+		},
+		{
+			"ImportPath": "github.com/ChimeraCoder/tokenbucket",
+			"Rev": "c5a927568de7aad8a58127d80bcd36ca4e71e454"
 		}
 	]
 }

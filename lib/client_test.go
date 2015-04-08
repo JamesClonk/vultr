@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -50,5 +51,35 @@ func Test_Client_NewClient(t *testing.T) {
 		assert.Equal(t, "test-key-new", client.APIKey)
 		assert.Equal(t, "https://api.vultr.com/", client.Endpoint.String())
 		assert.Equal(t, "vultr-go/"+Version, client.UserAgent)
+	}
+}
+
+// Test that API queries are throttled to 1/sec
+func Test_Client_Throttling(t *testing.T) {
+	const ERROR = 250 * time.Millisecond
+	const EXPECTED_DURATION = 4 * time.Second
+	server, client := getTestServerAndClient(http.StatusOK, `{
+		"balance":-15.97,"pending_charges":"2.34",
+		"last_payment_date":"2015-01-29 05:06:27","last_payment_amount":"-5.00"}`)
+	defer server.Close()
+
+	time.Sleep(1 * time.Second)
+
+	// The first query should not be throttled
+	info, _ := client.GetAccountInfo()
+
+	// The next four queries should be throttled and take 4 seconds
+	before := time.Now()
+	info, _ = client.GetAccountInfo()
+	info, _ = client.GetAccountInfo()
+	info, _ = client.GetAccountInfo()
+	info, _ = client.GetAccountInfo()
+	after := time.Now()
+
+	lower := EXPECTED_DURATION - ERROR
+	upper := EXPECTED_DURATION + ERROR
+	assert.NotNil(t, info)
+	if diff := after.Sub(before); diff < lower || diff > upper {
+		t.Errorf("Waited %s seconds, though really should have waited between %s and %s", diff.String(), lower.String(), upper.String())
 	}
 }
