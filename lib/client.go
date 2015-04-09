@@ -53,6 +53,9 @@ type Options struct {
 
 	// Endpoint URL for API requests
 	Endpoint string
+
+	// API rate limitation, calls per duration
+	RateLimitation time.Duration
 }
 
 // NewClient creates new Vultr API client. Options are optional and can be nil.
@@ -60,6 +63,7 @@ func NewClient(apiKey string, options *Options) *Client {
 	userAgent := "vultr-go/" + Version
 	client := http.DefaultClient
 	endpoint, _ := url.Parse(DefaultEndpoint)
+	rate := 1 * time.Second
 
 	if options != nil {
 		if options.HTTPClient != nil {
@@ -71,6 +75,9 @@ func NewClient(apiKey string, options *Options) *Client {
 		if options.Endpoint != "" {
 			endpoint, _ = url.Parse(options.Endpoint)
 		}
+		if options.RateLimitation != 0 {
+			rate = options.RateLimitation
+		}
 	}
 
 	return &Client{
@@ -78,7 +85,7 @@ func NewClient(apiKey string, options *Options) *Client {
 		client:    client,
 		Endpoint:  endpoint,
 		APIKey:    apiKey,
-		bucket:    tokenbucket.NewBucket(1 * time.Second, 1),
+		bucket:    tokenbucket.NewBucket(rate, 1),
 	}
 }
 
@@ -112,6 +119,7 @@ func (c *Client) post(path string, values url.Values, data interface{}) error {
 func (c *Client) do(req *http.Request, data interface{}) error {
 	// Throttle http requests to avoid hitting Vultr's API rate-limit
 	<-c.bucket.SpendToken(1)
+
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err

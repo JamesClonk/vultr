@@ -25,7 +25,8 @@ func getTestServer(code int, body string) *httptest.Server {
 
 func getTestClient(endpoint string) *Client {
 	options := Options{
-		Endpoint: endpoint,
+		Endpoint:       endpoint,
+		RateLimitation: 1 * time.Millisecond,
 	}
 	return NewClient("test-key", &options)
 }
@@ -58,10 +59,16 @@ func Test_Client_NewClient(t *testing.T) {
 func Test_Client_Throttling(t *testing.T) {
 	const ERROR = 250 * time.Millisecond
 	const EXPECTED_DURATION = 4 * time.Second
-	server, client := getTestServerAndClient(http.StatusOK, `{
+	server, _ := getTestServerAndClient(http.StatusOK, `{
 		"balance":-15.97,"pending_charges":"2.34",
 		"last_payment_date":"2015-01-29 05:06:27","last_payment_amount":"-5.00"}`)
 	defer server.Close()
+
+	options := Options{
+		Endpoint:       server.URL,
+		RateLimitation: 1 * time.Second,
+	}
+	client := NewClient("test-key", &options)
 
 	time.Sleep(1 * time.Second)
 
