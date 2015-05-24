@@ -194,6 +194,7 @@ func Test_Servers_CreateServer_OK(t *testing.T) {
 		IPXEChainURL:      "...",
 		ISO:               1,
 		Script:            2,
+		UserData:          "#cloud-config ssh_authorized_keys: - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0g+Z",
 		Snapshot:          "alpha",
 		SSHKey:            "key123",
 		IPV6:              true,
