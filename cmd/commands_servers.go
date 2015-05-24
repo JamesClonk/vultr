@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	vultr "github.com/JamesClonk/vultr/lib"
@@ -20,6 +21,7 @@ func serversCreate(cmd *cli.Cmd) {
 	ipxe := cmd.StringOpt("ipxe", "", "Chainload the specified URL on bootup, via iPXE, for custom OS")
 	iso := cmd.IntOpt("iso", 0, "ISOID of a specific ISO to mount during the deployment, for custom OS")
 	script := cmd.IntOpt("s script", 0, "SCRIPTID of a startup script to execute on boot (see <scripts>)")
+	userDataFile := cmd.StringOpt("user-data", "", "Path to file with user-data")
 	snapshot := cmd.StringOpt("snapshot", "", "SNAPSHOTID (see <snapshots>) to restore for the initial installation")
 	sshkey := cmd.StringOpt("k sshkey", "", "SSHKEYID (see <sshkeys>) of SSH key to apply to this server on install")
 	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
@@ -36,6 +38,13 @@ func serversCreate(cmd *cli.Cmd) {
 			IPV6:              *ipv6,
 			PrivateNetworking: *privateNetworking,
 			AutoBackups:       *autoBackups,
+		}
+		if *userDataFile != "" {
+			data, err := ioutil.ReadFile(*userDataFile)
+			if err != nil {
+				log.Fatal(err)
+			}
+			options.UserData = string(data)
 		}
 
 		server, err := GetClient().CreateServer(*name, *regionID, *planID, *osID, options)

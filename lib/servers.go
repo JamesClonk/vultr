@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/url"
 )
@@ -39,6 +40,7 @@ type ServerOptions struct {
 	IPXEChainURL      string
 	ISO               int
 	Script            int
+	UserData          string
 	Snapshot          string
 	SSHKey            string
 	IPV6              bool
@@ -84,6 +86,10 @@ func (c *Client) CreateServer(name string, regionID, planID, osID int, options *
 
 		if options.Script != 0 {
 			values.Add("SCRIPTID", fmt.Sprintf("%v", options.Script))
+		}
+
+		if options.UserData != "" {
+			values.Add("userdata", base64.StdEncoding.EncodeToString([]byte(options.UserData)))
 		}
 
 		if options.Snapshot != "" {
