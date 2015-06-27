@@ -6,16 +6,16 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/ChimeraCoder/tokenbucket",
+			"Rev": "c5a927568de7aad8a58127d80bcd36ca4e71e454"
+		},
+		{
 			"ImportPath": "github.com/jawher/mow.cli",
 			"Rev": "33e2f99c7beda006afee6bb2e39e31e4ba4e9946"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
-			"Rev": "e897f97d666c44ddbc131f4121c2961034b4c1b4"
-		},
-		{
-			"ImportPath": "github.com/ChimeraCoder/tokenbucket",
-			"Rev": "c5a927568de7aad8a58127d80bcd36ca4e71e454"
+			"Rev": "dab07ac62d4905d3e48d17dc549c684ac3b7c15a"
 		}
 	]
 }
