@@ -52,6 +52,17 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", serversBandwidth)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
 		cmd.Command("show", "show detailed information of a virtual machine", serversShow)
+		// ip information
+		cmd.Command("list-ipv4", "list IPv4 information of a virtual machine", ipv4List)
+		cmd.Command("list-ipv6", "list IPv6 information of a virtual machine", ipv6List)
+		// reverse dns
+		cmd.Command("reverse-dns", "modify reverse dns entries", func(cmd *cli.Cmd) {
+			cmd.Command("default-ipv4", "create a snapshot from an existing virtual machine", ipv6List)
+			cmd.Command("set-ipv4", "delete a snapshot", ipv6List)
+			cmd.Command("set-ipv6", "list all snapshots on current account", ipv6List)
+			cmd.Command("delete-ipv6", "list all snapshots on current account", ipv6List)
+			cmd.Command("list-ipv6", "list all snapshots on current account", ipv6List)
+		})
 	})
 	c.Command("servers", "list all active or pending virtual machines on current account", serversList)
 

@@ -274,3 +274,62 @@ func serversShow(cmd *cli.Cmd) {
 		tabsFlush()
 	}
 }
+
+func ipv4List(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+
+	cmd.Action = func() {
+		list, err := GetClient().ListIPv4OfServer(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(list) == 0 {
+			fmt.Printf("No IPv4 information for virtual machine with SUBID %v found!\n", *id)
+			return
+		}
+
+		lengths := []int{24, 24, 24, 32, 48}
+		tabsPrint(Columns{"IP", "NETMASK", "GATEWAY", "TYPE", "REVERSE DNS"}, lengths)
+		for _, ip := range list {
+			tabsPrint(Columns{
+				ip.IP,
+				ip.Netmask,
+				ip.Gateway,
+				ip.Type,
+				ip.ReverseDNS,
+			}, lengths)
+		}
+		tabsFlush()
+	}
+}
+
+func ipv6List(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+
+	cmd.Action = func() {
+		list, err := GetClient().ListIPv6OfServer(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(list) == 0 {
+			fmt.Printf("No IPv4 information for virtual machine with SUBID %v found!\n", *id)
+			return
+		}
+
+		lengths := []int{48, 32, 24, 32}
+		tabsPrint(Columns{"IP", "NETWORK", "NETWORK SIZE", "TYPE"}, lengths)
+		for _, ip := range list {
+			tabsPrint(Columns{
+				ip.IP,
+				ip.Network,
+				ip.NetworkSize,
+				ip.Type,
+			}, lengths)
+		}
+		tabsFlush()
+	}
+}

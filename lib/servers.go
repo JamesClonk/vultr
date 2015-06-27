@@ -48,6 +48,23 @@ type ServerOptions struct {
 	AutoBackups       bool
 }
 
+// IPv4 information of a virtual machine
+type IPv4 struct {
+	IP         string `json:"ip"`
+	Netmask    string `json:"netmask"`
+	Gateway    string `json:"gateway"`
+	Type       string `json:"type"`
+	ReverseDNS string `json:"reverse"`
+}
+
+// IPv6 information of a virtual machine
+type IPv6 struct {
+	IP          string `json:"ip"`
+	Network     string `json:"network"`
+	NetworkSize string `json:"network_size"`
+	Type        string `json:"type"`
+}
+
 func (c *Client) GetServers() (servers []Server, err error) {
 	var serverMap map[string]Server
 	if err := c.get(`server/list`, &serverMap); err != nil {
@@ -243,4 +260,32 @@ func (c *Client) BandwidthOfServer(id string) (bandwidth []map[string]string, er
 	}
 
 	return bandwidth, nil
+}
+
+func (c *Client) ListIPv4OfServer(id string) (list []IPv4, err error) {
+	var ipMap map[string][]IPv4
+	if err := c.get(`server/list_ipv4?SUBID=`+id, &ipMap); err != nil {
+		return nil, err
+	}
+
+	for _, iplist := range ipMap {
+		for _, ip := range iplist {
+			list = append(list, ip)
+		}
+	}
+	return list, nil
+}
+
+func (c *Client) ListIPv6OfServer(id string) (list []IPv6, err error) {
+	var ipMap map[string][]IPv6
+	if err := c.get(`server/list_ipv6?SUBID=`+id, &ipMap); err != nil {
+		return nil, err
+	}
+
+	for _, iplist := range ipMap {
+		for _, ip := range iplist {
+			list = append(list, ip)
+		}
+	}
+	return list, nil
 }
