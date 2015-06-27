@@ -276,11 +276,9 @@ func serversShow(cmd *cli.Cmd) {
 }
 
 func ipv4List(cmd *cli.Cmd) {
-	cmd.Spec = "SUBID"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
-
 	cmd.Action = func() {
-		list, err := GetClient().ListIPv4OfServer(*id)
+		list, err := GetClient().ListIPv4(*id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -306,17 +304,15 @@ func ipv4List(cmd *cli.Cmd) {
 }
 
 func ipv6List(cmd *cli.Cmd) {
-	cmd.Spec = "SUBID"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
-
 	cmd.Action = func() {
-		list, err := GetClient().ListIPv6OfServer(*id)
+		list, err := GetClient().ListIPv6(*id)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		if len(list) == 0 {
-			fmt.Printf("No IPv4 information for virtual machine with SUBID %v found!\n", *id)
+			fmt.Printf("No IPv6 information for virtual machine with SUBID %v found!\n", *id)
 			return
 		}
 
@@ -331,5 +327,54 @@ func ipv6List(cmd *cli.Cmd) {
 			}, lengths)
 		}
 		tabsFlush()
+	}
+}
+
+func reverseIpv6List(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		list, err := GetClient().ListIPv6ReverseDNS(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(list) == 0 {
+			fmt.Printf("No IPv6 reverse DNS entries for virtual machine with SUBID %v found!\n", *id)
+			return
+		}
+
+		lengths := []int{48, 64}
+		tabsPrint(Columns{"IP", "REVERSE DNS"}, lengths)
+		for _, ip := range list {
+			tabsPrint(Columns{ip.IP, ip.ReverseDNS}, lengths)
+		}
+		tabsFlush()
+	}
+}
+
+func reverseIpv6Delete(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID IP"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	ip := cmd.StringArg("IP", "", "IPv6 of virtual machine (see <list-ipv6>)")
+
+	cmd.Action = func() {
+		if err := GetClient().DeleteIPv6ReverseDNS(*id, *ip); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("IPv6 reverse DNS deleted")
+	}
+}
+
+func reverseIpv6Set(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID IP DNS"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	ip := cmd.StringArg("IP", "", "IPv6 of virtual machine (see <list-ipv6>)")
+	entry := cmd.StringArg("DNS", "", "Reverse DNS entry")
+
+	cmd.Action = func() {
+		if err := GetClient().SetIPv6ReverseDNS(*id, *ip, *entry); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("IPv6 reverse DNS set to: %v\n", *entry)
 	}
 }
