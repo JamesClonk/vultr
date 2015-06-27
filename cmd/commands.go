@@ -57,8 +57,8 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("list-ipv6", "list IPv6 information of a virtual machine", ipv6List)
 		// reverse dns
 		cmd.Command("reverse-dns", "modify reverse dns entries", func(cmd *cli.Cmd) {
-			cmd.Command("default-ipv4", "reset IPv4 reverse DNS entry back to original setting", ipv6List)
-			cmd.Command("set-ipv4", "set IPv4 reverse DNS entry", ipv6List)
+			cmd.Command("default-ipv4", "reset IPv4 reverse DNS entry back to original setting", reverseIpv4Default)
+			cmd.Command("set-ipv4", "set IPv4 reverse DNS entry", reverseIpv4Set)
 			cmd.Command("set-ipv6", "set IPv6 reverse DNS entry", reverseIpv6Set)
 			cmd.Command("delete-ipv6", "delete IPv6 reverse DNS entry", reverseIpv6Delete)
 			cmd.Command("list-ipv6", "list IPv6 reverse DNS entries of a virtual machine", reverseIpv6List)

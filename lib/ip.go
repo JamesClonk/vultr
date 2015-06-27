@@ -91,3 +91,28 @@ func (c *Client) SetIPv6ReverseDNS(id, ip, entry string) error {
 	}
 	return nil
 }
+
+func (c *Client) DefaultIPv4ReverseDNS(id, ip string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"ip":    {ip},
+	}
+
+	if err := c.post(`server/reverse_default_ipv4`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) SetIPv4ReverseDNS(id, ip, entry string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"ip":    {ip},
+		"entry": {entry},
+	}
+
+	if err := c.post(`server/reverse_set_ipv4`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}

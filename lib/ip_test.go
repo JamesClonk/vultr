@@ -196,3 +196,37 @@ func Test_IP_SetIPv6ReverseDNS_OK(t *testing.T) {
 
 	assert.Nil(t, client.SetIPv6ReverseDNS("123456789", "AAAA:BBBB:CCCC", "host1.example.com"))
 }
+
+func Test_IP_DefaultIPv4ReverseDNS_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.DefaultIPv4ReverseDNS("123456789", "123.456.789.0")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_IP_DefaultIPv4ReverseDNS_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.DefaultIPv4ReverseDNS("123456789", "123.456.789.0"))
+}
+
+func Test_IP_SetIPv4ReverseDNS_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.SetIPv4ReverseDNS("123456789", "123.456.789.0", "host1.example.com")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_IP_SetIPv4ReverseDNS_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.SetIPv4ReverseDNS("123456789", "123.456.789.0", "host1.example.com"))
+}

@@ -378,3 +378,30 @@ func reverseIpv6Set(cmd *cli.Cmd) {
 		fmt.Printf("IPv6 reverse DNS set to: %v\n", *entry)
 	}
 }
+
+func reverseIpv4Default(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID IP"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	ip := cmd.StringArg("IP", "", "IPv4 of virtual machine (see <list-ipv4>)")
+
+	cmd.Action = func() {
+		if err := GetClient().DefaultIPv4ReverseDNS(*id, *ip); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("IPv4 reverse DNS set back to original setting")
+	}
+}
+
+func reverseIpv4Set(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID IP DNS"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	ip := cmd.StringArg("IP", "", "IPv4 of virtual machine (see <list-ipv4>)")
+	entry := cmd.StringArg("DNS", "", "Reverse DNS entry")
+
+	cmd.Action = func() {
+		if err := GetClient().SetIPv4ReverseDNS(*id, *ip, *entry); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("IPv4 reverse DNS set to: %v\n", *entry)
+	}
+}
