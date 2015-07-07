@@ -176,7 +176,10 @@ func Test_Servers_CreateServer_NoServer(t *testing.T) {
 }
 
 func Test_Servers_CreateServer_OK(t *testing.T) {
-	server, client := getTestServerAndClient(http.StatusOK, `{"SUBID":"123456789"}`)
+	server, client := getTestServerAndClient(http.StatusOK, `{"SUBID":"123456789",
+		"vcpu_count":"1",
+		"DCID":17,
+		"VPSPLANID":"29"}`)
 	defer server.Close()
 
 	s, err := client.CreateServer("test", 1, 2, 3, nil)

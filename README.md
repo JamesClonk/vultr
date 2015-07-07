@@ -16,12 +16,12 @@ Everybody likes screenshots, even of command line tools.. :smile:
 * Place the **vultr** binary somewhere into your PATH
 * Export your Vultr API key into a VULTR_API_KEY env variable. You can get the API key from the [admin panel](https://my.vultr.com/settings)
 ```sh
-$ export VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS
+$ export VULTR_API_KEY=87dFbC91rJjkL/18zJEQxS
 ```
 * Run it
 ```sh
 $ vultr version
-Client version:         v1.3
+Client version:         v1.4
 Vultr API endpoint:     https://api.vultr.com/
 Vultr API version:      v1
 OS/Arch (client):       linux/amd64
@@ -46,7 +46,7 @@ $ export VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS
 * Run it
 ```sh
 $ vultr version
-Client version:         v1.3
+Client version:         v1.4
 Vultr API endpoint:     https://api.vultr.com/
 Vultr API version:      v1
 OS/Arch (client):       linux/amd64

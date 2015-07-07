@@ -2,8 +2,10 @@ package lib
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
 )
 
 // Server (virtual machine) on Vultr account
@@ -46,6 +48,103 @@ type ServerOptions struct {
 	IPV6              bool
 	PrivateNetworking bool
 	AutoBackups       bool
+}
+
+// UnmarshalJSON implements json.Unmarshaller on Server.
+// This is needed because the Vultr API is inconsistent in it's JSON responses for servers.
+// Some fields can changed type, from JSON number to JSON string and vice-versa.
+func (s *Server) UnmarshalJSON(data []byte) (err error) {
+	if s == nil {
+		*s = Server{}
+	}
+
+	var fields map[string]interface{}
+	if err := json.Unmarshal(data, &fields); err != nil {
+		return err
+	}
+
+	value := fmt.Sprintf("%v", fields["vcpu_count"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	vcpu, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return err
+	}
+	s.VCpus = int(vcpu)
+
+	value = fmt.Sprintf("%v", fields["DCID"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	region, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return err
+	}
+	s.RegionID = int(region)
+
+	value = fmt.Sprintf("%v", fields["VPSPLANID"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	plan, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return err
+	}
+	s.PlanID = int(plan)
+
+	value = fmt.Sprintf("%v", fields["pending_charges"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	pc, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return err
+	}
+	s.PendingCharges = pc
+
+	value = fmt.Sprintf("%v", fields["current_bandwidth_gb"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	cb, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return err
+	}
+	s.CurrentBandwidth = cb
+
+	value = fmt.Sprintf("%v", fields["allowed_bandwidth_gb"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	ab, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return err
+	}
+	s.AllowedBandwidth = ab
+
+	s.ID = fmt.Sprintf("%v", fields["SUBID"])
+	s.Name = fmt.Sprintf("%v", fields["label"])
+	s.OS = fmt.Sprintf("%v", fields["os"])
+	s.RAM = fmt.Sprintf("%v", fields["ram"])
+	s.Disk = fmt.Sprintf("%v", fields["disk"])
+	s.MainIP = fmt.Sprintf("%v", fields["main_ip"])
+	s.Location = fmt.Sprintf("%v", fields["location"])
+	s.DefaultPassword = fmt.Sprintf("%v", fields["default_password"])
+	s.Created = fmt.Sprintf("%v", fields["date_created"])
+	s.Status = fmt.Sprintf("%v", fields["status"])
+	s.Cost = fmt.Sprintf("%v", fields["cost_per_month"])
+	s.NetmaskV4 = fmt.Sprintf("%v", fields["netmask_v4"])
+	s.GatewayV4 = fmt.Sprintf("%v", fields["gateway_v4"])
+	s.PowerStatus = fmt.Sprintf("%v", fields["power_status"])
+	s.NetworkV6 = fmt.Sprintf("%v", fields["v6_network"])
+	s.MainIPV6 = fmt.Sprintf("%v", fields["v6_main_ip"])
+	s.NetworkSizeV6 = fmt.Sprintf("%v", fields["v6_network_size"])
+	s.InternalIP = fmt.Sprintf("%v", fields["internal_ip"])
+	s.KVMUrl = fmt.Sprintf("%v", fields["kvm_url"])
+	s.AutoBackups = fmt.Sprintf("%v", fields["auto_backups"])
+
+	return
 }
 
 func (c *Client) GetServers() (servers []Server, err error) {
