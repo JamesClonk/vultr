@@ -96,4 +96,18 @@ func (c *CLI) RegisterCommands() {
 			tabsFlush()
 		}
 	})
+
+	// dns
+	c.Command("dns", "modify dns", func(cmd *cli.Cmd) {
+	    cmd.Command("domain", "show and change dns domains", func(cmd *cli.Cmd) {
+		cmd.Command("create", "create a dns domain", dnsDomainCreate)
+		cmd.Command("delete", "delete a dns domain", dnsDomainDelete)
+		cmd.Command("list", "list all dns domain", dnsDomainList)
+	    })
+	    cmd.Command("record", "show and change dns records", func(cmd *cli.Cmd) {
+		cmd.Command("create", "create a dns record", dnsRecordCreate)
+		cmd.Command("delete", "delete a dns record", dnsRecordDelete)
+		cmd.Command("list", "list all dns record", dnsRecordList)
+	    })
+	})
 }
