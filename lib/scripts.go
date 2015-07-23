@@ -1,6 +1,10 @@
 package lib
 
-import "net/url"
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+)
 
 // StartupScript on Vultr account
 type StartupScript struct {
@@ -8,6 +12,26 @@ type StartupScript struct {
 	Name    string `json:"name"`
 	Type    string `json:"type"`
 	Content string `json:"script"`
+}
+
+// Implements json.Unmarshaller on StartupScript.
+// Necessary because the SRIPTID field has inconsistent types.
+func (s *StartupScript) UnmarshalJSON(data []byte) (err error) {
+	if s == nil {
+		*s = StartupScript{}
+	}
+
+	var fields map[string]interface{}
+	if err := json.Unmarshal(data, &fields); err != nil {
+		return err
+	}
+
+	s.ID = fmt.Sprintf("%v", fields["SCRIPTID"])
+	s.Name = fmt.Sprintf("%v", fields["name"])
+	s.Type = fmt.Sprintf("%v", fields["type"])
+	s.Content = fmt.Sprintf("%v", fields["script"])
+
+	return
 }
 
 func (c *Client) GetStartupScripts() (scripts []StartupScript, err error) {
