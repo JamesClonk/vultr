@@ -11,6 +11,7 @@ type Plan struct {
 	Disk      string `json:"disk"`
 	Bandwidth string `json:"bandwidth"`
 	Price     string `json:"price_per_month"`
+	Regions   []int  `json:"available_locations"`
 }
 
 func (c *Client) GetPlans() ([]Plan, error) {

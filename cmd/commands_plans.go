@@ -20,22 +20,16 @@ func planList(cmd *cli.Cmd) {
 		}
 
 		if *id != 0 {
-			ids, err := GetClient().GetAvailablePlansForRegion(*id)
-			if err != nil {
-				log.Fatal(err)
-			}
-			if len(ids) == 0 {
-				fmt.Println()
-				return
-			}
 			var filteredPlans []vultr.Plan
 			for _, plan := range plans {
-				for _, id := range ids {
-					if id == plan.ID {
+				for _, r := range plan.Regions {
+					if r == *id {
 						filteredPlans = append(filteredPlans, plan)
+						break
 					}
 				}
 			}
+			
 			plans = filteredPlans
 		}
 
