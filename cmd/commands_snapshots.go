@@ -19,7 +19,7 @@ func snapshotsCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Snapshot created\n")
+		fmt.Printf("Snapshot created\n\n")
 		lengths := []int{16, 48}
 		tabsPrint(Columns{"SNAPSHOTID", "DESCRIPTION"}, lengths)
 		tabsPrint(Columns{snapshot.ID, snapshot.Description}, lengths)

@@ -30,7 +30,7 @@ func sshKeysCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		fmt.Println("SSH key created\n")
+		fmt.Printf("SSH key created\n\n")
 		lengths := []int{24, 32, 64}
 		tabsPrint(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
 		tabsPrint(Columns{sshkey.ID, sshkey.Name, sshkey.Key}, lengths)

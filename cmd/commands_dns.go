@@ -33,8 +33,7 @@ func dnsDomainCreate(cmd *cli.Cmd) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		fmt.Println("DnsDomain created\n")
+		fmt.Println("DnsDomain created")
 	}
 }
 
@@ -85,8 +84,7 @@ func dnsRecordCreate(cmd *cli.Cmd) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		fmt.Println("DnsRecord created\n")
+		fmt.Println("DnsRecord created")
 	}
 }
 

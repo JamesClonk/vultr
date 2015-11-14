@@ -31,7 +31,7 @@ func scriptsCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Startup script created\n")
+		fmt.Printf("Startup script created\n\n")
 		lengths := []int{12, 32, 8, 64}
 		tabsPrint(Columns{"SCRIPTID", "NAME", "TYPE", "SCRIPT"}, lengths)
 		tabsPrint(Columns{script.ID, script.Name, script.Type, script.Content}, lengths)

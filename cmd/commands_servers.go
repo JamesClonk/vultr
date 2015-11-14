@@ -52,7 +52,7 @@ func serversCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 
-		fmt.Println("Virtual machine created\n")
+		fmt.Printf("Virtual machine created\n\n")
 		lengths := []int{12, 32, 8, 12, 8}
 		tabsPrint(Columns{"SUBID", "NAME", "DCID", "VPSPLANID", "OSID"}, lengths)
 		tabsPrint(Columns{server.ID, server.Name, server.RegionID, server.PlanID, *osID}, lengths)
