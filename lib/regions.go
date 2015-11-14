@@ -7,6 +7,7 @@ type Region struct {
 	Country   string `json:"country"`
 	Continent string `json:"continent"`
 	State     string `json:"state"`
+	Ddos      bool   `json:"ddos_protection"`
 }
 
 func (c *Client) GetRegions() ([]Region, error) {
