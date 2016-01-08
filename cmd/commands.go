@@ -106,6 +106,7 @@ func (c *CLI) RegisterCommands() {
 	    })
 	    cmd.Command("record", "show and change dns records", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create a dns record", dnsRecordCreate)
+		cmd.Command("update", "update a dns record", dnsRecordUpdate)
 		cmd.Command("delete", "delete a dns record", dnsRecordDelete)
 		cmd.Command("list", "list all dns record", dnsRecordList)
 	    })

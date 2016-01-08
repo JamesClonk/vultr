@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	vultr "github.com/JamesClonk/vultr/lib"
 	"github.com/jawher/mow.cli"
 )
 
@@ -85,6 +86,36 @@ func dnsRecordCreate(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 		fmt.Println("DnsRecord created")
+	}
+}
+
+func dnsRecordUpdate(cmd *cli.Cmd) {
+	cmd.Spec = "-d -r [OPTIONS]"
+
+	domain := cmd.StringOpt("d domain", "", "dns domain name")
+	record := cmd.IntOpt("r record", 0, "RECORDID of a dns record to delete")
+
+	// options
+	name := cmd.StringOpt("n name", "", "dns record name")
+	rtype := cmd.StringOpt("t type", "", "dns record type")
+	data := cmd.StringOpt("D data", "", "dns record data")
+	priority := cmd.IntOpt("priority", 0, "dns record priority")
+	ttl := cmd.IntOpt("ttl", 300, "dns record priority")
+
+	cmd.Action = func() {
+		dnsrecord := vultr.DnsRecord{
+                        RecordID: *record,
+                        Type:     *rtype,
+                        Name:     *name,
+                        Data:     *data,
+                        Priority: *priority,
+                        TTL:      *ttl,
+		}
+		err := GetClient().UpdateDnsRecord(*domain, dnsrecord)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("DnsRecord updated")
 	}
 }
 
