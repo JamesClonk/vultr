@@ -56,7 +56,7 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("list-ipv4", "list IPv4 information of a virtual machine", ipv4List)
 		cmd.Command("list-ipv6", "list IPv6 information of a virtual machine", ipv6List)
 		// reverse dns
-		cmd.Command("reverse-dns", "modify reverse dns entries", func(cmd *cli.Cmd) {
+		cmd.Command("reverse-dns", "modify reverse DNS entries", func(cmd *cli.Cmd) {
 			cmd.Command("default-ipv4", "reset IPv4 reverse DNS entry back to original setting", reverseIpv4Default)
 			cmd.Command("set-ipv4", "set IPv4 reverse DNS entry", reverseIpv4Set)
 			cmd.Command("set-ipv6", "set IPv6 reverse DNS entry", reverseIpv6Set)
@@ -98,17 +98,17 @@ func (c *CLI) RegisterCommands() {
 	})
 
 	// dns
-	c.Command("dns", "modify dns", func(cmd *cli.Cmd) {
-	    cmd.Command("domain", "show and change dns domains", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a dns domain", dnsDomainCreate)
-		cmd.Command("delete", "delete a dns domain", dnsDomainDelete)
-		cmd.Command("list", "list all dns domain", dnsDomainList)
-	    })
-	    cmd.Command("record", "show and change dns records", func(cmd *cli.Cmd) {
-		cmd.Command("create", "create a dns record", dnsRecordCreate)
-		cmd.Command("update", "update a dns record", dnsRecordUpdate)
-		cmd.Command("delete", "delete a dns record", dnsRecordDelete)
-		cmd.Command("list", "list all dns record", dnsRecordList)
-	    })
+	c.Command("dns", "modify DNS", func(cmd *cli.Cmd) {
+		cmd.Command("domain", "show and change DNS domains", func(cmd *cli.Cmd) {
+			cmd.Command("create", "create a DNS domain", dnsDomainCreate)
+			cmd.Command("delete", "delete a DNS domain", dnsDomainDelete)
+			cmd.Command("list", "list all DNS domains", dnsDomainList)
+		})
+		cmd.Command("record", "show and change DNS records", func(cmd *cli.Cmd) {
+			cmd.Command("create", "create a DNS record", dnsRecordCreate)
+			cmd.Command("update", "update a DNS record", dnsRecordUpdate)
+			cmd.Command("delete", "delete a DNS record", dnsRecordDelete)
+			cmd.Command("list", "list all DNS records", dnsRecordList)
+		})
 	})
 }

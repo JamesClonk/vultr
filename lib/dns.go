@@ -25,7 +25,6 @@ func (c *Client) GetDnsDomains() (dnsdomains []DnsDomain, err error) {
 	if err := c.get(`dns/list`, &dnsdomains); err != nil {
 		return nil, err
 	}
-
 	return dnsdomains, nil
 }
 
@@ -38,7 +37,6 @@ func (c *Client) CreateDnsDomain(domain, serverip string) error {
 	if err := c.post(`dns/create_domain`, values, nil); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -57,7 +55,6 @@ func (c *Client) GetDnsRecords(domain string) (dnsrecords []DnsRecord, err error
 	if err := c.get(`dns/records?domain=`+domain, &dnsrecords); err != nil {
 		return nil, err
 	}
-
 	return dnsrecords, nil
 }
 
@@ -68,13 +65,12 @@ func (c *Client) CreateDnsRecord(domain, name, rtype, data string, priority, ttl
 		"type":     {rtype},
 		"data":     {data},
 		"priority": {fmt.Sprintf("%v", priority)},
-		"ttl":	    {fmt.Sprintf("%v", ttl)},
+		"ttl":      {fmt.Sprintf("%v", ttl)},
 	}
 
 	if err := c.post(`dns/create_record`, values, nil); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -84,9 +80,6 @@ func (c *Client) UpdateDnsRecord(domain string, dnsrecord DnsRecord) error {
 		"RECORDID": {fmt.Sprintf("%v", dnsrecord.RecordID)},
 	}
 
-	if dnsrecord.Type != "" {
-		values.Add("type", dnsrecord.Type)
-	}
 	if dnsrecord.Name != "" {
 		values.Add("name", dnsrecord.Name)
 	}
@@ -103,7 +96,6 @@ func (c *Client) UpdateDnsRecord(domain string, dnsrecord DnsRecord) error {
 	if err := c.post(`dns/update_record`, values, nil); err != nil {
 		return err
 	}
-
 	return nil
 }
 

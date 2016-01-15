@@ -26,32 +26,32 @@ func dnsDomainList(cmd *cli.Cmd) {
 
 func dnsDomainCreate(cmd *cli.Cmd) {
 	cmd.Spec = "-d -s"
-	domain := cmd.StringOpt("d domain", "", "dns domain name")
-	serverip := cmd.StringOpt("s serverip", "", "dns domain ip")
+	domain := cmd.StringOpt("d domain", "", "DNS domain name")
+	serverip := cmd.StringOpt("s serverip", "", "DNS domain ip")
 
 	cmd.Action = func() {
 		err := GetClient().CreateDnsDomain(*domain, *serverip)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("DnsDomain created")
+		fmt.Println("DNS domain created")
 	}
 }
 
 func dnsDomainDelete(cmd *cli.Cmd) {
 	cmd.Spec = "-d"
-	domain := cmd.StringOpt("d domain", "", "dns domain name")
+	domain := cmd.StringOpt("d domain", "", "DNS domain name")
 	cmd.Action = func() {
 		if err := GetClient().DeleteDnsDomain(*domain); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("DnsDomain deleted")
+		fmt.Println("DNS domain deleted")
 	}
 }
 
 func dnsRecordList(cmd *cli.Cmd) {
 	cmd.Spec = "-d"
-	domain := cmd.StringOpt("d domain", "", "dns domain name")
+	domain := cmd.StringOpt("d domain", "", "DNS domain name")
 
 	cmd.Action = func() {
 		dnsrecords, err := GetClient().GetDnsRecords(*domain)
@@ -71,64 +71,62 @@ func dnsRecordList(cmd *cli.Cmd) {
 func dnsRecordCreate(cmd *cli.Cmd) {
 	cmd.Spec = "-d -n -t -D [OPTIONS]"
 
-	domain := cmd.StringOpt("d domain", "", "dns domain name")
-	name := cmd.StringOpt("n name", "", "dns record name")
-	rtype := cmd.StringOpt("t type", "", "dns record type")
-	data := cmd.StringOpt("D data", "", "dns record data")
+	domain := cmd.StringOpt("d domain", "", "DNS domain name")
+	name := cmd.StringOpt("n name", "", "DNS record name")
+	rtype := cmd.StringOpt("t type", "", "DNS record type")
+	data := cmd.StringOpt("D data", "", "DNS record data")
 
 	// options
-	priority := cmd.IntOpt("priority", 0, "dns record priority")
-	ttl := cmd.IntOpt("ttl", 300, "dns record priority")
+	priority := cmd.IntOpt("priority", 0, "DNS record priority")
+	ttl := cmd.IntOpt("ttl", 300, "DNS record TTL")
 
 	cmd.Action = func() {
 		err := GetClient().CreateDnsRecord(*domain, *name, *rtype, *data, *priority, *ttl)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("DnsRecord created")
+		fmt.Println("DNS record created")
 	}
 }
 
 func dnsRecordUpdate(cmd *cli.Cmd) {
 	cmd.Spec = "-d -r [OPTIONS]"
 
-	domain := cmd.StringOpt("d domain", "", "dns domain name")
-	record := cmd.IntOpt("r record", 0, "RECORDID of a dns record to delete")
+	domain := cmd.StringOpt("d domain", "", "DNS domain name")
+	record := cmd.IntOpt("r record", 0, "RECORDID of a DNS record to update")
 
 	// options
-	name := cmd.StringOpt("n name", "", "dns record name")
-	rtype := cmd.StringOpt("t type", "", "dns record type")
-	data := cmd.StringOpt("D data", "", "dns record data")
-	priority := cmd.IntOpt("priority", 0, "dns record priority")
-	ttl := cmd.IntOpt("ttl", 300, "dns record priority")
+	name := cmd.StringOpt("n name", "", "DNS record name")
+	data := cmd.StringOpt("D data", "", "DNS record data")
+	priority := cmd.IntOpt("priority", 0, "DNS record priority")
+	ttl := cmd.IntOpt("ttl", 300, "DNS record TTL")
 
 	cmd.Action = func() {
 		dnsrecord := vultr.DnsRecord{
-                        RecordID: *record,
-                        Type:     *rtype,
-                        Name:     *name,
-                        Data:     *data,
-                        Priority: *priority,
-                        TTL:      *ttl,
+			RecordID: *record,
+			Name:     *name,
+			Data:     *data,
+			Priority: *priority,
+			TTL:      *ttl,
 		}
 		err := GetClient().UpdateDnsRecord(*domain, dnsrecord)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("DnsRecord updated")
+		fmt.Println("DNS record updated")
 	}
 }
 
 func dnsRecordDelete(cmd *cli.Cmd) {
 	cmd.Spec = "-d -r"
 
-	domain := cmd.StringOpt("d domain", "", "dns domain name")
-	record := cmd.IntOpt("r record", 0, "RECORDID of a dns record to delete")
+	domain := cmd.StringOpt("d domain", "", "DNS domain name")
+	record := cmd.IntOpt("r record", 0, "RECORDID of a DNS record to delete")
 
 	cmd.Action = func() {
 		if err := GetClient().DeleteDnsRecord(*domain, *record); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("DnsRecord deleted")
+		fmt.Println("DNS record deleted")
 	}
 }

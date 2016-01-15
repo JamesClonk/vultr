@@ -16,7 +16,7 @@ import (
 
 const (
 	// Version of this libary
-	Version = "v1.5"
+	Version = "v1.6"
 
 	// APIVersion of Vultr
 	APIVersion = "v1"
