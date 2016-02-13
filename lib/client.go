@@ -16,7 +16,7 @@ import (
 
 const (
 	// Version of this libary
-	Version = "v1.6"
+	Version = "v1.7"
 
 	// APIVersion of Vultr
 	APIVersion = "v1"
@@ -63,7 +63,7 @@ func NewClient(apiKey string, options *Options) *Client {
 	userAgent := "vultr-go/" + Version
 	client := http.DefaultClient
 	endpoint, _ := url.Parse(DefaultEndpoint)
-	rate := 1 * time.Second
+	rate := 505 * time.Millisecond
 
 	if options != nil {
 		if options.HTTPClient != nil {

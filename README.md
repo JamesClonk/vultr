@@ -21,11 +21,11 @@ $ export VULTR_API_KEY=87dFbC91rJjkL/18zJEQxS
 * Run it
 ```sh
 $ vultr version
-Client version:         v1.6
+Client version:         v1.7
 Vultr API endpoint:     https://api.vultr.com/
 Vultr API version:      v1
 OS/Arch (client):       linux/amd64
-Go version:             go1.4.1
+Go version:             go1.5.3
 ```
 
 ---
@@ -46,11 +46,11 @@ $ export VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS
 * Run it
 ```sh
 $ vultr version
-Client version:         v1.6
+Client version:         v1.7
 Vultr API endpoint:     https://api.vultr.com/
 Vultr API version:      v1
 OS/Arch (client):       linux/amd64
-Go version:             go1.4.1
+Go version:             go1.5.3
 ```
 
 ---
