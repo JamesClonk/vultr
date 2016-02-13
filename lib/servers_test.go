@@ -34,14 +34,15 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 "9753721":{"SUBID":"9753721","os":"Ubuntu 14.04 x64","ram":"768 MB","disk":"Virtual 15 GB","main_ip":"123.456.789.0",
 	"vcpu_count":"2","location":"Frankfurt","DCID":"9","default_password":"oops!","date_created":"2017-07-07 07:07:07",
 	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
-	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29","v6_network":"::",
-	"v6_main_ip":"","v6_network_size":"0","label":"test alpha","internal_ip":"",
+	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29",
+	"label":"test alpha","internal_ip":"",
 	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no"},
 "789032":{"SUBID":"789032","os":"CentOs 6.5 i368","ram":"1024 MB","disk":"Virtual 20 GB","main_ip":"192.168.1.2",
 	"vcpu_count":"1","location":"Amsterdam","DCID":"21","default_password":"more oops!","date_created":"2011-01-01 01:01:01",
 	"pending_charges":0.01,"status":"stopped","cost_per_month":"7.25","current_bandwidth_gb":0,"allowed_bandwidth_gb":"25",
-	"netmask_v4":"255.255.254.0","gateway_v4":"192.168.1.1","power_status":"down","VPSPLANID":"31","v6_network":"::",
-	"v6_main_ip":"?","v6_network_size":"2","label":"test 002","internal_ip":"10.10.10.10",
+	"netmask_v4":"255.255.254.0","gateway_v4":"192.168.1.1","power_status":"down","VPSPLANID":"31",
+	"v6_networks": [{"v6_network": "2002:DB9:1000::", "v6_main_ip": "2000:DB8:1000::0000", "v6_network_size": "32" }],
+	"label":"test 002","internal_ip":"10.10.10.10",
 	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes"}}`)
 	defer server.Close()
 
@@ -67,6 +68,7 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 				assert.Equal(t, "2017-07-07 07:07:07", server.Created)
 				assert.Equal(t, "255.255.255.0", server.NetmaskV4)
 				assert.Equal(t, "123.456.789.1", server.GatewayV4)
+				assert.Equal(t, 0, len(server.V6Networks))
 				assert.Equal(t, 7.0, server.CurrentBandwidth)
 				assert.Equal(t, 1000.0, server.AllowedBandwidth)
 			case "789032":
@@ -76,9 +78,10 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 				assert.Equal(t, "stopped", server.Status)
 				assert.Equal(t, "down", server.PowerStatus)
 				assert.Equal(t, 31, server.PlanID)
-				assert.Equal(t, "::", server.NetworkV6)
-				assert.Equal(t, "?", server.MainIPV6)
-				assert.Equal(t, "2", server.NetworkSizeV6)
+				assert.Equal(t, 1, len(server.V6Networks))
+				assert.Equal(t, "2002:DB9:1000::", server.V6Networks[0].Network)
+				assert.Equal(t, "2000:DB8:1000::0000", server.V6Networks[0].MainIP)
+				assert.Equal(t, "32", server.V6Networks[0].NetworkSize)
 				assert.Equal(t, "10.10.10.10", server.InternalIP)
 				assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=456`, server.KVMUrl)
 				assert.Equal(t, "yes", server.AutoBackups)
@@ -86,6 +89,61 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 				t.Error("Unknown SUBID")
 			}
 		}
+	}
+}
+
+func Test_Servers_GetServersByTag_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	servers, err := client.GetServersByTag("Unknown")
+	assert.Nil(t, servers)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_GetServersByTag_NoServers(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	servers, err := client.GetServersByTag("Nothing")
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, servers)
+}
+
+func Test_Servers_GetServersByTag_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{
+"789032":{"SUBID":"789032","os":"CentOs 6.5 i368","ram":"1024 MB","disk":"Virtual 20 GB","main_ip":"192.168.1.2",
+	"vcpu_count":"1","location":"Amsterdam","DCID":"21","default_password":"more oops!","date_created":"2011-01-01 01:01:01",
+	"pending_charges":0.01,"status":"stopped","cost_per_month":"7.25","current_bandwidth_gb":0,"allowed_bandwidth_gb":"25",
+	"netmask_v4":"255.255.254.0","gateway_v4":"192.168.1.1","power_status":"down","VPSPLANID":"31","v6_network":"::",
+	"v6_networks": [{"v6_network": "2001:DB8:1000::", "v6_main_ip": "2001:DB8:1000::100", "v6_network_size": "64" }],
+	"v6_main_ip":"?","v6_network_size":"2","label":"test 002","internal_ip":"10.10.10.10",
+	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes", "tag":"Database"}}`)
+	defer server.Close()
+
+	servers, err := client.GetServersByTag("Database")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, servers) {
+		assert.Equal(t, 1, len(servers))
+		assert.Equal(t, "test 002", servers[0].Name)
+		assert.Equal(t, 0.01, servers[0].PendingCharges)
+		assert.Equal(t, "7.25", servers[0].Cost)
+		assert.Equal(t, "stopped", servers[0].Status)
+		assert.Equal(t, "down", servers[0].PowerStatus)
+		assert.Equal(t, 31, servers[0].PlanID)
+		assert.Equal(t, 1, len(servers[0].V6Networks))
+		assert.Equal(t, "2001:DB8:1000::", servers[0].V6Networks[0].Network)
+		assert.Equal(t, "2001:DB8:1000::100", servers[0].V6Networks[0].MainIP)
+		assert.Equal(t, "64", servers[0].V6Networks[0].NetworkSize)
+		assert.Equal(t, "10.10.10.10", servers[0].InternalIP)
+		assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=456`, servers[0].KVMUrl)
+		assert.Equal(t, "yes", servers[0].AutoBackups)
 	}
 }
 
@@ -117,6 +175,7 @@ func Test_Servers_GetServer_OK(t *testing.T) {
 	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
 	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29","v6_network":"::",
 	"v6_main_ip":"","v6_network_size":"0","label":"test alpha","internal_ip":"",
+	"v6_networks": [{"v6_network": "::", "v6_network_size": "0" }],
 	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no"}`)
 	defer server.Close()
 
@@ -144,9 +203,10 @@ func Test_Servers_GetServer_OK(t *testing.T) {
 		assert.Equal(t, "active", s.Status)
 		assert.Equal(t, "running", s.PowerStatus)
 		assert.Equal(t, 29, s.PlanID)
-		assert.Equal(t, "::", s.NetworkV6)
-		assert.Equal(t, "", s.MainIPV6)
-		assert.Equal(t, "0", s.NetworkSizeV6)
+		assert.Equal(t, 1, len(s.V6Networks))
+		assert.Equal(t, "::", s.V6Networks[0].Network)
+		assert.Equal(t, "", s.V6Networks[0].MainIP)
+		assert.Equal(t, "0", s.V6Networks[0].NetworkSize)
 		assert.Equal(t, "", s.InternalIP)
 		assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=123`, s.KVMUrl)
 		assert.Equal(t, "no", s.AutoBackups)

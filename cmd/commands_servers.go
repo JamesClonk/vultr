@@ -27,17 +27,19 @@ func serversCreate(cmd *cli.Cmd) {
 	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
 	privateNetworking := cmd.BoolOpt("private-networking", false, "Add private networking support for this virtual machine")
 	autoBackups := cmd.BoolOpt("autobackups", false, "Enable automatic backups for this virtual machine")
+	notifyActivate := cmd.BoolOpt("notify-activate", true, "Send an activation email when the server is ready")
 
 	cmd.Action = func() {
 		options := &vultr.ServerOptions{
-			IPXEChainURL:      *ipxe,
-			ISO:               *iso,
-			Script:            *script,
-			Snapshot:          *snapshot,
-			SSHKey:            *sshkey,
-			IPV6:              *ipv6,
-			PrivateNetworking: *privateNetworking,
-			AutoBackups:       *autoBackups,
+			IPXEChainURL:         *ipxe,
+			ISO:                  *iso,
+			Script:               *script,
+			Snapshot:             *snapshot,
+			SSHKey:               *sshkey,
+			IPV6:                 *ipv6,
+			PrivateNetworking:    *privateNetworking,
+			AutoBackups:          *autoBackups,
+			DontNotifyOnActivate: !*notifyActivate,
 		}
 		if *userDataFile != "" {
 			data, err := ioutil.ReadFile(*userDataFile)
@@ -247,9 +249,13 @@ func serversShow(cmd *cli.Cmd) {
 
 		tabsPrint(Columns{"Id (SUBID):", server.ID}, lengths)
 		tabsPrint(Columns{"Name:", server.Name}, lengths)
+		if len(server.Tag) != 0 {
+			tabsPrint(Columns{"Tag:", server.Tag}, lengths)
+		}
 		tabsPrint(Columns{"Operating system:", server.OS}, lengths)
 		tabsPrint(Columns{"Status:", server.Status}, lengths)
 		tabsPrint(Columns{"Power status:", server.PowerStatus}, lengths)
+		tabsPrint(Columns{"Server state:", server.ServerState}, lengths)
 		tabsPrint(Columns{"Location:", server.Location}, lengths)
 		tabsPrint(Columns{"Region (DCID):", server.RegionID}, lengths)
 		tabsPrint(Columns{"VCPU count:", server.VCpus}, lengths)
@@ -263,10 +269,14 @@ func serversShow(cmd *cli.Cmd) {
 		tabsPrint(Columns{"IP:", server.MainIP}, lengths)
 		tabsPrint(Columns{"Netmask:", server.NetmaskV4}, lengths)
 		tabsPrint(Columns{"Gateway:", server.GatewayV4}, lengths)
-		tabsPrint(Columns{"Internal IP:", server.InternalIP}, lengths)
-		tabsPrint(Columns{"IPv6 IP:", server.MainIPV6}, lengths)
-		tabsPrint(Columns{"IPv6 Network:", server.NetworkV6}, lengths)
-		tabsPrint(Columns{"IPv6 Network Size:", server.NetworkSizeV6}, lengths)
+		if len(server.InternalIP) != 0 {
+			tabsPrint(Columns{"Internal IP:", server.InternalIP}, lengths)
+		}
+		for n, v6network := range server.V6Networks {
+			tabsPrint(Columns{fmt.Sprintf("#%d IPv6 IP:", n+1), v6network.MainIP}, lengths)
+			tabsPrint(Columns{fmt.Sprintf("#%d IPv6 Network:", n+1), v6network.Network}, lengths)
+			tabsPrint(Columns{fmt.Sprintf("#%d IPv6 Network Size:", n+1), v6network.NetworkSize}, lengths)
+		}
 		tabsPrint(Columns{"Created date:", server.Created}, lengths)
 		tabsPrint(Columns{"Default password:", server.DefaultPassword}, lengths)
 		tabsPrint(Columns{"Auto backups:", server.AutoBackups}, lengths)

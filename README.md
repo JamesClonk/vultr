@@ -149,9 +149,9 @@ IP:                     107.62.131.240
 Netmask:                255.255.254.0
 Gateway:                107.62.131.1
 Internal IP:
-IPv6 IP:
-IPv6 Network:           ::
-IPv6 Network Size:      0
+#1 IPv6 IP:
+#1 IPv6 Network:        ::
+#1 IPv6 Network Size:   0
 Created date:           2015-02-08 12:36:36
 Default password:       sbiecxo8yk!5
 Auto backups:           no

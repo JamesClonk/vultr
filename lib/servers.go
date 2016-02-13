@@ -10,44 +10,53 @@ import (
 
 // Server (virtual machine) on Vultr account
 type Server struct {
-	ID               string  `json:"SUBID"`
-	Name             string  `json:"label"`
-	OS               string  `json:"os"`
-	RAM              string  `json:"ram"`
-	Disk             string  `json:"disk"`
-	MainIP           string  `json:"main_ip"`
-	VCpus            int     `json:"vcpu_count,string"`
-	Location         string  `json:"location"`
-	RegionID         int     `json:"DCID,string"`
-	DefaultPassword  string  `json:"default_password"`
-	Created          string  `json:"date_created"`
-	PendingCharges   float64 `json:"pending_charges"`
-	Status           string  `json:"status"`
-	Cost             string  `json:"cost_per_month"`
-	CurrentBandwidth float64 `json:"current_bandwidth_gb"`
-	AllowedBandwidth float64 `json:"allowed_bandwidth_gb,string"`
-	NetmaskV4        string  `json:"netmask_v4"`
-	GatewayV4        string  `json:"gateway_v4"`
-	PowerStatus      string  `json:"power_status"`
-	PlanID           int     `json:"VPSPLANID,string"`
-	NetworkV6        string  `json:"v6_network"`
-	MainIPV6         string  `json:"v6_main_ip"`
-	NetworkSizeV6    string  `json:"v6_network_size"`
-	InternalIP       string  `json:"internal_ip"`
-	KVMUrl           string  `json:"kvm_url"`
-	AutoBackups      string  `json:"auto_backups"`
+	ID               string      `json:"SUBID"`
+	Name             string      `json:"label"`
+	OS               string      `json:"os"`
+	RAM              string      `json:"ram"`
+	Disk             string      `json:"disk"`
+	MainIP           string      `json:"main_ip"`
+	VCpus            int         `json:"vcpu_count,string"`
+	Location         string      `json:"location"`
+	RegionID         int         `json:"DCID,string"`
+	DefaultPassword  string      `json:"default_password"`
+	Created          string      `json:"date_created"`
+	PendingCharges   float64     `json:"pending_charges"`
+	Status           string      `json:"status"`
+	Cost             string      `json:"cost_per_month"`
+	CurrentBandwidth float64     `json:"current_bandwidth_gb"`
+	AllowedBandwidth float64     `json:"allowed_bandwidth_gb,string"`
+	NetmaskV4        string      `json:"netmask_v4"`
+	GatewayV4        string      `json:"gateway_v4"`
+	PowerStatus      string      `json:"power_status"`
+	ServerState      string      `json:"server_state"`
+	PlanID           int         `json:"VPSPLANID,string"`
+	V6Networks       []V6Network `json:"v6_networks"`
+	InternalIP       string      `json:"internal_ip"`
+	KVMUrl           string      `json:"kvm_url"`
+	AutoBackups      string      `json:"auto_backups"`
+	Tag              string      `json:"tag"`
 }
 
+// ServerOptions are optional parameters to be used during server creation
 type ServerOptions struct {
-	IPXEChainURL      string
-	ISO               int
-	Script            int
-	UserData          string
-	Snapshot          string
-	SSHKey            string
-	IPV6              bool
-	PrivateNetworking bool
-	AutoBackups       bool
+	IPXEChainURL         string
+	ISO                  int
+	Script               int
+	UserData             string
+	Snapshot             string
+	SSHKey               string
+	IPV6                 bool
+	PrivateNetworking    bool
+	AutoBackups          bool
+	DontNotifyOnActivate bool
+}
+
+// V6Network represents a IPv6 network of a Vultr server
+type V6Network struct {
+	Network     string `json:"v6_network"`
+	MainIP      string `json:"v6_main_ip"`
+	NetworkSize string `json:"v6_network_size"`
 }
 
 // UnmarshalJSON implements json.Unmarshaller on Server.
@@ -137,12 +146,27 @@ func (s *Server) UnmarshalJSON(data []byte) (err error) {
 	s.NetmaskV4 = fmt.Sprintf("%v", fields["netmask_v4"])
 	s.GatewayV4 = fmt.Sprintf("%v", fields["gateway_v4"])
 	s.PowerStatus = fmt.Sprintf("%v", fields["power_status"])
-	s.NetworkV6 = fmt.Sprintf("%v", fields["v6_network"])
-	s.MainIPV6 = fmt.Sprintf("%v", fields["v6_main_ip"])
-	s.NetworkSizeV6 = fmt.Sprintf("%v", fields["v6_network_size"])
+	s.ServerState = fmt.Sprintf("%v", fields["server_state"])
+
+	v6networks := make([]V6Network, 0)
+	if networks, ok := fields["v6_networks"].([]interface{}); ok {
+		for _, network := range networks {
+			if network, ok := network.(map[string]interface{}); ok {
+				v6network := V6Network{
+					Network:     fmt.Sprintf("%v", network["v6_network"]),
+					MainIP:      fmt.Sprintf("%v", network["v6_main_ip"]),
+					NetworkSize: fmt.Sprintf("%v", network["v6_network_size"]),
+				}
+				v6networks = append(v6networks, v6network)
+			}
+		}
+		s.V6Networks = v6networks
+	}
+
 	s.InternalIP = fmt.Sprintf("%v", fields["internal_ip"])
 	s.KVMUrl = fmt.Sprintf("%v", fields["kvm_url"])
 	s.AutoBackups = fmt.Sprintf("%v", fields["auto_backups"])
+	s.Tag = fmt.Sprintf("%v", fields["tag"])
 
 	return
 }
@@ -150,6 +174,18 @@ func (s *Server) UnmarshalJSON(data []byte) (err error) {
 func (c *Client) GetServers() (servers []Server, err error) {
 	var serverMap map[string]Server
 	if err := c.get(`server/list`, &serverMap); err != nil {
+		return nil, err
+	}
+
+	for _, server := range serverMap {
+		servers = append(servers, server)
+	}
+	return servers, nil
+}
+
+func (c *Client) GetServersByTag(tag string) (servers []Server, err error) {
+	var serverMap map[string]Server
+	if err := c.get(`server/list?tag=`+tag, &serverMap); err != nil {
 		return nil, err
 	}
 
@@ -212,6 +248,11 @@ func (c *Client) CreateServer(name string, regionID, planID, osID int, options *
 		values.Add("auto_backups", "no")
 		if options.AutoBackups {
 			values.Set("auto_backups", "yes")
+		}
+
+		values.Add("notify_activate", "yes")
+		if options.DontNotifyOnActivate {
+			values.Set("notify_activate", "no")
 		}
 	}
 
