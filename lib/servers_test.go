@@ -175,7 +175,7 @@ func Test_Servers_GetServer_OK(t *testing.T) {
 	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
 	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29","v6_network":"::",
 	"v6_main_ip":"","v6_network_size":"0","label":"test alpha","internal_ip":"",
-	"v6_networks": [{"v6_network": "::", "v6_network_size": "0" }],
+	"v6_networks": [{"v6_network": "::", "v6_main_ip": "", "v6_network_size": "0" }],
 	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no"}`)
 	defer server.Close()
 
