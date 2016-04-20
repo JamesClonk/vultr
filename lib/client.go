@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ChimeraCoder/tokenbucket"
+	"github.com/juju/ratelimit"
 )
 
 const (
@@ -40,8 +40,8 @@ type Client struct {
 	// API key for accessing the Vultr API
 	APIKey string
 
-	// Tokenbucket throttling struct
-	bucket *tokenbucket.Bucket
+	// Throttling struct
+	bucket *ratelimit.Bucket
 }
 
 type Options struct {
@@ -85,7 +85,7 @@ func NewClient(apiKey string, options *Options) *Client {
 		client:    client,
 		Endpoint:  endpoint,
 		APIKey:    apiKey,
-		bucket:    tokenbucket.NewBucket(rate, 1),
+		bucket:    ratelimit.NewBucket(rate, 1),
 	}
 }
 
@@ -118,7 +118,7 @@ func (c *Client) post(path string, values url.Values, data interface{}) error {
 
 func (c *Client) do(req *http.Request, data interface{}) error {
 	// Throttle http requests to avoid hitting Vultr's API rate-limit
-	<-c.bucket.SpendToken(1)
+	c.bucket.Wait(1)
 
 	resp, err := c.client.Do(req)
 	if err != nil {
