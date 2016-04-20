@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"strings"
@@ -27,6 +28,13 @@ const (
 	mediaType = "application/json"
 )
 
+// retryableStatusCodes are API response status codes that indicate that
+// the failed request can be retried without further actions.
+var retryableStatusCodes = map[int]struct{}{
+	503: {}, // Rate limit hit
+	500: {}, // Internal server error. Try again at a later time.
+}
+
 type Client struct {
 	// HTTP client for communication with the Vultr API
 	client *http.Client
@@ -39,6 +47,9 @@ type Client struct {
 
 	// API key for accessing the Vultr API
 	APIKey string
+
+	// Max. number of request attempts
+	MaxAttempts int
 
 	// Tokenbucket throttling struct
 	bucket *tokenbucket.Bucket
@@ -56,6 +67,9 @@ type Options struct {
 
 	// API rate limitation, calls per duration
 	RateLimitation time.Duration
+
+	// Max. number of times to retry API calls
+	MaxRetries int
 }
 
 // NewClient creates new Vultr API client. Options are optional and can be nil.
@@ -64,6 +78,7 @@ func NewClient(apiKey string, options *Options) *Client {
 	client := http.DefaultClient
 	endpoint, _ := url.Parse(DefaultEndpoint)
 	rate := 505 * time.Millisecond
+	attempts := 1
 
 	if options != nil {
 		if options.HTTPClient != nil {
@@ -78,14 +93,18 @@ func NewClient(apiKey string, options *Options) *Client {
 		if options.RateLimitation != 0 {
 			rate = options.RateLimitation
 		}
+		if options.MaxRetries != 0 {
+			attempts = options.MaxRetries + 1
+		}
 	}
 
 	return &Client{
-		UserAgent: userAgent,
-		client:    client,
-		Endpoint:  endpoint,
-		APIKey:    apiKey,
-		bucket:    tokenbucket.NewBucket(rate, 1),
+		UserAgent:   userAgent,
+		client:      client,
+		Endpoint:    endpoint,
+		APIKey:      apiKey,
+		MaxAttempts: attempts,
+		bucket:      tokenbucket.NewBucket(rate, 1),
 	}
 }
 
@@ -116,38 +135,6 @@ func (c *Client) post(path string, values url.Values, data interface{}) error {
 	return c.do(req, data)
 }
 
-func (c *Client) do(req *http.Request, data interface{}) error {
-	// Throttle http requests to avoid hitting Vultr's API rate-limit
-	<-c.bucket.SpendToken(1)
-
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if err := checkResponse(resp); err != nil {
-		return err
-	}
-
-	if data != nil {
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
-
-		// avoid unmarshalling problem because Vultr API returns empty array instead of empty map when it shouldn't!
-		if string(body) == `[]` {
-			data = nil
-		} else {
-			if err := json.Unmarshal(body, data); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
 func (c *Client) newRequest(method string, path string, body io.Reader) (*http.Request, error) {
 	relPath, err := url.Parse(apiKeyPath(path, c.APIKey))
 	if err != nil {
@@ -170,15 +157,68 @@ func (c *Client) newRequest(method string, path string, body io.Reader) (*http.R
 	return req, nil
 }
 
-func checkResponse(resp *http.Response) error {
-	// 200 is OK
-	if resp.StatusCode == http.StatusOK {
-		return nil
+func (c *Client) do(req *http.Request, data interface{}) error {
+	// Throttle http requests to avoid hitting Vultr's API rate-limit
+	<-c.bucket.SpendToken(1)
+
+	var apiError error
+	for tryCount := 1; tryCount <= c.MaxAttempts; tryCount++ {
+		resp, err := c.client.Do(req)
+		if err != nil {
+			return err
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		if err != nil {
+			return err
+		}
+
+		if resp.StatusCode == http.StatusOK {
+			if data != nil {
+				// avoid unmarshalling problem because Vultr API returns
+				// empty array instead of empty map when it shouldn't!
+				if string(body) == `[]` {
+					data = nil
+				} else {
+					if err := json.Unmarshal(body, data); err != nil {
+						return err
+					}
+				}
+			}
+			return nil
+		}
+
+		apiError = errors.New(string(body))
+		if !isCodeRetryable(resp.StatusCode) {
+			break
+		}
+
+		delay := backoffDuration(tryCount)
+		time.Sleep(delay)
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
+	return apiError
+}
+
+// backoffDuration returns the duration to wait before retrying the request.
+// Duration is an exponential function of the retry count with a jitter of ~0-30%.
+func backoffDuration(retryCount int) time.Duration {
+	// Upper limit of delay at ~1 minute
+	if retryCount > 7 {
+		retryCount = 7
 	}
-	return errors.New(string(data))
+
+	rand.Seed(time.Now().UnixNano())
+	delay := (1 << uint(retryCount)) * (rand.Intn(150) + 500)
+	return time.Duration(delay) * time.Millisecond
+}
+
+// isCodeRetryable returns true if the given status code means that we should retry.
+func isCodeRetryable(statusCode int) bool {
+	if _, ok := retryableStatusCodes[statusCode]; ok {
+		return true
+	}
+
+	return false
 }
