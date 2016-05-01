@@ -12,12 +12,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ChimeraCoder/tokenbucket"
+	"github.com/juju/ratelimit"
 )
 
 const (
 	// Version of this libary
-	Version = "v1.7"
+	Version = "v1.8"
 
 	// APIVersion of Vultr
 	APIVersion = "v1"
@@ -51,8 +51,8 @@ type Client struct {
 	// Max. number of request attempts
 	MaxAttempts int
 
-	// Tokenbucket throttling struct
-	bucket *tokenbucket.Bucket
+	// Throttling struct
+	bucket *ratelimit.Bucket
 }
 
 type Options struct {
@@ -104,7 +104,7 @@ func NewClient(apiKey string, options *Options) *Client {
 		Endpoint:    endpoint,
 		APIKey:      apiKey,
 		MaxAttempts: attempts,
-		bucket:      tokenbucket.NewBucket(rate, 1),
+		bucket:      ratelimit.NewBucket(rate, 1),
 	}
 }
 
@@ -159,7 +159,7 @@ func (c *Client) newRequest(method string, path string, body io.Reader) (*http.R
 
 func (c *Client) do(req *http.Request, data interface{}) error {
 	// Throttle http requests to avoid hitting Vultr's API rate-limit
-	<-c.bucket.SpendToken(1)
+	c.bucket.Wait(1)
 
 	var apiError error
 	for tryCount := 1; tryCount <= c.MaxAttempts; tryCount++ {
