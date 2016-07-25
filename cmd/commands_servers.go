@@ -126,6 +126,50 @@ func serversChangeOS(cmd *cli.Cmd) {
 	}
 }
 
+func serversAttachISO(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -i"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	isoID := cmd.IntOpt("i iso", 0, "ISO ID (ISOID)")
+	cmd.Action = func() {
+		if err := GetClient().AttachISOtoServer(*id, *isoID); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine ISO attached, server will reboot: %v\n", *isoID)
+	}
+}
+
+func serversDetachISO(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		if err := GetClient().DetachISOfromServer(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine ISO detached, server will reboot\n")
+	}
+}
+
+func serversStatusISO(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		iso, err := GetClient().GetISOStatusofServer(*id)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if iso.State == "" {
+			fmt.Printf("Couldn't determine ISO state of virtual machine on SUBID %v!\n", *id)
+			return
+		}
+
+		lengths := []int{24, 64}
+		tabsPrint(Columns{"Id (SUBID):", *id}, lengths)
+		tabsPrint(Columns{"State:", iso.State}, lengths)
+		tabsPrint(Columns{"Iso (ISOID):", iso.ISOID}, lengths)
+		tabsFlush()
+	}
+}
+
 func serversListOS(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cmd.Action = func() {

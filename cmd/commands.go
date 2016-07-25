@@ -48,6 +48,11 @@ func (c *CLI) RegisterCommands() {
 			cmd.Command("change", "change operating system of virtual machine (all data will be lost)", serversChangeOS)
 			cmd.Command("list", "show a list of operating systems to which can be changed to", serversListOS)
 		})
+		cmd.Command("iso", "attach/detach ISO of a virtual machine", func(cmd *cli.Cmd) {
+			cmd.Command("attach", "attach ISO to a virtual machine (server will hard reboot)", serversAttachISO)
+			cmd.Command("detach", "detach ISO from a virtual machine (server will hard reboot)", serversDetachISO)
+			cmd.Command("status", "show status of ISO attached to a virtual machine", serversStatusISO)
+		})
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", serversBandwidth)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
