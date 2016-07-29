@@ -59,9 +59,10 @@ type V6Network struct {
 	NetworkSize string `json:"v6_network_size"`
 }
 
+// ISOStatus represents an ISO image attached to a Vultr server
 type ISOStatus struct {
-	State       string `json:"state"`
-	ISOID       string `json:"ISOID"`
+	State string `json:"state"`
+	ISOID string `json:"ISOID"`
 }
 
 // UnmarshalJSON implements json.Unmarshaller on Server.
@@ -343,7 +344,7 @@ func (c *Client) ChangeOSofServer(id string, osID int) error {
 func (c *Client) AttachISOtoServer(id string, isoID int) error {
 	values := url.Values{
 		"SUBID": {id},
-		"ISOID":  {fmt.Sprintf("%v", isoID)},
+		"ISOID": {fmt.Sprintf("%v", isoID)},
 	}
 
 	if err := c.post(`server/iso_attach`, values, nil); err != nil {
@@ -363,11 +364,10 @@ func (c *Client) DetachISOfromServer(id string) error {
 	return nil
 }
 
-func (c *Client) GetISOStatusofServer(id string)(isoStatus ISOStatus, err error) {
+func (c *Client) GetISOStatusofServer(id string) (isoStatus ISOStatus, err error) {
 	if err := c.get(`server/iso_status?SUBID=`+id, &isoStatus); err != nil {
 		return ISOStatus{}, err
 	}
-
 	return isoStatus, nil
 }
 
