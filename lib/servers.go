@@ -59,6 +59,11 @@ type V6Network struct {
 	NetworkSize string `json:"v6_network_size"`
 }
 
+type ISOStatus struct {
+	State       string `json:"state"`
+	ISOID       string `json:"ISOID"`
+}
+
 // UnmarshalJSON implements json.Unmarshaller on Server.
 // This is needed because the Vultr API is inconsistent in it's JSON responses for servers.
 // Some fields can change type, from JSON number to JSON string and vice-versa.
@@ -333,6 +338,37 @@ func (c *Client) ChangeOSofServer(id string, osID int) error {
 		return err
 	}
 	return nil
+}
+
+func (c *Client) AttachISOtoServer(id string, isoID int) error {
+	values := url.Values{
+		"SUBID": {id},
+		"ISOID":  {fmt.Sprintf("%v", isoID)},
+	}
+
+	if err := c.post(`server/iso_attach`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) DetachISOfromServer(id string) error {
+	values := url.Values{
+		"SUBID": {id},
+	}
+
+	if err := c.post(`server/iso_detach`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) GetISOStatusofServer(id string)(isoStatus ISOStatus, err error) {
+	if err := c.get(`server/iso_status?SUBID=`+id, &isoStatus); err != nil {
+		return ISOStatus{}, err
+	}
+
+	return isoStatus, nil
 }
 
 func (c *Client) ListOSforServer(id string) (os []OS, err error) {
