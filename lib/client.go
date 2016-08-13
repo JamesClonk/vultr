@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -75,7 +76,11 @@ type Options struct {
 // NewClient creates new Vultr API client. Options are optional and can be nil.
 func NewClient(apiKey string, options *Options) *Client {
 	userAgent := "vultr-go/" + Version
+	transport := &http.Transport{
+		TLSNextProto: make(map[string]func(string, *tls.Conn) http.RoundTripper),
+	}
 	client := http.DefaultClient
+	client.Transport = transport
 	endpoint, _ := url.Parse(DefaultEndpoint)
 	rate := 505 * time.Millisecond
 	attempts := 1
