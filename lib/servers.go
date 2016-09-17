@@ -50,6 +50,8 @@ type ServerOptions struct {
 	PrivateNetworking    bool
 	AutoBackups          bool
 	DontNotifyOnActivate bool
+	Hostname             string
+	Tag                  string
 }
 
 // V6Network represents a IPv6 network of a Vultr server
@@ -259,6 +261,14 @@ func (c *Client) CreateServer(name string, regionID, planID, osID int, options *
 		values.Add("notify_activate", "yes")
 		if options.DontNotifyOnActivate {
 			values.Set("notify_activate", "no")
+		}
+
+		if options.Hostname != "" {
+			values.Add("hostname", options.Hostname)
+		}
+
+		if options.Tag != "" {
+			values.Add("tag", options.Tag)
 		}
 	}
 
