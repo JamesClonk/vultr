@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	vultr "github.com/JamesClonk/vultr/lib"
 	"github.com/jawher/mow.cli"
@@ -191,12 +192,24 @@ func serversListOS(cmd *cli.Cmd) {
 }
 
 func serversDelete(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID [-f]"
+
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	confirm := cmd.BoolOpt("f force", false, "Confirm deleting a server")
+	var input string
 	cmd.Action = func() {
+		if *confirm != true {
+			fmt.Print("Are you sure? (Type uppercase yes): ")
+			fmt.Scanln(&input)
+			if input != "YES" {
+				os.Exit(1)
+			}
+		}
 		if err := GetClient().DeleteServer(*id); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Virtual machine deleted")
+
 	}
 }
 
