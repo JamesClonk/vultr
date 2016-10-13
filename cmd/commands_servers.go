@@ -25,7 +25,8 @@ func serversCreate(cmd *cli.Cmd) {
 	userDataFile := cmd.StringOpt("user-data", "", "Path to file with user-data")
 	snapshot := cmd.StringOpt("snapshot", "", "SNAPSHOTID (see <snapshots>) to restore for the initial installation")
 	sshkey := cmd.StringOpt("k sshkey", "", "SSHKEYID (see <sshkeys>) of SSH key to apply to this server on install")
-	hostname := cmd.StringOpt("hostname", "", "Hostname for this server.")
+	hostname := cmd.StringOpt("hostname", "", "Hostname to assign to this server")
+	tag := cmd.StringOpt("tag", "", "Tag to assign to this server")
 	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
 	privateNetworking := cmd.BoolOpt("private-networking", false, "Add private networking support for this virtual machine")
 	autoBackups := cmd.BoolOpt("autobackups", false, "Enable automatic backups for this virtual machine")
@@ -42,6 +43,7 @@ func serversCreate(cmd *cli.Cmd) {
 			PrivateNetworking:    *privateNetworking,
 			AutoBackups:          *autoBackups,
 			Hostname:             *hostname,
+			Tag:                  *tag,
 			DontNotifyOnActivate: !*notifyActivate,
 		}
 		if *userDataFile != "" {

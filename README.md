@@ -21,11 +21,11 @@ $ export VULTR_API_KEY=87dFbC91rJjkL/18zJEQxS
 * Run it
 ```sh
 $ vultr version
-Client version:         v1.9
+Client version:         v1.10
 Vultr API endpoint:     https://api.vultr.com/
 Vultr API version:      v1
 OS/Arch (client):       linux/amd64
-Go version:             go1.5.3
+Go version:             go1.6.3
 ```
 
 ---
@@ -46,11 +46,11 @@ $ export VULTR_API_KEY=89dFbb91rGjkL/12zJEQxS
 * Run it
 ```sh
 $ vultr version
-Client version:         v1.9
+Client version:         v1.10
 Vultr API endpoint:     https://api.vultr.com/
 Vultr API version:      v1
 OS/Arch (client):       linux/amd64
-Go version:             go1.5.3
+Go version:             go1.6.3
 ```
 
 ---
@@ -169,7 +169,7 @@ Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-37-generic x86_64)
 
  * Documentation:  https://help.ubuntu.com/
 Last login: Thu Oct 16 21:49:35 2014 from 10.0.2.2
-root@vultr:~# 
+root@vultr:~#
 
 ```
 
