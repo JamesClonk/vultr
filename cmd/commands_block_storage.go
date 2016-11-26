@@ -28,7 +28,32 @@ func blockStorageCreate(cmd *cli.Cmd) {
 	}
 }
 
-func blockStorageUpdate(cmd *cli.Cmd) {
+func blockStorageResize(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID SIZE_GB"
+
+	id := cmd.StringArg("SUBID", "", "SUBID of block storage to resize (see <storage list>)")
+	size := cmd.IntArg("SIZE_GB", 0, "New size in GB")
+
+	cmd.Action = func() {
+		if err := GetClient().ResizeBlockStorage(*id, *size); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Block storage resized")
+	}
+}
+
+func blockStorageLabel(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID NAME"
+
+	id := cmd.StringArg("SUBID", "", "SUBID of block storage to rename (see <storage list>)")
+	name := cmd.StringArg("NAME", "", "New name/label of block storage")
+
+	cmd.Action = func() {
+		if err := GetClient().LabelBlockStorage(*id, *name); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Block storage renamed")
+	}
 }
 
 func blockStorageDelete(cmd *cli.Cmd) {

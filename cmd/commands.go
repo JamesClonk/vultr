@@ -89,10 +89,9 @@ func (c *CLI) RegisterCommands() {
 	// block storage
 	c.Command("storage", "modify block storage", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create new block storage", blockStorageCreate)
+		cmd.Command("resize", "resize existing block storage", blockStorageResize)
+		cmd.Command("label", "rename existing block storage", blockStorageLabel)
 		cmd.Command("delete", "remove block storage", blockStorageDelete)
-		/*		cmd.Command("create", "create new block storage", blockStorageCreate)
-				cmd.Command("update", "update existing block storage", blockStorageUpdate)
-				cmd.Command("delete", "remove block storage", blockStorageDelete)*/
 		cmd.Command("list", "list all block storage", blockStorageList)
 	})
 	c.Command("storages", "list all block storage", blockStorageList)

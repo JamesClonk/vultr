@@ -115,6 +115,30 @@ func (c *Client) CreateBlockStorage(name string, regionID, size int) (BlockStora
 	return storage, nil
 }
 
+func (c *Client) ResizeBlockStorage(id string, size int) error {
+	values := url.Values{
+		"SUBID":   {id},
+		"size_gb": {fmt.Sprintf("%v", size)},
+	}
+
+	if err := c.post(`block/resize`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) LabelBlockStorage(id, name string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"label": {name},
+	}
+
+	if err := c.post(`block/label_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Client) DeleteBlockStorage(id string) error {
 	values := url.Values{
 		"SUBID": {id},
