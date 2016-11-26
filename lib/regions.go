@@ -2,12 +2,14 @@ package lib
 
 // Region on Vultr
 type Region struct {
-	ID        int    `json:"DCID,string"`
-	Name      string `json:"name"`
-	Country   string `json:"country"`
-	Continent string `json:"continent"`
-	State     string `json:"state"`
-	Ddos      bool   `json:"ddos_protection"`
+	ID           int    `json:"DCID,string"`
+	Name         string `json:"name"`
+	Country      string `json:"country"`
+	Continent    string `json:"continent"`
+	State        string `json:"state"`
+	Ddos         bool   `json:"ddos_protection"`
+	BlockStorage bool   `json:"block_storage"`
+	Code         string `json:"regioncode"`
 }
 
 func (c *Client) GetRegions() ([]Region, error) {

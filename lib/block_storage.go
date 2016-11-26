@@ -33,14 +33,15 @@ func (b *BlockStorage) UnmarshalJSON(data []byte) (err error) {
 	}
 
 	value := fmt.Sprintf("%v", fields["SUBID"])
-	if len(value) == 0 || value == "<nil>" {
-		value = "0"
+	if len(value) == 0 || value == "<nil>" || value == "0" {
+		b.ID = ""
+	} else {
+		id, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return err
+		}
+		b.ID = strconv.FormatFloat(id, 'f', -1, 64)
 	}
-	id, err := strconv.ParseFloat(value, 64)
-	if err != nil {
-		return err
-	}
-	b.ID = strconv.FormatFloat(id, 'f', -1, 64)
 
 	value = fmt.Sprintf("%v", fields["DCID"])
 	if len(value) == 0 || value == "<nil>" {
@@ -63,10 +64,15 @@ func (b *BlockStorage) UnmarshalJSON(data []byte) (err error) {
 	b.SizeGB = int(size)
 
 	value = fmt.Sprintf("%v", fields["attached_to_SUBID"])
-	if value == "<nil>" {
-		value = ""
+	if len(value) == 0 || value == "<nil>" || value == "0" {
+		b.AttachedTo = ""
+	} else {
+		attached, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return err
+		}
+		b.AttachedTo = strconv.FormatFloat(attached, 'f', -1, 64)
 	}
-	b.AttachedTo = value
 
 	b.Name = fmt.Sprintf("%v", fields["label"])
 	b.Created = fmt.Sprintf("%v", fields["date_created"])
@@ -134,6 +140,29 @@ func (c *Client) LabelBlockStorage(id, name string) error {
 	}
 
 	if err := c.post(`block/label_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) AttachBlockStorage(id, serverId string) error {
+	values := url.Values{
+		"SUBID":           {id},
+		"attach_to_SUBID": {serverId},
+	}
+
+	if err := c.post(`block/attach`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Client) DetachBlockStorage(id string) error {
+	values := url.Values{
+		"SUBID": {id},
+	}
+
+	if err := c.post(`block/detach`, values, nil); err != nil {
 		return err
 	}
 	return nil

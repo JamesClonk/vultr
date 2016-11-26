@@ -91,6 +91,8 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("create", "create new block storage", blockStorageCreate)
 		cmd.Command("resize", "resize existing block storage", blockStorageResize)
 		cmd.Command("label", "rename existing block storage", blockStorageLabel)
+		cmd.Command("attach", "attach block storage to virtual machine", blockStorageAttach)
+		cmd.Command("detach", "detach block storage from virtual machine", blockStorageDetach)
 		cmd.Command("delete", "remove block storage", blockStorageDelete)
 		cmd.Command("list", "list all block storage", blockStorageList)
 	})

@@ -56,6 +56,30 @@ func blockStorageLabel(cmd *cli.Cmd) {
 	}
 }
 
+func blockStorageAttach(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID ATTACH_TO_SUBID"
+
+	id := cmd.StringArg("SUBID", "", "SUBID of block storage to attach (see <storage list>)")
+	serverId := cmd.StringArg("ATTACH_TO_SUBID", "", "SUBID of virtual machine to attach to (see <servers>)")
+
+	cmd.Action = func() {
+		if err := GetClient().AttachBlockStorage(*id, *serverId); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Block storage attached")
+	}
+}
+
+func blockStorageDetach(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of block storage to detach (see <storage list>)")
+	cmd.Action = func() {
+		if err := GetClient().DetachBlockStorage(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Block storage detached")
+	}
+}
+
 func blockStorageDelete(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of block storage to delete (see <storage list>)")
 	cmd.Action = func() {
