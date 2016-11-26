@@ -15,7 +15,7 @@ type StartupScript struct {
 }
 
 // Implements json.Unmarshaller on StartupScript.
-// Necessary because the SRIPTID field has inconsistent types.
+// Necessary because the SCRIPTID field has inconsistent types.
 func (s *StartupScript) UnmarshalJSON(data []byte) (err error) {
 	if s == nil {
 		*s = StartupScript{}

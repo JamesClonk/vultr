@@ -9,14 +9,29 @@ import (
 )
 
 func (c *CLI) RegisterCommands() {
+	// dns
+	c.Command("dns", "modify DNS", func(cmd *cli.Cmd) {
+		cmd.Command("domain", "show and change DNS domains", func(cmd *cli.Cmd) {
+			cmd.Command("create", "create a DNS domain", dnsDomainCreate)
+			cmd.Command("delete", "delete a DNS domain", dnsDomainDelete)
+			cmd.Command("list", "list all DNS domains", dnsDomainList)
+		})
+		cmd.Command("record", "show and change DNS records", func(cmd *cli.Cmd) {
+			cmd.Command("create", "create a DNS record", dnsRecordCreate)
+			cmd.Command("update", "update a DNS record", dnsRecordUpdate)
+			cmd.Command("delete", "delete a DNS record", dnsRecordDelete)
+			cmd.Command("list", "list all DNS records", dnsRecordList)
+		})
+	})
+
 	// info
 	c.Command("info", "display account information", accountInfo)
 
-	// os
-	c.Command("os", "list all available operating systems", osList)
-
 	// iso
 	c.Command("iso", "list all ISOs currently available on account", isoList)
+
+	// os
+	c.Command("os", "list all available operating systems", osList)
 
 	// plans
 	c.Command("plans", "list all active plans", planList)
@@ -71,6 +86,17 @@ func (c *CLI) RegisterCommands() {
 	})
 	c.Command("servers", "list all active or pending virtual machines on current account", serversList)
 
+	// block storage
+	c.Command("storage", "modify block storage", func(cmd *cli.Cmd) {
+		cmd.Command("create", "create new block storage", blockStorageCreate)
+		cmd.Command("delete", "remove block storage", blockStorageDelete)
+		/*		cmd.Command("create", "create new block storage", blockStorageCreate)
+				cmd.Command("update", "update existing block storage", blockStorageUpdate)
+				cmd.Command("delete", "remove block storage", blockStorageDelete)*/
+		cmd.Command("list", "list all block storage", blockStorageList)
+	})
+	c.Command("storages", "list all block storage", blockStorageList)
+
 	// snapshots
 	c.Command("snapshot", "modify snapshots", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create a snapshot from an existing virtual machine", snapshotsCreate)
@@ -100,20 +126,5 @@ func (c *CLI) RegisterCommands() {
 			tabsPrint(Columns{"Go version:", runtime.Version()}, lengths)
 			tabsFlush()
 		}
-	})
-
-	// dns
-	c.Command("dns", "modify DNS", func(cmd *cli.Cmd) {
-		cmd.Command("domain", "show and change DNS domains", func(cmd *cli.Cmd) {
-			cmd.Command("create", "create a DNS domain", dnsDomainCreate)
-			cmd.Command("delete", "delete a DNS domain", dnsDomainDelete)
-			cmd.Command("list", "list all DNS domains", dnsDomainList)
-		})
-		cmd.Command("record", "show and change DNS records", func(cmd *cli.Cmd) {
-			cmd.Command("create", "create a DNS record", dnsRecordCreate)
-			cmd.Command("update", "update a DNS record", dnsRecordUpdate)
-			cmd.Command("delete", "delete a DNS record", dnsRecordDelete)
-			cmd.Command("list", "list all DNS records", dnsRecordList)
-		})
 	})
 }
