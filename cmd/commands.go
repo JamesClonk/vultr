@@ -116,19 +116,16 @@ func (c *CLI) RegisterCommands() {
 	})
 	c.Command("scripts", "list all startup scripts on current account", scriptsList)
 
-  c.Command("reservedip", "modify reserved ip's", func(cmd *cli.Cmd) {
-    cmd.Command("attach", "attach a reserved IP to an existing subscription", reservedIpAttach)
-    cmd.Command("convert", "convert an existing IP on a subscription to a reserved IP", reservedIpConvert)
-    cmd.Command("create", "create a new reserved IP", func(cmd *cli.Cmd) {
-      cmd.Command("v4", "create ipv4", func(cmd *cli.Cmd) { reservedIpCreate(cmd, "v4") })
-      cmd.Command("v6", "create ipv6", func(cmd *cli.Cmd) { reservedIpCreate(cmd, "v6") })
-    })
-    cmd.Command("destroy", "remove a reserved IP from your account", reservedIpDestroy)
-    cmd.Command("detach", "detach a reserved IP from an existing subscription", reservedIpDetach)
-    cmd.Command("list", "list all the active reserved IPs on this account", reservedIpList)
-  })
-  c.Command("reservedips", "list all the active reserved IPs on this account", reservedIpList)
-
+	// reserved ips
+	c.Command("reservedip", "modify reserved IPs", func(cmd *cli.Cmd) {
+		cmd.Command("attach", "attach reserved IP to an existing virtual machine", reservedIpAttach)
+		cmd.Command("convert", "convert existing IP on a virtual machine to a reserved IP", reservedIpConvert)
+		cmd.Command("create", "create new reserved IP", reservedIpCreate)
+		cmd.Command("delete", "delete reserved IP from your account", reservedIpDestroy)
+		cmd.Command("detach", "detach reserved IP from an existing virtual machine", reservedIpDetach)
+		cmd.Command("list", "list all active reserved IPs on current account", reservedIpList)
+	})
+	c.Command("reservedips", "list all active reserved IPs on current account", reservedIpList)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {

@@ -20,7 +20,7 @@ type BlockStorage struct {
 }
 
 // Implements json.Unmarshaller on BlockStorage.
-// This is needed because the Vultr API is inconsistent in it's JSON responses for account info.
+// This is needed because the Vultr API is inconsistent in it's JSON responses.
 // Some fields can change type, from JSON number to JSON string and vice-versa.
 func (b *BlockStorage) UnmarshalJSON(data []byte) (err error) {
 	if b == nil {

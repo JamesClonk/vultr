@@ -8,83 +8,83 @@ import (
 )
 
 func reservedIpAttach(cmd *cli.Cmd) {
-	ip_address := cmd.StringArg("ip_address", "", "ip_address to attach")
-	attach_subid := cmd.StringArg("attach_SUBID", "", "subid to attach ip")
+	cmd.Spec = "SUBID IP_ADDRESS"
+
+	serverId := cmd.StringArg("SUBID", "", "SUBID of virtual machine to attach to (see <servers>)")
+	ip := cmd.StringArg("IP_ADDRESS", "", "IP address to attach (see <reservedips>)")
+
 	cmd.Action = func() {
-		err := GetClient().AttachReservedIp(*ip_address, *attach_subid)
-		if err != nil {
+		if err := GetClient().AttachReservedIp(*ip, *serverId); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Attach IP to SUBID\n\n")
-		lengths := []int{40, 10}
-		tabsPrint(Columns{"ip_address", "attached_SUBID"}, lengths)
-		tabsPrint(Columns{*ip_address, *attach_subid}, lengths)
-		tabsFlush()
+		fmt.Println("Reserved IP attached")
 	}
 }
 
 func reservedIpConvert(cmd *cli.Cmd) {
-  cmd.Spec = "SUBID IPADDRESS"
-	subid := cmd.StringArg("SUBID", "", "subid convert to reverse")
-	ip_address := cmd.StringArg("IPADDRESS", "", "ipaddress to convert")
+	cmd.Spec = "SUBID IP_ADDRESS"
+
+	serverId := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	ip := cmd.StringArg("IP_ADDRESS", "", "IP address to convert to reserved IP")
+
 	cmd.Action = func() {
-    // fmt.Println("meno-0")
-    // fmt.Printf("meno-3 %v %v\n", *subid, *ip_address)
-		osubid, err := GetClient().ConvertReservedIp(*subid, *ip_address)
+		id, err := GetClient().ConvertReservedIp(*serverId, *ip)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("SUBIID to Attach IP\n\n")
-		lengths := []int{10, 40, 10}
-		tabsPrint(Columns{"SUBID", "ip_address", "attach_subid"}, lengths)
-		tabsPrint(Columns{*subid, *ip_address, osubid.SUBID}, lengths)
+
+		fmt.Printf("Reserved IP converted\n\n")
+		lengths := []int{12, 48, 12}
+		tabsPrint(Columns{"ID", "IP_ADDRESS", "ATTACHED_TO"}, lengths)
+		tabsPrint(Columns{id, *ip, *serverId}, lengths)
 		tabsFlush()
 	}
 }
 
-func reservedIpCreate(cmd *cli.Cmd, ip_type string) {
-	dcid := cmd.StringArg("DCID", "", "DCID Datacenter id")
+func reservedIpCreate(cmd *cli.Cmd) {
+	cmd.Spec = "[-r -t]"
+
+	regionID := cmd.IntOpt("r region", 1, "Region (DCID)")
+	ipType := cmd.StringOpt("t type", "v4", "Type of new reserved IP (v4 or v6)")
+
 	cmd.Action = func() {
-		subid, err := GetClient().CreateReservedIp(*dcid, ip_type)
+		id, err := GetClient().CreateReservedIp(*regionID, *ipType)
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		fmt.Printf("Reserved IP created\n\n")
-		lengths := []int{10, 4}
-		tabsPrint(Columns{"SUBID", "TYPE"}, lengths)
-		tabsPrint(Columns{subid, ip_type}, lengths)
+		lengths := []int{12, 6, 10}
+		tabsPrint(Columns{"ID", "TYPE", "DCID"}, lengths)
+		tabsPrint(Columns{id, *ipType, *regionID}, lengths)
 		tabsFlush()
 	}
 }
 
 func reservedIpDestroy(cmd *cli.Cmd) {
-	subid := cmd.StringArg("SUBID", "", "SUBID of the ip")
+	cmd.Spec = "SUBID"
+
+	id := cmd.StringArg("SUBID", "", "SUBID of reserved IP (see <reservedips>)")
+
 	cmd.Action = func() {
-		err := GetClient().DestroyReservedIp(*subid)
-		if err != nil {
+		if err := GetClient().DestroyReservedIp(*id); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Destroyed IP\n\n")
-		lengths := []int{10}
-		tabsPrint(Columns{"SUBID"}, lengths)
-		tabsPrint(Columns{*subid}, lengths)
-		tabsFlush()
+		fmt.Println("Reserved IP deleted")
 	}
 }
 
 func reservedIpDetach(cmd *cli.Cmd) {
-	ip_address := cmd.StringArg("ip_address", "", "ip_address to attach")
-	detach_subid := cmd.StringArg("detach_SUBID", "", "subid to detach ip")
+	cmd.Spec = "SUBID IP_ADDRESS"
+
+	serverId := cmd.StringArg("SUBID", "", "SUBID of virtual machine to detach from (see <servers>)")
+	ip := cmd.StringArg("IP_ADDRESS", "", "IP address to detach (see <reservedips>)")
+
 	cmd.Action = func() {
-		err := GetClient().DetachReservedIp(*ip_address, *detach_subid)
-		if err != nil {
+		if err := GetClient().DetachReservedIp(*ip, *serverId); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Detach IP to SUBID\n\n")
-		lengths := []int{40, 10}
-		tabsPrint(Columns{"ip_address", "detached_SUBID"}, lengths)
-		tabsPrint(Columns{*ip_address, *detach_subid}, lengths)
-		tabsFlush()
+		fmt.Println("Reserved IP detached")
 	}
 }
 
@@ -99,10 +99,19 @@ func reservedIpList(cmd *cli.Cmd) {
 			fmt.Println()
 			return
 		}
-		lengths := []int{10, 4, 4, 32, 4, 10, 10}
-		tabsPrint(Columns{"SUBID", "DCID", "ip_type", "subnet", "prefix", "label", "attached"}, lengths)
+
+		lengths := []int{12, 8, 8, 48, 6, 32, 12}
+		tabsPrint(Columns{"SUBID", "DCID", "IP_TYPE", "SUBNET", "SIZE", "LABEL", "ATTACHED_TO"}, lengths)
 		for _, ip := range ips {
-			tabsPrint(Columns{ip.SUBID, ip.DCID, ip.Ip_type, ip.Subnet, ip.Subnet_size, ip.Label, ip.Attached_SUBID}, lengths)
+			tabsPrint(Columns{
+				ip.ID,
+				ip.RegionID,
+				ip.IPType,
+				ip.Subnet,
+				ip.SubnetSize,
+				ip.Label,
+				ip.AttachedTo,
+			}, lengths)
 		}
 		tabsFlush()
 	}

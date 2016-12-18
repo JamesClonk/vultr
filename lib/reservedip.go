@@ -1,87 +1,147 @@
 package lib
 
-import "net/url"
-// import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+	"strconv"
+)
 
-// Ips on Vultr account
-
-// "1313044": {
-//     "SUBID": 1313044,
-//     "DCID": 1,
-//     "ip_type": "v4",
-//     "subnet": "10.234.22.53",
-//     "subnet_size": 32,
-//     "label": "my first reserved ip",
-//     "attached_SUBID": 123456
-// },
-
-type SubId struct {
-	SUBID int `json:"SUBID"`
+// IP on Vultr
+type IP struct {
+	ID         string `json:"SUBID,string"`
+	RegionID   int    `json:"DCID,string"`
+	IPType     string `json:"ip_type"`
+	Subnet     string `json:"subnet"`
+	SubnetSize int    `json:"subnet_size"`
+	Label      string `json:"label"`
+	AttachedTo string `json:"attached_SUBID,string"`
 }
 
-type Ip struct {
-	SUBID          int    `json:"SUBID"`
-	DCID           int    `json:"DCID"`
-	Ip_type        string `json:"ip_type"`
-	Subnet         string `json:"subnet"`
-	Subnet_size    int    `json:"subnet_size"`
-	Label          string `json:"label"`
-	Attached_SUBID bool   `json:"attached_SUBID"`
+// Implements json.Unmarshaller on IP.
+// This is needed because the Vultr API is inconsistent in it's JSON responses.
+// Some fields can change type, from JSON number to JSON string and vice-versa.
+func (i *IP) UnmarshalJSON(data []byte) (err error) {
+	if i == nil {
+		*i = IP{}
+	}
+
+	var fields map[string]interface{}
+	if err := json.Unmarshal(data, &fields); err != nil {
+		return err
+	}
+
+	value := fmt.Sprintf("%v", fields["SUBID"])
+	if len(value) == 0 || value == "<nil>" || value == "0" {
+		i.ID = ""
+	} else {
+		id, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return err
+		}
+		i.ID = strconv.FormatFloat(id, 'f', -1, 64)
+	}
+
+	value = fmt.Sprintf("%v", fields["DCID"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	region, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return err
+	}
+	i.RegionID = int(region)
+
+	value = fmt.Sprintf("%v", fields["attached_SUBID"])
+	if len(value) == 0 || value == "<nil>" || value == "0" || value == "false" {
+		i.AttachedTo = ""
+	} else {
+		attached, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return err
+		}
+		i.AttachedTo = strconv.FormatFloat(attached, 'f', -1, 64)
+	}
+
+	value = fmt.Sprintf("%v", fields["subnet_size"])
+	if len(value) == 0 || value == "<nil>" {
+		value = "0"
+	}
+	size, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return err
+	}
+	i.SubnetSize = int(size)
+
+	i.IPType = fmt.Sprintf("%v", fields["ip_type"])
+	i.Subnet = fmt.Sprintf("%v", fields["subnet"])
+	i.Label = fmt.Sprintf("%v", fields["label"])
+
+	return
 }
 
-func (c *Client) ListReservedIp() (ips []Ip, err error) {
-	var ipMap map[string]Ip
-	err = c.get(`reservedip/list`, &ipMap)
+func (c *Client) ListReservedIp() ([]IP, error) {
+	var ipMap map[string]IP
+
+	err := c.get(`reservedip/list`, &ipMap)
 	if err != nil {
 		return nil, err
 	}
+
+	ips := make([]IP, 0)
 	for _, ip := range ipMap {
 		ips = append(ips, ip)
 	}
 	return ips, nil
 }
 
-func (c *Client) CreateReservedIp(dcid string, ip_type string) (subid SubId, err error) {
+func (c *Client) CreateReservedIp(regionID int, ipType string) (string, error) {
 	values := url.Values{
-		"DCID":    {dcid},
-		"ip_type": {ip_type},
+		"DCID":    {fmt.Sprintf("%v", regionID)},
+		"ip_type": {ipType},
 	}
-	err = c.post(`reservedip/create`, values, &subid)
+
+	result := IP{}
+	err := c.post(`reservedip/create`, values, &result)
 	if err != nil {
-		return subid, err
+		return "", err
 	}
-	return subid, nil
+	return result.ID, nil
 }
 
-func (c *Client) DestroyReservedIp(subid string) (err error) {
+func (c *Client) DestroyReservedIp(id string) error {
 	values := url.Values{
-		"SUBID": {subid},
+		"SUBID": {id},
 	}
 	return c.post(`reservedip/destroy`, values, nil)
 }
 
-func (c *Client) AttachReservedIp(ip_address string, attach_subid string) (err error) {
+func (c *Client) AttachReservedIp(ip string, serverId string) error {
 	values := url.Values{
-		"ip_address":   {ip_address},
-		"attach_SUBID": {attach_subid},
+		"ip_address":   {ip},
+		"attach_SUBID": {serverId},
 	}
 	return c.post(`reservedip/attach`, values, nil)
 }
 
-func (c *Client) ConvertReservedIp(subid string, ip_address string) (subId SubId, err error) {
+func (c *Client) ConvertReservedIp(serverId string, ip string) (string, error) {
 	values := url.Values{
-		"SUBID":      {subid},
-		"ip_address": {ip_address},
+		"SUBID":      {serverId},
+		"ip_address": {ip},
 	}
-  // fmt.Printf("%s:%s\n", subid, ip_address)
-	err = c.post(`reservedip/convert`, values, &subId)
-	return subId, err
+
+	result := IP{}
+	err := c.post(`reservedip/convert`, values, &result)
+	if err != nil {
+		return "", err
+	}
+	return result.ID, err
 }
 
-func (c *Client) DetachReservedIp(detach_subid string, ip_address string) (err error) {
+func (c *Client) DetachReservedIp(serverId string, ip string) error {
 	values := url.Values{
-		"ip_address":   {ip_address},
-		"detach_SUBID": {detach_subid},
+		"ip_address":   {ip},
+		"detach_SUBID": {serverId},
 	}
 	return c.post(`reservedip/detach`, values, nil)
 }

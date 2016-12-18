@@ -18,7 +18,7 @@ import (
 
 const (
 	// Version of this libary
-	Version = "v1.11-mabels"
+	Version = "1.12.0"
 
 	// APIVersion of Vultr
 	APIVersion = "v1"
