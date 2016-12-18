@@ -11,7 +11,7 @@ import (
 )
 
 func serversCreate(cmd *cli.Cmd) {
-	cmd.Spec = "-n -r -p -o [OPTIONS]"
+	cmd.Spec = "-n [-r -p -o] [OPTIONS]"
 
 	name := cmd.StringOpt("n name", "", "Name of new virtual machine")
 	regionID := cmd.IntOpt("r region", 1, "Region (DCID)")
