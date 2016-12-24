@@ -95,6 +95,19 @@ func (c *Client) ListReservedIP() ([]IP, error) {
 	return ips, nil
 }
 
+func (c *Client) GetReservedIP(id string) (IP, error) {
+	var ipMap map[string]IP
+
+	err := c.get(`reservedip/list`, &ipMap)
+	if err != nil {
+		return IP{}, err
+	}
+	if ip, ok := ipMap[id]; ok {
+		return ip, nil
+	}
+	return IP{}, fmt.Errorf("IP with id %v not found.", id)
+}
+
 func (c *Client) CreateReservedIP(regionID int, ipType string, label string) (string, error) {
 	values := url.Values{
 		"DCID":    {fmt.Sprintf("%v", regionID)},
