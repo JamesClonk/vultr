@@ -18,7 +18,7 @@ type IP struct {
 	AttachedTo string `json:"attached_SUBID,string"`
 }
 
-// Implements json.Unmarshaller on IP.
+// UnmarshalJSON implements json.Unmarshaller on IP.
 // This is needed because the Vultr API is inconsistent in it's JSON responses.
 // Some fields can change type, from JSON number to JSON string and vice-versa.
 func (i *IP) UnmarshalJSON(data []byte) (err error) {
@@ -80,6 +80,7 @@ func (i *IP) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
+// ListReservedIP returns a list of all available reserved IPs on Vultr account
 func (c *Client) ListReservedIP() ([]IP, error) {
 	var ipMap map[string]IP
 
@@ -95,6 +96,7 @@ func (c *Client) ListReservedIP() ([]IP, error) {
 	return ips, nil
 }
 
+// GetReservedIP returns reserved IP with given ID
 func (c *Client) GetReservedIP(id string) (IP, error) {
 	var ipMap map[string]IP
 
@@ -105,9 +107,10 @@ func (c *Client) GetReservedIP(id string) (IP, error) {
 	if ip, ok := ipMap[id]; ok {
 		return ip, nil
 	}
-	return IP{}, fmt.Errorf("IP with id %v not found.", id)
+	return IP{}, fmt.Errorf("IP with ID %v not found", id)
 }
 
+// CreateReservedIP creates a new reserved IP on Vultr account
 func (c *Client) CreateReservedIP(regionID int, ipType string, label string) (string, error) {
 	values := url.Values{
 		"DCID":    {fmt.Sprintf("%v", regionID)},
@@ -125,6 +128,7 @@ func (c *Client) CreateReservedIP(regionID int, ipType string, label string) (st
 	return result.ID, nil
 }
 
+// DestroyReservedIP deletes an existing reserved IP
 func (c *Client) DestroyReservedIP(id string) error {
 	values := url.Values{
 		"SUBID": {id},
@@ -132,17 +136,28 @@ func (c *Client) DestroyReservedIP(id string) error {
 	return c.post(`reservedip/destroy`, values, nil)
 }
 
-func (c *Client) AttachReservedIP(ip string, serverId string) error {
+// AttachReservedIP attaches a reserved IP to a virtual machine
+func (c *Client) AttachReservedIP(ip string, serverID string) error {
 	values := url.Values{
 		"ip_address":   {ip},
-		"attach_SUBID": {serverId},
+		"attach_SUBID": {serverID},
 	}
 	return c.post(`reservedip/attach`, values, nil)
 }
 
-func (c *Client) ConvertReservedIP(serverId string, ip string) (string, error) {
+// DetachReservedIP detaches a reserved IP from an existing virtual machine
+func (c *Client) DetachReservedIP(serverID string, ip string) error {
 	values := url.Values{
-		"SUBID":      {serverId},
+		"ip_address":   {ip},
+		"detach_SUBID": {serverID},
+	}
+	return c.post(`reservedip/detach`, values, nil)
+}
+
+// ConvertReservedIP converts an existing virtual machines IP to a reserved IP
+func (c *Client) ConvertReservedIP(serverID string, ip string) (string, error) {
+	values := url.Values{
+		"SUBID":      {serverID},
 		"ip_address": {ip},
 	}
 
@@ -152,12 +167,4 @@ func (c *Client) ConvertReservedIP(serverId string, ip string) (string, error) {
 		return "", err
 	}
 	return result.ID, err
-}
-
-func (c *Client) DetachReservedIP(serverId string, ip string) error {
-	values := url.Values{
-		"ip_address":   {ip},
-		"detach_SUBID": {serverId},
-	}
-	return c.post(`reservedip/detach`, values, nil)
 }
