@@ -14,7 +14,7 @@ func reservedIpAttach(cmd *cli.Cmd) {
 	ip := cmd.StringArg("IP_ADDRESS", "", "IP address to attach (see <reservedips>)")
 
 	cmd.Action = func() {
-		if err := GetClient().AttachReservedIp(*ip, *serverId); err != nil {
+		if err := GetClient().AttachReservedIP(*ip, *serverId); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Reserved IP attached")
@@ -28,7 +28,7 @@ func reservedIpConvert(cmd *cli.Cmd) {
 	ip := cmd.StringArg("IP_ADDRESS", "", "IP address to convert to reserved IP")
 
 	cmd.Action = func() {
-		id, err := GetClient().ConvertReservedIp(*serverId, *ip)
+		id, err := GetClient().ConvertReservedIP(*serverId, *ip)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -46,9 +46,10 @@ func reservedIpCreate(cmd *cli.Cmd) {
 
 	regionID := cmd.IntOpt("r region", 1, "Region (DCID)")
 	ipType := cmd.StringOpt("t type", "v4", "Type of new reserved IP (v4 or v6)")
+	label := cmd.StringOpt("l label", "", "Label for new reserved IP")
 
 	cmd.Action = func() {
-		id, err := GetClient().CreateReservedIp(*regionID, *ipType)
+		id, err := GetClient().CreateReservedIP(*regionID, *ipType, *label)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -67,7 +68,7 @@ func reservedIpDestroy(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of reserved IP (see <reservedips>)")
 
 	cmd.Action = func() {
-		if err := GetClient().DestroyReservedIp(*id); err != nil {
+		if err := GetClient().DestroyReservedIP(*id); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Reserved IP deleted")
@@ -81,7 +82,7 @@ func reservedIpDetach(cmd *cli.Cmd) {
 	ip := cmd.StringArg("IP_ADDRESS", "", "IP address to detach (see <reservedips>)")
 
 	cmd.Action = func() {
-		if err := GetClient().DetachReservedIp(*ip, *serverId); err != nil {
+		if err := GetClient().DetachReservedIP(*ip, *serverId); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Reserved IP detached")
@@ -90,7 +91,7 @@ func reservedIpDetach(cmd *cli.Cmd) {
 
 func reservedIpList(cmd *cli.Cmd) {
 	cmd.Action = func() {
-		ips, err := GetClient().ListReservedIp()
+		ips, err := GetClient().ListReservedIP()
 		if err != nil {
 			log.Fatal(err)
 		}

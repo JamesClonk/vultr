@@ -7,28 +7,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Plans_ListReservedIp_Fail(t *testing.T) {
+func Test_Plans_ListReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
-	_, err := client.ListReservedIp()
+	_, err := client.ListReservedIP()
 	if err == nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_ListReservedIp_Ok_Empty(t *testing.T) {
+func Test_Plans_ListReservedIP_Ok_Empty(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{}`)
 	defer server.Close()
 
-	list, err := client.ListReservedIp()
+	list, err := client.ListReservedIP()
 	if err == nil {
 		t.Error(err)
 	}
 	assert.Equal(t, len(list), 0)
 }
 
-func Test_Plans_ListReservedIp_Ok(t *testing.T) {
+func Test_Plans_ListReservedIP_Ok(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK,
 		`{
       "4":{"SUBID":4,"DCID":5,"ip_type":"v4","subnet":"subnet1",
@@ -38,7 +38,7 @@ func Test_Plans_ListReservedIp_Ok(t *testing.T) {
       }`)
 	defer server.Close()
 
-	list, err := client.ListReservedIp()
+	list, err := client.ListReservedIP()
 	if err != nil {
 		t.Error(err)
 	}
@@ -60,103 +60,103 @@ func Test_Plans_ListReservedIp_Ok(t *testing.T) {
 	assert.Equal(t, list[1].AttachedTo, "123")
 }
 
-func Test_Plans_CreateReservedIp_Fail(t *testing.T) {
+func Test_Plans_CreateReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
-	_, err := client.CreateReservedIp(1, "ip")
+	_, err := client.CreateReservedIP(1, "ip", "")
 	if err == nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_CreateReservedIp_OK(t *testing.T) {
+func Test_Plans_CreateReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{"SUBID":4711}`)
 	defer server.Close()
 
-	id, err := client.CreateReservedIp(1, "ip")
+	id, err := client.CreateReservedIP(1, "ip", "")
 	if err != nil {
 		t.Error(err)
 	}
 	assert.Equal(t, id, "4711")
 }
 
-func Test_Plans_DestroyReservedIp_Fail(t *testing.T) {
+func Test_Plans_DestroyReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
-	err := client.DestroyReservedIp("subid")
+	err := client.DestroyReservedIP("subid")
 	if err == nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_DestroyReservedIp_OK(t *testing.T) {
+func Test_Plans_DestroyReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, ``)
 	defer server.Close()
 
-	err := client.DestroyReservedIp("subid")
+	err := client.DestroyReservedIP("subid")
 	if err != nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_AttachReservedIp_Fail(t *testing.T) {
+func Test_Plans_AttachReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
-	err := client.AttachReservedIp("ip", "subid")
+	err := client.AttachReservedIP("ip", "subid")
 	if err == nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_AttachReservedIp_OK(t *testing.T) {
+func Test_Plans_AttachReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, ``)
 	defer server.Close()
 
-	err := client.AttachReservedIp("subid", "ip")
+	err := client.AttachReservedIP("subid", "ip")
 	if err != nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_ConvertReservedIp_Fail(t *testing.T) {
+func Test_Plans_ConvertReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
-	_, err := client.ConvertReservedIp("subid", "ip")
+	_, err := client.ConvertReservedIP("subid", "ip")
 	if err == nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_ConvertReservedIp_OK(t *testing.T) {
+func Test_Plans_ConvertReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{"SUBID":4711}`)
 	defer server.Close()
 
-	id, err := client.ConvertReservedIp("subid", "ip")
+	id, err := client.ConvertReservedIP("subid", "ip")
 	if err != nil {
 		t.Error(err)
 	}
 	assert.Equal(t, id, "4711")
 }
 
-func Test_Plans_DetachReservedIp_Fail(t *testing.T) {
+func Test_Plans_DetachReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
-	err := client.DetachReservedIp("subid", "ip")
+	err := client.DetachReservedIP("subid", "ip")
 	if err == nil {
 		t.Error(err)
 	}
 }
 
-func Test_Plans_DetachReservedIp_OK(t *testing.T) {
+func Test_Plans_DetachReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, ``)
 	defer server.Close()
 
-	err := client.DetachReservedIp("subid", "ip")
+	err := client.DetachReservedIP("subid", "ip")
 	if err != nil {
 		t.Error(err)
 	}

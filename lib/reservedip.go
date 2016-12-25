@@ -80,7 +80,7 @@ func (i *IP) UnmarshalJSON(data []byte) (err error) {
 	return
 }
 
-func (c *Client) ListReservedIp() ([]IP, error) {
+func (c *Client) ListReservedIP() ([]IP, error) {
 	var ipMap map[string]IP
 
 	err := c.get(`reservedip/list`, &ipMap)
@@ -95,10 +95,26 @@ func (c *Client) ListReservedIp() ([]IP, error) {
 	return ips, nil
 }
 
-func (c *Client) CreateReservedIp(regionID int, ipType string) (string, error) {
+func (c *Client) GetReservedIP(id string) (IP, error) {
+	var ipMap map[string]IP
+
+	err := c.get(`reservedip/list`, &ipMap)
+	if err != nil {
+		return IP{}, err
+	}
+	if ip, ok := ipMap[id]; ok {
+		return ip, nil
+	}
+	return IP{}, fmt.Errorf("IP with id %v not found.", id)
+}
+
+func (c *Client) CreateReservedIP(regionID int, ipType string, label string) (string, error) {
 	values := url.Values{
 		"DCID":    {fmt.Sprintf("%v", regionID)},
 		"ip_type": {ipType},
+	}
+	if len(label) > 0 {
+		values.Add("label", label)
 	}
 
 	result := IP{}
@@ -109,14 +125,14 @@ func (c *Client) CreateReservedIp(regionID int, ipType string) (string, error) {
 	return result.ID, nil
 }
 
-func (c *Client) DestroyReservedIp(id string) error {
+func (c *Client) DestroyReservedIP(id string) error {
 	values := url.Values{
 		"SUBID": {id},
 	}
 	return c.post(`reservedip/destroy`, values, nil)
 }
 
-func (c *Client) AttachReservedIp(ip string, serverId string) error {
+func (c *Client) AttachReservedIP(ip string, serverId string) error {
 	values := url.Values{
 		"ip_address":   {ip},
 		"attach_SUBID": {serverId},
@@ -124,7 +140,7 @@ func (c *Client) AttachReservedIp(ip string, serverId string) error {
 	return c.post(`reservedip/attach`, values, nil)
 }
 
-func (c *Client) ConvertReservedIp(serverId string, ip string) (string, error) {
+func (c *Client) ConvertReservedIP(serverId string, ip string) (string, error) {
 	values := url.Values{
 		"SUBID":      {serverId},
 		"ip_address": {ip},
@@ -138,7 +154,7 @@ func (c *Client) ConvertReservedIp(serverId string, ip string) (string, error) {
 	return result.ID, err
 }
 
-func (c *Client) DetachReservedIp(serverId string, ip string) error {
+func (c *Client) DetachReservedIP(serverId string, ip string) error {
 	values := url.Values{
 		"ip_address":   {ip},
 		"detach_SUBID": {serverId},
