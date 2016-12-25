@@ -1,9 +1,10 @@
 .PHONY: all prepare build vet lint test
 
-all: vet lint test build
+all: prepare vet lint test build
 
 prepare:
-	go get github.com/Masterminds/glide
+	go get -v github.com/golang/lint/golint
+	go get -v github.com/Masterminds/glide
 	glide install
 
 build:
