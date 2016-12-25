@@ -1,6 +1,6 @@
-.PHONY: prepare build vet test
+.PHONY: all prepare build vet lint test
 
-all: vet test build
+all: vet lint test build
 
 prepare:
 	go get github.com/Masterminds/glide
@@ -11,6 +11,9 @@ build:
 
 vet:
 	GOARCH=amd64 GOOS=linux go vet $$(go list ./... | grep -v /vendor/)
+
+lint:
+	for pkg in $$(go list ./... | grep -v /vendor/); do golint $$pkg; done
 
 test:
 	GOARCH=amd64 GOOS=linux go test $$(go list ./... | grep -v /vendor/)
