@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Plans_ListReservedIP_Fail(t *testing.T) {
+func Test_ReservedIP_ListReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
@@ -17,7 +17,7 @@ func Test_Plans_ListReservedIP_Fail(t *testing.T) {
 	}
 }
 
-func Test_Plans_ListReservedIP_Ok_Empty(t *testing.T) {
+func Test_ReservedIP_ListReservedIP_Ok_Empty(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{}`)
 	defer server.Close()
 
@@ -28,7 +28,7 @@ func Test_Plans_ListReservedIP_Ok_Empty(t *testing.T) {
 	assert.Equal(t, len(list), 0)
 }
 
-func Test_Plans_ListReservedIP_Ok(t *testing.T) {
+func Test_ReservedIP_ListReservedIP_Ok(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK,
 		`{
       "4":{"SUBID":4,"DCID":5,"ip_type":"v4","subnet":"subnet1",
@@ -38,29 +38,37 @@ func Test_Plans_ListReservedIP_Ok(t *testing.T) {
       }`)
 	defer server.Close()
 
-	list, err := client.ListReservedIP()
+	ips, err := client.ListReservedIP()
 	if err != nil {
 		t.Error(err)
 	}
-
-	assert.Equal(t, list[0].ID, "4")
-	assert.Equal(t, list[0].RegionID, 5)
-	assert.Equal(t, list[0].IPType, "v4")
-	assert.Equal(t, list[0].Subnet, "subnet1")
-	assert.Equal(t, list[0].SubnetSize, 8)
-	assert.Equal(t, list[0].Label, "label")
-	assert.Equal(t, list[0].AttachedTo, "")
-
-	assert.Equal(t, list[1].ID, "9")
-	assert.Equal(t, list[1].RegionID, 5)
-	assert.Equal(t, list[1].IPType, "v6")
-	assert.Equal(t, list[1].Subnet, "subnet2")
-	assert.Equal(t, list[1].SubnetSize, 16)
-	assert.Equal(t, list[1].Label, "label")
-	assert.Equal(t, list[1].AttachedTo, "123")
+	if assert.NotNil(t, ips) {
+		assert.Equal(t, 2, len(ips))
+		// keys could be in random order
+		for _, ip := range ips {
+			switch ip.ID {
+			case "4":
+				assert.Equal(t, ip.RegionID, 5)
+				assert.Equal(t, ip.IPType, "v4")
+				assert.Equal(t, ip.Subnet, "subnet1")
+				assert.Equal(t, ip.SubnetSize, 8)
+				assert.Equal(t, ip.Label, "label")
+				assert.Equal(t, ip.AttachedTo, "")
+			case "9":
+				assert.Equal(t, ip.RegionID, 5)
+				assert.Equal(t, ip.IPType, "v6")
+				assert.Equal(t, ip.Subnet, "subnet2")
+				assert.Equal(t, ip.SubnetSize, 16)
+				assert.Equal(t, ip.Label, "label")
+				assert.Equal(t, ip.AttachedTo, "123")
+			default:
+				t.Error("Unknown ReservedIP")
+			}
+		}
+	}
 }
 
-func Test_Plans_CreateReservedIP_Fail(t *testing.T) {
+func Test_ReservedIP_CreateReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
@@ -70,7 +78,7 @@ func Test_Plans_CreateReservedIP_Fail(t *testing.T) {
 	}
 }
 
-func Test_Plans_CreateReservedIP_OK(t *testing.T) {
+func Test_ReservedIP_CreateReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{"SUBID":4711}`)
 	defer server.Close()
 
@@ -81,7 +89,7 @@ func Test_Plans_CreateReservedIP_OK(t *testing.T) {
 	assert.Equal(t, id, "4711")
 }
 
-func Test_Plans_DestroyReservedIP_Fail(t *testing.T) {
+func Test_ReservedIP_DestroyReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
@@ -91,7 +99,7 @@ func Test_Plans_DestroyReservedIP_Fail(t *testing.T) {
 	}
 }
 
-func Test_Plans_DestroyReservedIP_OK(t *testing.T) {
+func Test_ReservedIP_DestroyReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, ``)
 	defer server.Close()
 
@@ -101,7 +109,7 @@ func Test_Plans_DestroyReservedIP_OK(t *testing.T) {
 	}
 }
 
-func Test_Plans_AttachReservedIP_Fail(t *testing.T) {
+func Test_ReservedIP_AttachReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
@@ -111,7 +119,7 @@ func Test_Plans_AttachReservedIP_Fail(t *testing.T) {
 	}
 }
 
-func Test_Plans_AttachReservedIP_OK(t *testing.T) {
+func Test_ReservedIP_AttachReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, ``)
 	defer server.Close()
 
@@ -121,7 +129,7 @@ func Test_Plans_AttachReservedIP_OK(t *testing.T) {
 	}
 }
 
-func Test_Plans_ConvertReservedIP_Fail(t *testing.T) {
+func Test_ReservedIP_ConvertReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
@@ -131,7 +139,7 @@ func Test_Plans_ConvertReservedIP_Fail(t *testing.T) {
 	}
 }
 
-func Test_Plans_ConvertReservedIP_OK(t *testing.T) {
+func Test_ReservedIP_ConvertReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{"SUBID":4711}`)
 	defer server.Close()
 
@@ -142,7 +150,7 @@ func Test_Plans_ConvertReservedIP_OK(t *testing.T) {
 	assert.Equal(t, id, "4711")
 }
 
-func Test_Plans_DetachReservedIP_Fail(t *testing.T) {
+func Test_ReservedIP_DetachReservedIP_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
 
@@ -152,7 +160,7 @@ func Test_Plans_DetachReservedIP_Fail(t *testing.T) {
 	}
 }
 
-func Test_Plans_DetachReservedIP_OK(t *testing.T) {
+func Test_ReservedIP_DetachReservedIP_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, ``)
 	defer server.Close()
 

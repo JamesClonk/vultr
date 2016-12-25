@@ -75,8 +75,8 @@ func Test_Client_NewClient(t *testing.T) {
 
 // Test that API queries are throttled
 func Test_Client_Throttling(t *testing.T) {
-	const ERROR = 100 * time.Millisecond
-	const EXPECTED_DURATION = 400 * time.Millisecond
+	const errorDuration = 100 * time.Millisecond
+	const expectedDuration = 400 * time.Millisecond
 	server, _ := getTestServerAndClient(http.StatusOK, `{
 		"balance":-15.97,"pending_charges":"2.34",
 		"last_payment_date":"2015-01-29 05:06:27","last_payment_amount":"-5.00"}`)
@@ -99,8 +99,8 @@ func Test_Client_Throttling(t *testing.T) {
 	info, _ = client.GetAccountInfo()
 	after := time.Now()
 
-	lower := EXPECTED_DURATION - ERROR
-	upper := EXPECTED_DURATION + ERROR
+	lower := expectedDuration - errorDuration
+	upper := expectedDuration + errorDuration
 	assert.NotNil(t, info)
 	if diff := after.Sub(before); diff < lower || diff > upper {
 		t.Errorf("Waited %s seconds, though really should have waited between %s and %s", diff.String(), lower.String(), upper.String())

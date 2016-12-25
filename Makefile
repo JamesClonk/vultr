@@ -1,6 +1,6 @@
-.PHONY: all prepare build vet lint test
+.PHONY: all prepare build lint vet test check
 
-all: prepare vet lint test build
+all: prepare lint vet test build
 
 prepare:
 	go get -v github.com/golang/lint/golint
@@ -10,11 +10,13 @@ prepare:
 build:
 	GOARCH=amd64 GOOS=linux go install
 
-vet:
-	GOARCH=amd64 GOOS=linux go vet $$(go list ./... | grep -v /vendor/)
-
 lint:
 	for pkg in $$(go list ./... | grep -v /vendor/); do golint $$pkg; done
 
+vet:
+	GOARCH=amd64 GOOS=linux go vet $$(go list ./... | grep -v /vendor/)
+
 test:
 	GOARCH=amd64 GOOS=linux go test $$(go list ./... | grep -v /vendor/)
+
+check: lint vet test

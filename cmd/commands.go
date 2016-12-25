@@ -118,14 +118,14 @@ func (c *CLI) RegisterCommands() {
 
 	// reserved ips
 	c.Command("reservedip", "modify reserved IPs", func(cmd *cli.Cmd) {
-		cmd.Command("attach", "attach reserved IP to an existing virtual machine", reservedIpAttach)
-		cmd.Command("convert", "convert existing IP on a virtual machine to a reserved IP", reservedIpConvert)
-		cmd.Command("create", "create new reserved IP", reservedIpCreate)
-		cmd.Command("delete", "delete reserved IP from your account", reservedIpDestroy)
-		cmd.Command("detach", "detach reserved IP from an existing virtual machine", reservedIpDetach)
-		cmd.Command("list", "list all active reserved IPs on current account", reservedIpList)
+		cmd.Command("attach", "attach reserved IP to an existing virtual machine", reservedIPAttach)
+		cmd.Command("convert", "convert existing IP on a virtual machine to a reserved IP", reservedIPConvert)
+		cmd.Command("create", "create new reserved IP", reservedIPCreate)
+		cmd.Command("delete", "delete reserved IP from your account", reservedIPDestroy)
+		cmd.Command("detach", "detach reserved IP from an existing virtual machine", reservedIPDetach)
+		cmd.Command("list", "list all active reserved IPs on current account", reservedIPList)
 	})
-	c.Command("reservedips", "list all active reserved IPs on current account", reservedIpList)
+	c.Command("reservedips", "list all active reserved IPs on current account", reservedIPList)
 
 	// version
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
