@@ -35,14 +35,14 @@ func reservedIPConvert(cmd *cli.Cmd) {
 
 		fmt.Printf("Reserved IP converted\n\n")
 		lengths := []int{12, 48, 12}
-		tabsPrint(Columns{"ID", "IP_ADDRESS", "ATTACHED_TO"}, lengths)
-		tabsPrint(Columns{id, *ip, *serverID}, lengths)
+		tabsPrint(columns{"ID", "IP_ADDRESS", "ATTACHED_TO"}, lengths)
+		tabsPrint(columns{id, *ip, *serverID}, lengths)
 		tabsFlush()
 	}
 }
 
 func reservedIPCreate(cmd *cli.Cmd) {
-	cmd.Spec = "[-r -t]"
+	cmd.Spec = "[-r -t -l]"
 
 	regionID := cmd.IntOpt("r region", 1, "Region (DCID)")
 	ipType := cmd.StringOpt("t type", "v4", "Type of new reserved IP (v4 or v6)")
@@ -55,9 +55,9 @@ func reservedIPCreate(cmd *cli.Cmd) {
 		}
 
 		fmt.Printf("Reserved IP created\n\n")
-		lengths := []int{12, 6, 10}
-		tabsPrint(Columns{"ID", "TYPE", "DCID"}, lengths)
-		tabsPrint(Columns{id, *ipType, *regionID}, lengths)
+		lengths := []int{12, 6, 10, 32}
+		tabsPrint(columns{"ID", "TYPE", "DCID", "LABEL"}, lengths)
+		tabsPrint(columns{id, *ipType, *regionID, label}, lengths)
 		tabsFlush()
 	}
 }
@@ -102,9 +102,9 @@ func reservedIPList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 8, 8, 48, 6, 32, 12}
-		tabsPrint(Columns{"SUBID", "DCID", "IP_TYPE", "SUBNET", "SIZE", "LABEL", "ATTACHED_TO"}, lengths)
+		tabsPrint(columns{"SUBID", "DCID", "IP_TYPE", "SUBNET", "SIZE", "LABEL", "ATTACHED_TO"}, lengths)
 		for _, ip := range ips {
-			tabsPrint(Columns{
+			tabsPrint(columns{
 				ip.ID,
 				ip.RegionID,
 				ip.IPType,

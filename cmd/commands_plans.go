@@ -29,7 +29,6 @@ func planList(cmd *cli.Cmd) {
 					}
 				}
 			}
-			
 			plans = filteredPlans
 		}
 
@@ -39,9 +38,9 @@ func planList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 48, 8, 8, 8, 12, 8}
-		tabsPrint(Columns{"VPSPLANID", "NAME", "VCPU", "RAM", "DISK", "BANDWIDTH", "PRICE"}, lengths)
+		tabsPrint(columns{"VPSPLANID", "NAME", "VCPU", "RAM", "DISK", "BANDWIDTH", "PRICE"}, lengths)
 		for _, plan := range plans {
-			tabsPrint(Columns{plan.ID, plan.Name, plan.VCpus, plan.RAM, plan.Disk, plan.Bandwidth, plan.Price}, lengths)
+			tabsPrint(columns{plan.ID, plan.Name, plan.VCpus, plan.RAM, plan.Disk, plan.Bandwidth, plan.Price}, lengths)
 		}
 		tabsFlush()
 	}

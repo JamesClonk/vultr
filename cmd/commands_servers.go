@@ -61,8 +61,8 @@ func serversCreate(cmd *cli.Cmd) {
 
 		fmt.Printf("Virtual machine created\n\n")
 		lengths := []int{12, 32, 8, 12, 8}
-		tabsPrint(Columns{"SUBID", "NAME", "DCID", "VPSPLANID", "OSID"}, lengths)
-		tabsPrint(Columns{server.ID, server.Name, server.RegionID, server.PlanID, *osID}, lengths)
+		tabsPrint(columns{"SUBID", "NAME", "DCID", "VPSPLANID", "OSID"}, lengths)
+		tabsPrint(columns{server.ID, server.Name, server.RegionID, server.PlanID, *osID}, lengths)
 		tabsFlush()
 	}
 }
@@ -167,8 +167,8 @@ func serversStatusISO(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 8, 24}
-		tabsPrint(Columns{"SUBID", "ISOID", "STATE"}, lengths)
-		tabsPrint(Columns{*id, iso.ISOID, iso.State}, lengths)
+		tabsPrint(columns{"SUBID", "ISOID", "STATE"}, lengths)
+		tabsPrint(columns{*id, iso.ISOID, iso.State}, lengths)
 		tabsFlush()
 	}
 }
@@ -187,9 +187,9 @@ func serversListOS(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{8, 32, 8, 16, 8, 12}
-		tabsPrint(Columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS", "SURCHARGE"}, lengths)
+		tabsPrint(columns{"OSID", "NAME", "ARCH", "FAMILY", "WINDOWS", "SURCHARGE"}, lengths)
 		for _, os := range os {
-			tabsPrint(Columns{os.ID, os.Name, os.Arch, os.Family, os.Windows, os.Surcharge}, lengths)
+			tabsPrint(columns{os.ID, os.Name, os.Arch, os.Family, os.Windows, os.Surcharge}, lengths)
 		}
 		tabsFlush()
 	}
@@ -231,9 +231,9 @@ func serversBandwidth(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{24, 24, 24}
-		tabsPrint(Columns{"DATE", "INCOMING", "OUTGOING"}, lengths)
+		tabsPrint(columns{"DATE", "INCOMING", "OUTGOING"}, lengths)
 		for _, b := range bandwidth {
-			tabsPrint(Columns{b["date"], b["incoming"], b["outgoing"]}, lengths)
+			tabsPrint(columns{b["date"], b["incoming"], b["outgoing"]}, lengths)
 		}
 		tabsFlush()
 	}
@@ -252,7 +252,7 @@ func serversList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 16, 24, 32, 32, 32, 8, 8, 24, 12, 8}
-		tabsPrint(Columns{
+		tabsPrint(columns{
 			"SUBID",
 			"STATUS",
 			"IP",
@@ -265,7 +265,7 @@ func serversList(cmd *cli.Cmd) {
 			"BANDWIDTH",
 			"COST"}, lengths)
 		for _, server := range servers {
-			tabsPrint(Columns{
+			tabsPrint(columns{
 				server.ID,
 				server.Status,
 				server.MainIP,
@@ -306,40 +306,40 @@ func serversShow(cmd *cli.Cmd) {
 		}
 		lengths := []int{24, keyLength}
 
-		tabsPrint(Columns{"Id (SUBID):", server.ID}, lengths)
-		tabsPrint(Columns{"Name:", server.Name}, lengths)
+		tabsPrint(columns{"Id (SUBID):", server.ID}, lengths)
+		tabsPrint(columns{"Name:", server.Name}, lengths)
 		if len(server.Tag) != 0 {
-			tabsPrint(Columns{"Tag:", server.Tag}, lengths)
+			tabsPrint(columns{"Tag:", server.Tag}, lengths)
 		}
-		tabsPrint(Columns{"Operating system:", server.OS}, lengths)
-		tabsPrint(Columns{"Status:", server.Status}, lengths)
-		tabsPrint(Columns{"Power status:", server.PowerStatus}, lengths)
-		tabsPrint(Columns{"Server state:", server.ServerState}, lengths)
-		tabsPrint(Columns{"Location:", server.Location}, lengths)
-		tabsPrint(Columns{"Region (DCID):", server.RegionID}, lengths)
-		tabsPrint(Columns{"VCPU count:", server.VCpus}, lengths)
-		tabsPrint(Columns{"RAM:", server.RAM}, lengths)
-		tabsPrint(Columns{"Disk:", server.Disk}, lengths)
-		tabsPrint(Columns{"Allowed bandwidth:", server.AllowedBandwidth}, lengths)
-		tabsPrint(Columns{"Current bandwidth:", server.CurrentBandwidth}, lengths)
-		tabsPrint(Columns{"Cost per month:", server.Cost}, lengths)
-		tabsPrint(Columns{"Pending charges:", server.PendingCharges}, lengths)
-		tabsPrint(Columns{"Plan (VPSPLANID):", server.PlanID}, lengths)
-		tabsPrint(Columns{"IP:", server.MainIP}, lengths)
-		tabsPrint(Columns{"Netmask:", server.NetmaskV4}, lengths)
-		tabsPrint(Columns{"Gateway:", server.GatewayV4}, lengths)
+		tabsPrint(columns{"Operating system:", server.OS}, lengths)
+		tabsPrint(columns{"Status:", server.Status}, lengths)
+		tabsPrint(columns{"Power status:", server.PowerStatus}, lengths)
+		tabsPrint(columns{"Server state:", server.ServerState}, lengths)
+		tabsPrint(columns{"Location:", server.Location}, lengths)
+		tabsPrint(columns{"Region (DCID):", server.RegionID}, lengths)
+		tabsPrint(columns{"VCPU count:", server.VCpus}, lengths)
+		tabsPrint(columns{"RAM:", server.RAM}, lengths)
+		tabsPrint(columns{"Disk:", server.Disk}, lengths)
+		tabsPrint(columns{"Allowed bandwidth:", server.AllowedBandwidth}, lengths)
+		tabsPrint(columns{"Current bandwidth:", server.CurrentBandwidth}, lengths)
+		tabsPrint(columns{"Cost per month:", server.Cost}, lengths)
+		tabsPrint(columns{"Pending charges:", server.PendingCharges}, lengths)
+		tabsPrint(columns{"Plan (VPSPLANID):", server.PlanID}, lengths)
+		tabsPrint(columns{"IP:", server.MainIP}, lengths)
+		tabsPrint(columns{"Netmask:", server.NetmaskV4}, lengths)
+		tabsPrint(columns{"Gateway:", server.GatewayV4}, lengths)
 		if len(server.InternalIP) != 0 {
-			tabsPrint(Columns{"Internal IP:", server.InternalIP}, lengths)
+			tabsPrint(columns{"Internal IP:", server.InternalIP}, lengths)
 		}
 		for n, v6network := range server.V6Networks {
-			tabsPrint(Columns{fmt.Sprintf("#%d IPv6 IP:", n+1), v6network.MainIP}, lengths)
-			tabsPrint(Columns{fmt.Sprintf("#%d IPv6 Network:", n+1), v6network.Network}, lengths)
-			tabsPrint(Columns{fmt.Sprintf("#%d IPv6 Network Size:", n+1), v6network.NetworkSize}, lengths)
+			tabsPrint(columns{fmt.Sprintf("#%d IPv6 IP:", n+1), v6network.MainIP}, lengths)
+			tabsPrint(columns{fmt.Sprintf("#%d IPv6 Network:", n+1), v6network.Network}, lengths)
+			tabsPrint(columns{fmt.Sprintf("#%d IPv6 Network Size:", n+1), v6network.NetworkSize}, lengths)
 		}
-		tabsPrint(Columns{"Created date:", server.Created}, lengths)
-		tabsPrint(Columns{"Default password:", server.DefaultPassword}, lengths)
-		tabsPrint(Columns{"Auto backups:", server.AutoBackups}, lengths)
-		tabsPrint(Columns{"KVM URL:", server.KVMUrl}, lengths)
+		tabsPrint(columns{"Created date:", server.Created}, lengths)
+		tabsPrint(columns{"Default password:", server.DefaultPassword}, lengths)
+		tabsPrint(columns{"Auto backups:", server.AutoBackups}, lengths)
+		tabsPrint(columns{"KVM URL:", server.KVMUrl}, lengths)
 		tabsFlush()
 	}
 }
@@ -358,9 +358,9 @@ func ipv4List(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{24, 24, 24, 32, 48}
-		tabsPrint(Columns{"IP", "NETMASK", "GATEWAY", "TYPE", "REVERSE DNS"}, lengths)
+		tabsPrint(columns{"IP", "NETMASK", "GATEWAY", "TYPE", "REVERSE DNS"}, lengths)
 		for _, ip := range list {
-			tabsPrint(Columns{
+			tabsPrint(columns{
 				ip.IP,
 				ip.Netmask,
 				ip.Gateway,
@@ -386,9 +386,9 @@ func ipv6List(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{48, 32, 24, 32}
-		tabsPrint(Columns{"IP", "NETWORK", "NETWORK SIZE", "TYPE"}, lengths)
+		tabsPrint(columns{"IP", "NETWORK", "NETWORK SIZE", "TYPE"}, lengths)
 		for _, ip := range list {
-			tabsPrint(Columns{
+			tabsPrint(columns{
 				ip.IP,
 				ip.Network,
 				ip.NetworkSize,
@@ -413,9 +413,9 @@ func reverseIpv6List(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{48, 64}
-		tabsPrint(Columns{"IP", "REVERSE DNS"}, lengths)
+		tabsPrint(columns{"IP", "REVERSE DNS"}, lengths)
 		for _, ip := range list {
-			tabsPrint(Columns{ip.IP, ip.ReverseDNS}, lengths)
+			tabsPrint(columns{ip.IP, ip.ReverseDNS}, lengths)
 		}
 		tabsFlush()
 	}

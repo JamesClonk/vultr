@@ -33,8 +33,8 @@ func scriptsCreate(cmd *cli.Cmd) {
 
 		fmt.Printf("Startup script created\n\n")
 		lengths := []int{12, 32, 8, 64}
-		tabsPrint(Columns{"SCRIPTID", "NAME", "TYPE", "SCRIPT"}, lengths)
-		tabsPrint(Columns{script.ID, script.Name, script.Type, script.Content}, lengths)
+		tabsPrint(columns{"SCRIPTID", "NAME", "TYPE", "SCRIPT"}, lengths)
+		tabsPrint(columns{script.ID, script.Name, script.Type, script.Content}, lengths)
 		tabsFlush()
 	}
 }
@@ -91,9 +91,9 @@ func scriptsList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 32, 8, 64}
-		tabsPrint(Columns{"SCRIPTID", "NAME", "TYPE", "SCRIPT"}, lengths)
+		tabsPrint(columns{"SCRIPTID", "NAME", "TYPE", "SCRIPT"}, lengths)
 		for _, script := range scripts {
-			tabsPrint(Columns{script.ID, script.Name, script.Type, script.Content}, lengths)
+			tabsPrint(columns{script.ID, script.Name, script.Type, script.Content}, lengths)
 		}
 		tabsFlush()
 	}

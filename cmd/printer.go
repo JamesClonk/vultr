@@ -14,9 +14,9 @@ func init() {
 	tw.Init(os.Stdout, 0, 8, 2, '\t', 0)
 }
 
-type Columns []interface{}
+type columns []interface{}
 
-func tabsPrint(values Columns, lengths []int) {
+func tabsPrint(values columns, lengths []int) {
 	if len(values) != len(lengths) {
 		log.Fatalf("Internal error! Mismatch during tabbed line print. Values: %d, Lengths: %d\n", len(values), len(lengths))
 	}

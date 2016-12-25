@@ -21,8 +21,8 @@ func snapshotsCreate(cmd *cli.Cmd) {
 
 		fmt.Printf("Snapshot created\n\n")
 		lengths := []int{16, 48}
-		tabsPrint(Columns{"SNAPSHOTID", "DESCRIPTION"}, lengths)
-		tabsPrint(Columns{snapshot.ID, snapshot.Description}, lengths)
+		tabsPrint(columns{"SNAPSHOTID", "DESCRIPTION"}, lengths)
+		tabsPrint(columns{snapshot.ID, snapshot.Description}, lengths)
 		tabsFlush()
 	}
 }
@@ -50,9 +50,9 @@ func snapshotsList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{16, 40, 16, 16, 24}
-		tabsPrint(Columns{"SNAPSHOTID", "DESCRIPTION", "SIZE", "STATUS", "DATE"}, lengths)
+		tabsPrint(columns{"SNAPSHOTID", "DESCRIPTION", "SIZE", "STATUS", "DATE"}, lengths)
 		for _, snapshot := range snapshots {
-			tabsPrint(Columns{snapshot.ID, snapshot.Description, snapshot.Size, snapshot.Status, snapshot.Created}, lengths)
+			tabsPrint(columns{snapshot.ID, snapshot.Description, snapshot.Size, snapshot.Status, snapshot.Created}, lengths)
 		}
 		tabsFlush()
 	}

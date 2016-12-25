@@ -20,9 +20,9 @@ func regionList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{8, 48, 24, 8, 8, 8, 8}
-		tabsPrint(Columns{"DCID", "NAME", "CONTINENT", "COUNTRY", "STATE", "STORAGE", "CODE"}, lengths)
+		tabsPrint(columns{"DCID", "NAME", "CONTINENT", "COUNTRY", "STATE", "STORAGE", "CODE"}, lengths)
 		for _, region := range regions {
-			tabsPrint(Columns{
+			tabsPrint(columns{
 				region.ID, region.Name, region.Continent,
 				region.Country, region.State, region.BlockStorage, region.Code,
 			}, lengths)

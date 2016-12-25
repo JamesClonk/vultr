@@ -32,8 +32,8 @@ func sshKeysCreate(cmd *cli.Cmd) {
 
 		fmt.Printf("SSH key created\n\n")
 		lengths := []int{24, 32, 64}
-		tabsPrint(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
-		tabsPrint(Columns{sshkey.ID, sshkey.Name, sshkey.Key}, lengths)
+		tabsPrint(columns{"SSHKEYID", "NAME", "KEY"}, lengths)
+		tabsPrint(columns{sshkey.ID, sshkey.Name, sshkey.Key}, lengths)
 		tabsFlush()
 	}
 }
@@ -99,9 +99,9 @@ func sshKeysList(cmd *cli.Cmd) {
 		}
 		lengths := []int{24, 32, keyLength}
 
-		tabsPrint(Columns{"SSHKEYID", "NAME", "KEY"}, lengths)
+		tabsPrint(columns{"SSHKEYID", "NAME", "KEY"}, lengths)
 		for _, key := range keys {
-			tabsPrint(Columns{key.ID, key.Name, key.Key}, lengths)
+			tabsPrint(columns{key.ID, key.Name, key.Key}, lengths)
 		}
 		tabsFlush()
 	}

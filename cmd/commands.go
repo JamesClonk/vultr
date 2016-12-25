@@ -8,6 +8,7 @@ import (
 	"github.com/jawher/mow.cli"
 )
 
+// RegisterCommands registers all CLI commands
 func (c *CLI) RegisterCommands() {
 	// dns
 	c.Command("dns", "modify DNS", func(cmd *cli.Cmd) {
@@ -131,11 +132,11 @@ func (c *CLI) RegisterCommands() {
 	c.Command("version", "vultr CLI version", func(cmd *cli.Cmd) {
 		cmd.Action = func() {
 			lengths := []int{24, 48}
-			tabsPrint(Columns{"Client version:", vultr.Version}, lengths)
-			tabsPrint(Columns{"Vultr API endpoint:", vultr.DefaultEndpoint}, lengths)
-			tabsPrint(Columns{"Vultr API version:", vultr.APIVersion}, lengths)
-			tabsPrint(Columns{"OS/Arch (client):", fmt.Sprintf("%v/%v", runtime.GOOS, runtime.GOARCH)}, lengths)
-			tabsPrint(Columns{"Go version:", runtime.Version()}, lengths)
+			tabsPrint(columns{"Client version:", vultr.Version}, lengths)
+			tabsPrint(columns{"Vultr API endpoint:", vultr.DefaultEndpoint}, lengths)
+			tabsPrint(columns{"Vultr API version:", vultr.APIVersion}, lengths)
+			tabsPrint(columns{"OS/Arch (client):", fmt.Sprintf("%v/%v", runtime.GOOS, runtime.GOARCH)}, lengths)
+			tabsPrint(columns{"Go version:", runtime.Version()}, lengths)
 			tabsFlush()
 		}
 	})

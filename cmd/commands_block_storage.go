@@ -22,8 +22,8 @@ func blockStorageCreate(cmd *cli.Cmd) {
 
 		fmt.Printf("Block storage created\n\n")
 		lengths := []int{12, 32, 8, 8}
-		tabsPrint(Columns{"SUBID", "NAME", "SIZE_GB", "DCID"}, lengths)
-		tabsPrint(Columns{storage.ID, storage.Name, storage.SizeGB, storage.RegionID}, lengths)
+		tabsPrint(columns{"SUBID", "NAME", "SIZE_GB", "DCID"}, lengths)
+		tabsPrint(columns{storage.ID, storage.Name, storage.SizeGB, storage.RegionID}, lengths)
 		tabsFlush()
 	}
 }
@@ -60,10 +60,10 @@ func blockStorageAttach(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID ATTACH_TO_SUBID"
 
 	id := cmd.StringArg("SUBID", "", "SUBID of block storage to attach (see <storage list>)")
-	serverId := cmd.StringArg("ATTACH_TO_SUBID", "", "SUBID of virtual machine to attach to (see <servers>)")
+	serverID := cmd.StringArg("ATTACH_TO_SUBID", "", "SUBID of virtual machine to attach to (see <servers>)")
 
 	cmd.Action = func() {
-		if err := GetClient().AttachBlockStorage(*id, *serverId); err != nil {
+		if err := GetClient().AttachBlockStorage(*id, *serverID); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Block storage attached")
@@ -103,12 +103,12 @@ func blockStorageList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{12, 32, 16, 8, 8, 8, 12, 24}
-		tabsPrint(Columns{
+		tabsPrint(columns{
 			"SUBID", "NAME", "STATUS", "SIZE_GB", "COST",
 			"DCID", "ATTACHED_TO", "CREATED_DATE",
 		}, lengths)
 		for _, storage := range storages {
-			tabsPrint(Columns{
+			tabsPrint(columns{
 				storage.ID, storage.Name, storage.Status, storage.SizeGB, storage.Cost,
 				storage.RegionID, storage.AttachedTo, storage.Created,
 			}, lengths)

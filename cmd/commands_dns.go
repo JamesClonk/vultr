@@ -16,9 +16,9 @@ func dnsDomainList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{40, 24}
-		tabsPrint(Columns{"DOMAIN", "DATE"}, lengths)
+		tabsPrint(columns{"DOMAIN", "DATE"}, lengths)
 		for _, dnsdomain := range dnsdomains {
-			tabsPrint(Columns{dnsdomain.Domain, dnsdomain.Created}, lengths)
+			tabsPrint(columns{dnsdomain.Domain, dnsdomain.Created}, lengths)
 		}
 		tabsFlush()
 	}
@@ -60,9 +60,9 @@ func dnsRecordList(cmd *cli.Cmd) {
 		}
 
 		lengths := []int{10, 10, 15, 50, 10}
-		tabsPrint(Columns{"RECORDID", "TYPE", "NAME", "DATA", "PRIORITY"}, lengths)
+		tabsPrint(columns{"RECORDID", "TYPE", "NAME", "DATA", "PRIORITY"}, lengths)
 		for _, dnsrecord := range dnsrecords {
-			tabsPrint(Columns{dnsrecord.RecordID, dnsrecord.Type, dnsrecord.Name, dnsrecord.Data, dnsrecord.Priority}, lengths)
+			tabsPrint(columns{dnsrecord.RecordID, dnsrecord.Type, dnsrecord.Name, dnsrecord.Data, dnsrecord.Priority}, lengths)
 		}
 		tabsFlush()
 	}
