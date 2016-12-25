@@ -1,5 +1,5 @@
 # vultr
-[![GoDoc](https://godoc.org/github.com/JamesClonk/vultr/lib?status.png)](https://godoc.org/github.com/JamesClonk/vultr/lib) [![License](https://img.shields.io/github/license/JamesClonk/vultr.svg)]() [![Latest Version](https://img.shields.io/github/release/JamesClonk/vultr.svg?maxAge=8600)](https://github.com/JamesClonk/vultr/releases) [![Downloads](https://img.shields.io/github/downloads/JamesClonk/vultr/total.svg)](https://github.com/JamesClonk/vultr/releases) [![Build Status](https://travis-ci.org/JamesClonk/vultr.png?branch=master)](https://travis-ci.org/JamesClonk/vultr)
+[![GoDoc](https://godoc.org/github.com/JamesClonk/vultr/lib?status.png)](https://godoc.org/github.com/JamesClonk/vultr/lib) [![License](https://img.shields.io/github/license/JamesClonk/vultr.svg)](https://en.wikipedia.org/wiki/MIT_License) [![Latest Version](https://img.shields.io/github/release/JamesClonk/vultr.svg)](https://github.com/JamesClonk/vultr/releases) [![Downloads](https://img.shields.io/github/downloads/JamesClonk/vultr/total.svg)](https://github.com/JamesClonk/vultr/releases) [![Build Status](https://travis-ci.org/JamesClonk/vultr.png?branch=master)](https://travis-ci.org/JamesClonk/vultr)
 
 [Vultr](https://www.vultr.com) CLI and API client library, written in [Go](https://golang.org)
 
