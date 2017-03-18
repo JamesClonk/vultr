@@ -27,6 +27,7 @@ func serversCreate(cmd *cli.Cmd) {
 	sshkey := cmd.StringOpt("k sshkey", "", "SSHKEYID (see <sshkeys>) of SSH key to apply to this server on install")
 	hostname := cmd.StringOpt("hostname", "", "Hostname to assign to this server")
 	tag := cmd.StringOpt("tag", "", "Tag to assign to this server")
+	appID := cmd.StringOpt("a app", "", "If launching an application (OSID 186), this is the APPID to launch")
 	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
 	privateNetworking := cmd.BoolOpt("private-networking", false, "Add private networking support for this virtual machine")
 	autoBackups := cmd.BoolOpt("autobackups", false, "Enable automatic backups for this virtual machine")
@@ -44,6 +45,7 @@ func serversCreate(cmd *cli.Cmd) {
 			AutoBackups:          *autoBackups,
 			Hostname:             *hostname,
 			Tag:                  *tag,
+			AppID:                *appID,
 			DontNotifyOnActivate: !*notifyActivate,
 		}
 		if *userDataFile != "" {
@@ -472,5 +474,39 @@ func reverseIpv4Set(cmd *cli.Cmd) {
 			log.Fatal(err)
 		}
 		fmt.Printf("IPv4 reverse DNS set to: %v\n", *entry)
+	}
+}
+
+func serversChangeApplication(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID APPID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	appID := cmd.StringArg("APPID", "", "Application to use (see <apps>)")
+	cmd.Action = func() {
+		if err := GetClient().ChangeApplicationofServer(*id, *appID); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine application changed to: %v\n", *appID)
+	}
+}
+
+func serversListApplications(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		apps, err := GetClient().ListApplicationsforServer(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(apps) == 0 {
+			fmt.Println()
+			return
+		}
+
+		lengths := []int{8, 32, 24, 32, 12}
+		tabsPrint(columns{"APPID", "NAME", "SHORT_NAME", "DEPLOY_NAME", "SURCHARGE"}, lengths)
+		for _, app := range apps {
+			tabsPrint(columns{app.ID, app.Name, app.ShortName, app.DeployName, app.Surcharge}, lengths)
+		}
+		tabsFlush()
 	}
 }

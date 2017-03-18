@@ -37,7 +37,7 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 	"netmask_v4":"255.255.254.0","gateway_v4":"192.168.1.1","power_status":"down","VPSPLANID":"31",
 	"v6_networks": [{"v6_network": "2002:DB9:1000::", "v6_main_ip": "2000:DB8:1000::0000", "v6_network_size": "32" }],
 	"label":"test beta","internal_ip":"10.10.10.10",
-	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes"},
+	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes", "OSID": "127", "APPID": "0"},
 "9753721":{"SUBID":"9753721","os":"Ubuntu 14.04 x64","ram":"768 MB","disk":"Virtual 15 GB","main_ip":"123.456.789.0",
 	"vcpu_count":"2","location":"Frankfurt","DCID":"9","default_password":"oops!","date_created":"2017-07-07 07:07:07",
 	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
@@ -69,6 +69,8 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 		assert.Equal(t, 0, len(servers[0].V6Networks))
 		assert.Equal(t, 7.0, servers[0].CurrentBandwidth)
 		assert.Equal(t, 1000.0, servers[0].AllowedBandwidth)
+		assert.Equal(t, "", servers[0].OSID)
+		assert.Equal(t, "", servers[0].AppID)
 
 		assert.Equal(t, "789032", servers[1].ID)
 		assert.Equal(t, "test beta", servers[1].Name)
@@ -84,6 +86,8 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 		assert.Equal(t, "10.10.10.10", servers[1].InternalIP)
 		assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=456`, servers[1].KVMUrl)
 		assert.Equal(t, "yes", servers[1].AutoBackups)
+		assert.Equal(t, "127", servers[1].OSID)
+		assert.Equal(t, "0", servers[1].AppID)
 	}
 }
 
@@ -493,5 +497,71 @@ func Test_Servers_BandwidthOfServer_OK(t *testing.T) {
 		assert.Equal(t, "2014-06-12", bandwidth[2]["date"])
 		assert.Equal(t, "216885232", bandwidth[2]["incoming"])
 		assert.Equal(t, "2455005", bandwidth[2]["outgoing"])
+	}
+}
+
+func Test_Servers_ChangeApplicationofServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.ChangeApplicationofServer("123456789", "3")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ChangeApplicationofServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.ChangeApplicationofServer("123456789", "3"))
+}
+
+func Test_Servers_ListApplicationsforServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	apps, err := client.ListApplicationsforServer("123456789")
+	assert.Nil(t, apps)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ListApplicationsforServer_NoOS(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	apps, err := client.ListApplicationsforServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, apps)
+}
+
+func Test_Servers_ListApplicationsforServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{
+"2": {"APPID": "2","name": "WordPress","short_name": "wordpress","deploy_name": "WordPress on CentOS 6 x64","surcharge": 0},
+"1": {"APPID": "1","name": "LEMP","short_name": "lemp","deploy_name": "LEMP on CentOS 6 x64","surcharge": 5}
+}`)
+	defer server.Close()
+
+	apps, err := client.ListApplicationsforServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, apps) {
+		assert.Equal(t, 2, len(apps))
+
+		assert.Equal(t, "1", apps[0].ID)
+		assert.Equal(t, "LEMP", apps[0].Name)
+		assert.Equal(t, "lemp", apps[0].ShortName)
+		assert.Equal(t, "LEMP on CentOS 6 x64", apps[0].DeployName)
+		assert.Equal(t, float64(5), apps[0].Surcharge)
+
+		assert.Equal(t, "2", apps[1].ID)
+		assert.Equal(t, "WordPress", apps[1].Name)
+		assert.Equal(t, "wordpress", apps[1].ShortName)
+		assert.Equal(t, "WordPress on CentOS 6 x64", apps[1].DeployName)
 	}
 }

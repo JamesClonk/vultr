@@ -34,6 +34,9 @@ func (c *CLI) RegisterCommands() {
 	// os
 	c.Command("os", "list all available operating systems", osList)
 
+	// applications
+	c.Command("apps", "list all available applications", appList)
+
 	// plans
 	c.Command("plans", "list all active plans", planList)
 
@@ -63,6 +66,10 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("os", "show and change OS on a virtual machine", func(cmd *cli.Cmd) {
 			cmd.Command("change", "change operating system of virtual machine (all data will be lost)", serversChangeOS)
 			cmd.Command("list", "show a list of operating systems to which can be changed to", serversListOS)
+		})
+		cmd.Command("app", "show and change application on a virtual machine", func(cmd *cli.Cmd) {
+			cmd.Command("change", "change application of virtual machine (all data will be lost)", serversChangeApplication)
+			cmd.Command("list", "show a list of available applications to which can be changed to", serversListApplications)
 		})
 		cmd.Command("iso", "attach/detach ISO of a virtual machine", func(cmd *cli.Cmd) {
 			cmd.Command("attach", "attach ISO to a virtual machine (server will hard reboot)", serversAttachISO)
