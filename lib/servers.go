@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // Server (virtual machine) on Vultr account
@@ -61,9 +62,9 @@ func (s servers) Len() int      { return len(s) }
 func (s servers) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 func (s servers) Less(i, j int) bool {
 	// sort order: name, ip
-	if s[i].Name < s[j].Name {
+	if strings.ToLower(s[i].Name) < strings.ToLower(s[j].Name) {
 		return true
-	} else if s[i].Name > s[j].Name {
+	} else if strings.ToLower(s[i].Name) > strings.ToLower(s[j].Name) {
 		return false
 	}
 	return s[i].MainIP < s[j].MainIP
