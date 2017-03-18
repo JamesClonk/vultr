@@ -31,9 +31,8 @@ func Test_BlockStorage_GetBlockStorages_NoKeys(t *testing.T) {
 
 func Test_BlockStorage_GetBlockStorages_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `[
-{"SUBID":"1","label":"alpha","attached_to_SUBID":123,"size_gb":10,"status":"pending","date_created":"2011-11-11 11:11:11"},
-{"SUBID":"2","label":"beta","DCID":33,"size_gb":100,"cost_per_month":10,"date_created":"2014-12-31 13:34:56"}
-]`)
+{"SUBID":"2","label":"beta","DCID":33,"size_gb":100,"cost_per_month":10,"date_created":"2014-12-31 13:34:56"},
+{"SUBID":"1","label":"alpha","attached_to_SUBID":123,"size_gb":10,"status":"pending","date_created":"2011-11-11 11:11:11"}]`)
 	defer server.Close()
 
 	storages, err := client.GetBlockStorages()
@@ -42,25 +41,20 @@ func Test_BlockStorage_GetBlockStorages_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, storages) {
 		assert.Equal(t, 2, len(storages))
-		// storage could be in random order
-		for _, storage := range storages {
-			switch storage.ID {
-			case "1":
-				assert.Equal(t, "alpha", storage.Name)
-				assert.Equal(t, "2011-11-11 11:11:11", storage.Created)
-				assert.Equal(t, "123", storage.AttachedTo)
-				assert.Equal(t, 10, storage.SizeGB)
-				assert.Equal(t, "pending", storage.Status)
-			case "2":
-				assert.Equal(t, "beta", storage.Name)
-				assert.Equal(t, "2014-12-31 13:34:56", storage.Created)
-				assert.Equal(t, 33, storage.RegionID)
-				assert.Equal(t, 100, storage.SizeGB)
-				assert.Equal(t, "10", storage.Cost)
-			default:
-				t.Error("Unknown SUBID")
-			}
-		}
+
+		assert.Equal(t, "1", storages[0].ID)
+		assert.Equal(t, "alpha", storages[0].Name)
+		assert.Equal(t, "2011-11-11 11:11:11", storages[0].Created)
+		assert.Equal(t, "123", storages[0].AttachedTo)
+		assert.Equal(t, 10, storages[0].SizeGB)
+		assert.Equal(t, "pending", storages[0].Status)
+
+		assert.Equal(t, "2", storages[1].ID)
+		assert.Equal(t, "beta", storages[1].Name)
+		assert.Equal(t, "2014-12-31 13:34:56", storages[1].Created)
+		assert.Equal(t, 33, storages[1].RegionID)
+		assert.Equal(t, 100, storages[1].SizeGB)
+		assert.Equal(t, "10", storages[1].Cost)
 	}
 }
 

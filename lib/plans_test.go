@@ -42,6 +42,7 @@ func Test_Plans_GetPlans_OK(t *testing.T) {
 	if assert.NotNil(t, plans) {
 		assert.Equal(t, 2, len(plans))
 
+		assert.Equal(t, 29, plans[0].ID)
 		assert.Equal(t, "768 MB RAM,15 GB SSD,1.00 TB BW", plans[0].Name)
 		assert.Equal(t, 1, plans[0].VCpus)
 		assert.Equal(t, "768", plans[0].RAM)
@@ -49,6 +50,7 @@ func Test_Plans_GetPlans_OK(t *testing.T) {
 		assert.Equal(t, 1, plans[0].Regions[0])
 		assert.Equal(t, 3, plans[0].Regions[2])
 
+		assert.Equal(t, 30, plans[1].ID)
 		assert.Equal(t, "1024 MB RAM,20 GB SSD,2.00 TB BW", plans[1].Name)
 		assert.Equal(t, 2, plans[1].VCpus)
 		assert.Equal(t, "20", plans[1].Disk)

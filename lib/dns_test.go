@@ -31,9 +31,8 @@ func Test_DNS_GetDNSDomains_NoDomains(t *testing.T) {
 
 func Test_DNS_GetDNSDomains_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `[
-    {"domain": "example.com","date_created": "2012-11-23 13:37:33"},
-    {"domain": "example2.com","date_created": "2010-11-23 13:37:44"}
-    ]`)
+	{"domain": "yolo.yolo","date_created": "2010-11-23 13:37:44"},
+    {"domain": "example.com","date_created": "2012-11-23 13:37:33"}]`)
 	defer server.Close()
 
 	domains, err := client.GetDNSDomains()
@@ -42,17 +41,12 @@ func Test_DNS_GetDNSDomains_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, domains) {
 		assert.Equal(t, 2, len(domains))
-		// domains could be in random order
-		for _, domain := range domains {
-			switch domain.Domain {
-			case "example.com":
-				assert.Equal(t, "2012-11-23 13:37:33", domain.Created)
-			case "example2.com":
-				assert.Equal(t, "2010-11-23 13:37:44", domain.Created)
-			default:
-				t.Error("Unknown DNS domain")
-			}
-		}
+
+		assert.Equal(t, "example.com", domains[0].Domain)
+		assert.Equal(t, "2012-11-23 13:37:33", domains[0].Created)
+
+		assert.Equal(t, "yolo.yolo", domains[1].Domain)
+		assert.Equal(t, "2010-11-23 13:37:44", domains[1].Created)
 	}
 }
 
