@@ -1,4 +1,4 @@
-.PHONY: all prepare build lint vet test check
+.PHONY: all prepare build lint vet test check release
 
 all: prepare lint vet test build
 
@@ -20,3 +20,6 @@ test:
 	GOARCH=amd64 GOOS=linux go test $$(go list ./... | grep -v /vendor/)
 
 check: lint vet test
+
+release:
+	goxc -os="linux darwin windows freebsd openbsd" -tasks-=validate
