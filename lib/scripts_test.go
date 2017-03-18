@@ -31,10 +31,10 @@ func Test_StartupScripts_GetStartupScripts_NoScripts(t *testing.T) {
 
 func Test_StartupScripts_GetStartupScripts_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
-"3": {"SCRIPTID": "3","date_created": "2014-05-21 15:27:18","date_modified": "2014-05-21 15:27:18","name": "alpha","type": "boot",
-    "script": "#!/bin/bash echo Hello World > /root/hello"},
 "5": {"SCRIPTID": "5","date_created": "2014-08-22 15:27:18","date_modified": "2014-09-22 15:27:18","name": "beta","type": "pxe",
-    "script": "#!ipxe\necho Hello World\nshell"}}`)
+    "script": "#!ipxe\necho Hello World\nshell"},
+"3": {"SCRIPTID": "3","date_created": "2014-05-21 15:27:18","date_modified": "2014-05-21 15:27:18","name": "alpha","type": "boot",
+    "script": "#!/bin/bash echo Hello World > /root/hello"}}`)
 	defer server.Close()
 
 	scripts, err := client.GetStartupScripts()
@@ -43,21 +43,16 @@ func Test_StartupScripts_GetStartupScripts_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, scripts) {
 		assert.Equal(t, 2, len(scripts))
-		// scripts could be in random order
-		for _, script := range scripts {
-			switch script.ID {
-			case "3":
-				assert.Equal(t, "alpha", script.Name)
-				assert.Equal(t, "boot", script.Type)
-				assert.Equal(t, "#!/bin/bash echo Hello World > /root/hello", script.Content)
-			case "5":
-				assert.Equal(t, "beta", script.Name)
-				assert.Equal(t, "pxe", script.Type)
-				assert.Equal(t, "#!ipxe\necho Hello World\nshell", script.Content)
-			default:
-				t.Error("Unknown SCRIPTID")
-			}
-		}
+
+		assert.Equal(t, "3", scripts[0].ID)
+		assert.Equal(t, "alpha", scripts[0].Name)
+		assert.Equal(t, "boot", scripts[0].Type)
+		assert.Equal(t, "#!/bin/bash echo Hello World > /root/hello", scripts[0].Content)
+
+		assert.Equal(t, "5", scripts[1].ID)
+		assert.Equal(t, "beta", scripts[1].Name)
+		assert.Equal(t, "pxe", scripts[1].Type)
+		assert.Equal(t, "#!ipxe\necho Hello World\nshell", scripts[1].Content)
 	}
 }
 

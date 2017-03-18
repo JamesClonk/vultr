@@ -43,22 +43,17 @@ func Test_ISO_GetISO_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, iso) {
 		assert.Equal(t, 2, len(iso))
-		// ISO could be in random order
-		for _, iso := range iso {
-			switch iso.ID {
-			case 24:
-				assert.Equal(t, "CentOS-6.5-x86_64-minimal.iso", iso.Filename)
-				assert.Equal(t, 9342976, iso.Size)
-				assert.Equal(t, "ec0669895a250f803e1709d0402fc411", iso.MD5sum)
-				assert.Equal(t, "2014-04-01 14:10:09", iso.Created)
-			case 37:
-				assert.Equal(t, "ArchLinux-2013-01-01.iso", iso.Filename)
-				assert.Equal(t, 2345678, iso.Size)
-				assert.Equal(t, "bc583993dcb7aaff88820bc893a778f0", iso.MD5sum)
-				assert.Equal(t, "", iso.Created)
-			default:
-				t.Error("Unknown ISOID")
-			}
-		}
+
+		assert.Equal(t, 37, iso[0].ID)
+		assert.Equal(t, "ArchLinux-2013-01-01.iso", iso[0].Filename)
+		assert.Equal(t, 2345678, iso[0].Size)
+		assert.Equal(t, "bc583993dcb7aaff88820bc893a778f0", iso[0].MD5sum)
+		assert.Equal(t, "", iso[0].Created)
+
+		assert.Equal(t, 24, iso[1].ID)
+		assert.Equal(t, "CentOS-6.5-x86_64-minimal.iso", iso[1].Filename)
+		assert.Equal(t, 9342976, iso[1].Size)
+		assert.Equal(t, "ec0669895a250f803e1709d0402fc411", iso[1].MD5sum)
+		assert.Equal(t, "2014-04-01 14:10:09", iso[1].Created)
 	}
 }

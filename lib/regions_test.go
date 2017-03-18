@@ -42,32 +42,28 @@ func Test_Regions_GetRegions_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, regions) {
 		assert.Equal(t, 3, len(regions))
-		// Regions could be in random order
-		for _, region := range regions {
-			switch region.ID {
-			case 5:
-				assert.Equal(t, "Los Angeles", region.Name)
-				assert.Equal(t, "US", region.Country)
-				assert.Equal(t, "CA", region.State)
-				assert.Equal(t, true, region.Ddos)
-				assert.Equal(t, false, region.BlockStorage)
-				assert.Equal(t, "LAX", region.Code)
-			case 9:
-				assert.Equal(t, "Frankfurt", region.Name)
-				assert.Equal(t, "DE", region.Country)
-				assert.Equal(t, "Europe", region.Continent)
-				assert.Equal(t, false, region.Ddos)
-				assert.Equal(t, false, region.BlockStorage)
-				assert.Equal(t, "", region.Code)
-			case 19:
-				assert.Equal(t, "AU", region.Country)
-				assert.Equal(t, "", region.State)
-				assert.Equal(t, "Australia", region.Continent)
-				assert.Equal(t, false, region.Ddos)
-				assert.Equal(t, true, region.BlockStorage)
-			default:
-				t.Error("Unknown DCID")
-			}
-		}
+
+		assert.Equal(t, 19, regions[0].ID)
+		assert.Equal(t, "AU", regions[0].Country)
+		assert.Equal(t, "", regions[0].State)
+		assert.Equal(t, "Australia", regions[0].Continent)
+		assert.Equal(t, false, regions[0].Ddos)
+		assert.Equal(t, true, regions[0].BlockStorage)
+
+		assert.Equal(t, 9, regions[1].ID)
+		assert.Equal(t, "Frankfurt", regions[1].Name)
+		assert.Equal(t, "DE", regions[1].Country)
+		assert.Equal(t, "Europe", regions[1].Continent)
+		assert.Equal(t, false, regions[1].Ddos)
+		assert.Equal(t, false, regions[1].BlockStorage)
+		assert.Equal(t, "", regions[1].Code)
+
+		assert.Equal(t, 5, regions[2].ID)
+		assert.Equal(t, "Los Angeles", regions[2].Name)
+		assert.Equal(t, "US", regions[2].Country)
+		assert.Equal(t, "CA", regions[2].State)
+		assert.Equal(t, true, regions[2].Ddos)
+		assert.Equal(t, false, regions[2].BlockStorage)
+		assert.Equal(t, "LAX", regions[2].Code)
 	}
 }
