@@ -31,8 +31,8 @@ func Test_Plans_GetPlans_NoPlans(t *testing.T) {
 
 func Test_Plans_GetPlans_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
-"29":{"VPSPLANID":"29","name":"768 MB RAM,15 GB SSD,1.00 TB BW","vcpu_count":"1","ram":"768","disk":"15","bandwidth":"1.00","bandwidth_gb":"1024","price_per_month":"5.00","windows":false,"available_locations":[1,2,3]},
-"30":{"VPSPLANID":"30","name":"1024 MB RAM,20 GB SSD,2.00 TB BW","vcpu_count":"2","ram":"1024","disk":"20","bandwidth":"2.00","bandwidth_gb":"2048","price_per_month":"7.00","windows":false}}`)
+"30":{"VPSPLANID":"30","name":"1024 MB RAM,20 GB SSD,2.00 TB BW","vcpu_count":"2","ram":"1024","disk":"20","bandwidth":"2.00","bandwidth_gb":"2048","price_per_month":"7.00","windows":false},
+"29":{"VPSPLANID":"29","name":"768 MB RAM,15 GB SSD,1.00 TB BW","vcpu_count":"1","ram":"768","disk":"15","bandwidth":"1.00","bandwidth_gb":"1024","price_per_month":"5.00","windows":false,"available_locations":[1,2,3]}}`)
 	defer server.Close()
 
 	plans, err := client.GetPlans()
@@ -41,26 +41,19 @@ func Test_Plans_GetPlans_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, plans) {
 		assert.Equal(t, 2, len(plans))
-		// Plans could be in random order
-		for _, plan := range plans {
-			switch plan.ID {
-			case 29:
-				assert.Equal(t, "768 MB RAM,15 GB SSD,1.00 TB BW", plan.Name)
-				assert.Equal(t, 1, plan.VCpus)
-				assert.Equal(t, "768", plan.RAM)
-				assert.Equal(t, "5.00", plan.Price)
-				assert.Equal(t, 1, plan.Regions[0])
-				assert.Equal(t, 3, plan.Regions[2])
-			case 30:
-				assert.Equal(t, "1024 MB RAM,20 GB SSD,2.00 TB BW", plan.Name)
-				assert.Equal(t, 2, plan.VCpus)
-				assert.Equal(t, "20", plan.Disk)
-				assert.Equal(t, "2.00", plan.Bandwidth)
-				assert.Equal(t, 0, len(plan.Regions))
-			default:
-				t.Error("Unknown VPSPLANID")
-			}
-		}
+
+		assert.Equal(t, "768 MB RAM,15 GB SSD,1.00 TB BW", plans[0].Name)
+		assert.Equal(t, 1, plans[0].VCpus)
+		assert.Equal(t, "768", plans[0].RAM)
+		assert.Equal(t, "5.00", plans[0].Price)
+		assert.Equal(t, 1, plans[0].Regions[0])
+		assert.Equal(t, 3, plans[0].Regions[2])
+
+		assert.Equal(t, "1024 MB RAM,20 GB SSD,2.00 TB BW", plans[1].Name)
+		assert.Equal(t, 2, plans[1].VCpus)
+		assert.Equal(t, "20", plans[1].Disk)
+		assert.Equal(t, "2.00", plans[1].Bandwidth)
+		assert.Equal(t, 0, len(plans[1].Regions))
 	}
 }
 
