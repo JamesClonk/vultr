@@ -31,9 +31,9 @@ func Test_SSHKeys_GetSSHKeys_NoKeys(t *testing.T) {
 
 func Test_SSHKeys_GetSSHKeys_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
+"three":{"SSHKEYID":"3","name":"charlie","ssh_key":"cccc"},
 "one":{"SSHKEYID":"1","name":"alpha","ssh_key":"aaaa","date_created":null},
-"two":{"SSHKEYID":"2","name":"beta","ssh_key":"bbbb","date_created":"2014-12-31 13:34:56"},
-"three":{"SSHKEYID":"3","name":"charlie","ssh_key":"cccc"}}`)
+"two":{"SSHKEYID":"2","name":"beta","ssh_key":"bbbb","date_created":"2014-12-31 13:34:56"}}`)
 	defer server.Close()
 
 	keys, err := client.GetSSHKeys()
@@ -42,21 +42,17 @@ func Test_SSHKeys_GetSSHKeys_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, keys) {
 		assert.Equal(t, 3, len(keys))
-		// keys could be in random order
-		for _, key := range keys {
-			switch key.ID {
-			case "1":
-				assert.Equal(t, "alpha", key.Name)
-				assert.Equal(t, "", key.Created)
-			case "2":
-				assert.Equal(t, "beta", key.Name)
-				assert.Equal(t, "2014-12-31 13:34:56", key.Created)
-			case "3":
-				assert.Equal(t, "cccc", key.Key)
-			default:
-				t.Error("Unknown SSHKEYID")
-			}
-		}
+
+		assert.Equal(t, "1", keys[0].ID)
+		assert.Equal(t, "alpha", keys[0].Name)
+		assert.Equal(t, "", keys[0].Created)
+
+		assert.Equal(t, "2", keys[1].ID)
+		assert.Equal(t, "beta", keys[1].Name)
+		assert.Equal(t, "2014-12-31 13:34:56", keys[1].Created)
+
+		assert.Equal(t, "3", keys[2].ID)
+		assert.Equal(t, "cccc", keys[2].Key)
 	}
 }
 

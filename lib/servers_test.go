@@ -31,19 +31,19 @@ func Test_Servers_GetServers_NoServers(t *testing.T) {
 
 func Test_Servers_GetServers_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
-"9753721":{"SUBID":"9753721","os":"Ubuntu 14.04 x64","ram":"768 MB","disk":"Virtual 15 GB","main_ip":"123.456.789.0",
-	"vcpu_count":"2","location":"Frankfurt","DCID":"9","default_password":"oops!","date_created":"2017-07-07 07:07:07",
-	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
-	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29",
-	"label":"test alpha","internal_ip":"",
-	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no"},
 "789032":{"SUBID":"789032","os":"CentOs 6.5 i368","ram":"1024 MB","disk":"Virtual 20 GB","main_ip":"192.168.1.2",
 	"vcpu_count":"1","location":"Amsterdam","DCID":"21","default_password":"more oops!","date_created":"2011-01-01 01:01:01",
 	"pending_charges":0.01,"status":"stopped","cost_per_month":"7.25","current_bandwidth_gb":0,"allowed_bandwidth_gb":"25",
 	"netmask_v4":"255.255.254.0","gateway_v4":"192.168.1.1","power_status":"down","VPSPLANID":"31",
 	"v6_networks": [{"v6_network": "2002:DB9:1000::", "v6_main_ip": "2000:DB8:1000::0000", "v6_network_size": "32" }],
-	"label":"test 002","internal_ip":"10.10.10.10",
-	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes"}}`)
+	"label":"test beta","internal_ip":"10.10.10.10",
+	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes"},
+"9753721":{"SUBID":"9753721","os":"Ubuntu 14.04 x64","ram":"768 MB","disk":"Virtual 15 GB","main_ip":"123.456.789.0",
+	"vcpu_count":"2","location":"Frankfurt","DCID":"9","default_password":"oops!","date_created":"2017-07-07 07:07:07",
+	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
+	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29",
+	"label":"test alpha","internal_ip":"",
+	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no"}}`)
 	defer server.Close()
 
 	servers, err := client.GetServers()
@@ -52,43 +52,38 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, servers) {
 		assert.Equal(t, 2, len(servers))
-		// servers could be in random order
-		for _, server := range servers {
-			switch server.ID {
-			case "9753721":
-				assert.Equal(t, "test alpha", server.Name)
-				assert.Equal(t, "Ubuntu 14.04 x64", server.OS)
-				assert.Equal(t, "768 MB", server.RAM)
-				assert.Equal(t, "Virtual 15 GB", server.Disk)
-				assert.Equal(t, "123.456.789.0", server.MainIP)
-				assert.Equal(t, 2, server.VCpus)
-				assert.Equal(t, "Frankfurt", server.Location)
-				assert.Equal(t, 9, server.RegionID)
-				assert.Equal(t, "oops!", server.DefaultPassword)
-				assert.Equal(t, "2017-07-07 07:07:07", server.Created)
-				assert.Equal(t, "255.255.255.0", server.NetmaskV4)
-				assert.Equal(t, "123.456.789.1", server.GatewayV4)
-				assert.Equal(t, 0, len(server.V6Networks))
-				assert.Equal(t, 7.0, server.CurrentBandwidth)
-				assert.Equal(t, 1000.0, server.AllowedBandwidth)
-			case "789032":
-				assert.Equal(t, "test 002", server.Name)
-				assert.Equal(t, 0.01, server.PendingCharges)
-				assert.Equal(t, "7.25", server.Cost)
-				assert.Equal(t, "stopped", server.Status)
-				assert.Equal(t, "down", server.PowerStatus)
-				assert.Equal(t, 31, server.PlanID)
-				assert.Equal(t, 1, len(server.V6Networks))
-				assert.Equal(t, "2002:DB9:1000::", server.V6Networks[0].Network)
-				assert.Equal(t, "2000:DB8:1000::0000", server.V6Networks[0].MainIP)
-				assert.Equal(t, "32", server.V6Networks[0].NetworkSize)
-				assert.Equal(t, "10.10.10.10", server.InternalIP)
-				assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=456`, server.KVMUrl)
-				assert.Equal(t, "yes", server.AutoBackups)
-			default:
-				t.Error("Unknown SUBID")
-			}
-		}
+
+		assert.Equal(t, "9753721", servers[0].ID)
+		assert.Equal(t, "test alpha", servers[0].Name)
+		assert.Equal(t, "Ubuntu 14.04 x64", servers[0].OS)
+		assert.Equal(t, "768 MB", servers[0].RAM)
+		assert.Equal(t, "Virtual 15 GB", servers[0].Disk)
+		assert.Equal(t, "123.456.789.0", servers[0].MainIP)
+		assert.Equal(t, 2, servers[0].VCpus)
+		assert.Equal(t, "Frankfurt", servers[0].Location)
+		assert.Equal(t, 9, servers[0].RegionID)
+		assert.Equal(t, "oops!", servers[0].DefaultPassword)
+		assert.Equal(t, "2017-07-07 07:07:07", servers[0].Created)
+		assert.Equal(t, "255.255.255.0", servers[0].NetmaskV4)
+		assert.Equal(t, "123.456.789.1", servers[0].GatewayV4)
+		assert.Equal(t, 0, len(servers[0].V6Networks))
+		assert.Equal(t, 7.0, servers[0].CurrentBandwidth)
+		assert.Equal(t, 1000.0, servers[0].AllowedBandwidth)
+
+		assert.Equal(t, "789032", servers[1].ID)
+		assert.Equal(t, "test beta", servers[1].Name)
+		assert.Equal(t, 0.01, servers[1].PendingCharges)
+		assert.Equal(t, "7.25", servers[1].Cost)
+		assert.Equal(t, "stopped", servers[1].Status)
+		assert.Equal(t, "down", servers[1].PowerStatus)
+		assert.Equal(t, 31, servers[1].PlanID)
+		assert.Equal(t, 1, len(servers[1].V6Networks))
+		assert.Equal(t, "2002:DB9:1000::", servers[1].V6Networks[0].Network)
+		assert.Equal(t, "2000:DB8:1000::0000", servers[1].V6Networks[0].MainIP)
+		assert.Equal(t, "32", servers[1].V6Networks[0].NetworkSize)
+		assert.Equal(t, "10.10.10.10", servers[1].InternalIP)
+		assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=456`, servers[1].KVMUrl)
+		assert.Equal(t, "yes", servers[1].AutoBackups)
 	}
 }
 
@@ -420,8 +415,8 @@ func Test_Servers_ListOSforServer_NoOS(t *testing.T) {
 
 func Test_Servers_ListOSforServer_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
-"127":{"OSID":127,"name":"CentOS 6 x64","arch":"x64","family":"centos","windows":false,"surcharge":"0.00"},
 "179":{"OSID":179,"name":"CoreOS Stable","arch":"x64","family":"coreos","windows":false,"surcharge":"1.25"},
+"127":{"OSID":127,"name":"CentOS 6 x64","arch":"x64","family":"centos","windows":false,"surcharge":"0.00"},
 "124":{"OSID":124,"name":"Windows 2012 R2 x64","arch":"x64","family":"windows","windows":true,"surcharge":"5.99"}}`)
 	defer server.Close()
 
@@ -431,28 +426,24 @@ func Test_Servers_ListOSforServer_OK(t *testing.T) {
 	}
 	if assert.NotNil(t, os) {
 		assert.Equal(t, 3, len(os))
-		// OS could be in random order
-		for _, os := range os {
-			switch os.ID {
-			case 127:
-				assert.Equal(t, "CentOS 6 x64", os.Name)
-				assert.Equal(t, "x64", os.Arch)
-				assert.Equal(t, "centos", os.Family)
-				assert.Equal(t, "0.00", os.Surcharge)
-			case 179:
-				assert.Equal(t, "coreos", os.Family)
-				assert.Equal(t, "CoreOS Stable", os.Name)
-				assert.Equal(t, false, os.Windows)
-				assert.Equal(t, "1.25", os.Surcharge)
-			case 124:
-				assert.Equal(t, "windows", os.Family)
-				assert.Equal(t, "Windows 2012 R2 x64", os.Name)
-				assert.Equal(t, true, os.Windows)
-				assert.Equal(t, "5.99", os.Surcharge)
-			default:
-				t.Error("Unknown OSID")
-			}
-		}
+
+		assert.Equal(t, 127, os[0].ID)
+		assert.Equal(t, "CentOS 6 x64", os[0].Name)
+		assert.Equal(t, "x64", os[0].Arch)
+		assert.Equal(t, "centos", os[0].Family)
+		assert.Equal(t, "0.00", os[0].Surcharge)
+
+		assert.Equal(t, 179, os[1].ID)
+		assert.Equal(t, "coreos", os[1].Family)
+		assert.Equal(t, "CoreOS Stable", os[1].Name)
+		assert.Equal(t, false, os[1].Windows)
+		assert.Equal(t, "1.25", os[1].Surcharge)
+
+		assert.Equal(t, 124, os[2].ID)
+		assert.Equal(t, "windows", os[2].Family)
+		assert.Equal(t, "Windows 2012 R2 x64", os[2].Name)
+		assert.Equal(t, true, os[2].Windows)
+		assert.Equal(t, "5.99", os[2].Surcharge)
 	}
 }
 
