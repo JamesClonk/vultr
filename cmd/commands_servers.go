@@ -253,7 +253,7 @@ func serversList(cmd *cli.Cmd) {
 			return
 		}
 
-		lengths := []int{12, 16, 24, 32, 32, 32, 8, 8, 24, 12, 8}
+		lengths := []int{12, 16, 24, 32, 32, 32, 8, 8, 24, 16, 8}
 		tabsPrint(columns{
 			"SUBID",
 			"STATUS",
@@ -277,7 +277,7 @@ func serversList(cmd *cli.Cmd) {
 				server.VCpus,
 				server.RAM,
 				server.Disk,
-				server.AllowedBandwidth,
+				fmt.Sprintf("%v/%v", server.CurrentBandwidth, server.AllowedBandwidth),
 				server.Cost,
 			}, lengths)
 		}
