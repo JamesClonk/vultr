@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	vultr "github.com/JamesClonk/vultr/lib"
 	"github.com/jawher/mow.cli"
@@ -73,6 +74,7 @@ func serversRename(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID -n"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	name := cmd.StringOpt("n name", "", "new name of virtual machine")
+
 	cmd.Action = func() {
 		if err := GetClient().RenameServer(*id, *name); err != nil {
 			log.Fatal(err)
@@ -125,6 +127,7 @@ func serversChangeOS(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID -o"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	osID := cmd.IntOpt("o os", 0, "Operating system (OSID)")
+
 	cmd.Action = func() {
 		if err := GetClient().ChangeOSofServer(*id, *osID); err != nil {
 			log.Fatal(err)
@@ -137,6 +140,7 @@ func serversAttachISO(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID -i"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	isoID := cmd.IntOpt("i iso", 0, "ISOID of ISO image")
+
 	cmd.Action = func() {
 		if err := GetClient().AttachISOtoServer(*id, *isoID); err != nil {
 			log.Fatal(err)
@@ -199,23 +203,23 @@ func serversListOS(cmd *cli.Cmd) {
 
 func serversDelete(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID [-f]"
-
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	confirm := cmd.BoolOpt("f force", false, "Confirm deleting a server")
-	var input string
+
 	cmd.Action = func() {
 		if *confirm != true {
-			fmt.Print("Are you sure? (Type uppercase yes): ")
+			var input string
+			fmt.Print("Are you sure? (type 'yes'): ")
 			fmt.Scanln(&input)
-			if input != "YES" {
+			if strings.ToLower(input) != "yes" {
 				os.Exit(1)
 			}
 		}
+
 		if err := GetClient().DeleteServer(*id); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Virtual machine deleted")
-
 	}
 }
 
@@ -287,7 +291,6 @@ func serversList(cmd *cli.Cmd) {
 
 func serversShow(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID [-f]"
-
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	full := cmd.BoolOpt("f full", false, "Display full length of KVM URL")
 
@@ -481,6 +484,7 @@ func serversChangeApplication(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID APPID"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	appID := cmd.StringArg("APPID", "", "Application to use (see <apps>)")
+
 	cmd.Action = func() {
 		if err := GetClient().ChangeApplicationofServer(*id, *appID); err != nil {
 			log.Fatal(err)
