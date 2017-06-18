@@ -341,6 +341,9 @@ func serversShow(cmd *cli.Cmd) {
 			tabsPrint(columns{fmt.Sprintf("#%d IPv6 Network:", n+1), v6network.Network}, lengths)
 			tabsPrint(columns{fmt.Sprintf("#%d IPv6 Network Size:", n+1), v6network.NetworkSize}, lengths)
 		}
+		if len(server.FirewallGroupID) != 0 {
+			tabsPrint(columns{"Firewall Group ID:", server.FirewallGroupID}, lengths)
+		}
 		tabsPrint(columns{"Created date:", server.Created}, lengths)
 		tabsPrint(columns{"Default password:", server.DefaultPassword}, lengths)
 		tabsPrint(columns{"Auto backups:", server.AutoBackups}, lengths)
