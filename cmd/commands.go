@@ -25,6 +25,20 @@ func (c *CLI) RegisterCommands() {
 		})
 	})
 
+	// firewall
+	c.Command("firewall", "modify firewall groups and rules", func(cmd *cli.Cmd) {
+		cmd.Command("group", "show and change firewall groups", func(cmd *cli.Cmd) {
+			cmd.Command("create", "create a firewall group", firewallGroupCreate)
+			cmd.Command("delete", "delete a firewall group", firewallGroupDelete)
+			cmd.Command("list", "list all firewall groups", firewallGroupList)
+		})
+		cmd.Command("rule", "show and change firewall rules", func(cmd *cli.Cmd) {
+			cmd.Command("create", "create a firewall rule", firewallRuleCreate)
+			cmd.Command("delete", "delete a firewall rule", firewallRuleDelete)
+			cmd.Command("list", "list all firewall rules in a group", firewallRuleList)
+		})
+	})
+
 	// info
 	c.Command("info", "display account information", accountInfo)
 
