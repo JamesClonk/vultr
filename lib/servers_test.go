@@ -37,13 +37,14 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 	"netmask_v4":"255.255.254.0","gateway_v4":"192.168.1.1","power_status":"down","VPSPLANID":"31",
 	"v6_networks": [{"v6_network": "2002:DB9:1000::", "v6_main_ip": "2000:DB8:1000::0000", "v6_network_size": "32" }],
 	"label":"test beta","internal_ip":"10.10.10.10",
-	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes", "OSID": "127", "APPID": "0"},
+	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=456","auto_backups":"yes", "OSID": "127", "APPID": "2",
+	"FIREWALLGROUPID": "1a"},
 "9753721":{"SUBID":"9753721","os":"Ubuntu 14.04 x64","ram":"768 MB","disk":"Virtual 15 GB","main_ip":"123.456.789.0",
 	"vcpu_count":"2","location":"Frankfurt","DCID":"9","default_password":"oops!","date_created":"2017-07-07 07:07:07",
 	"pending_charges":0.04,"status":"active","cost_per_month":"5.00","current_bandwidth_gb":7,"allowed_bandwidth_gb":"1000",
 	"netmask_v4":"255.255.255.0","gateway_v4":"123.456.789.1","power_status":"running","VPSPLANID":"29",
 	"label":"test alpha","internal_ip":"",
-	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no"}}`)
+	"kvm_url":"https:\/\/my.vultr.com\/subs\/vps\/novnc\/api.php?data=123","auto_backups":"no", "APPID": "0"}}`)
 	defer server.Close()
 
 	servers, err := client.GetServers()
@@ -71,6 +72,7 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 		assert.Equal(t, 1000.0, servers[0].AllowedBandwidth)
 		assert.Equal(t, "", servers[0].OSID)
 		assert.Equal(t, "", servers[0].AppID)
+		assert.Equal(t, "", servers[0].FirewallGroupID)
 
 		assert.Equal(t, "789032", servers[1].ID)
 		assert.Equal(t, "test beta", servers[1].Name)
@@ -87,7 +89,8 @@ func Test_Servers_GetServers_OK(t *testing.T) {
 		assert.Equal(t, `https://my.vultr.com/subs/vps/novnc/api.php?data=456`, servers[1].KVMUrl)
 		assert.Equal(t, "yes", servers[1].AutoBackups)
 		assert.Equal(t, "127", servers[1].OSID)
-		assert.Equal(t, "0", servers[1].AppID)
+		assert.Equal(t, "2", servers[1].AppID)
+		assert.Equal(t, "1a", servers[1].FirewallGroupID)
 	}
 }
 
