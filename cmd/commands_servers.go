@@ -29,6 +29,7 @@ func serversCreate(cmd *cli.Cmd) {
 	hostname := cmd.StringOpt("hostname", "", "Hostname to assign to this server")
 	tag := cmd.StringOpt("tag", "", "Tag to assign to this server")
 	appID := cmd.StringOpt("a app", "", "If launching an application (OSID 186), this is the APPID to launch")
+	reservedIP := cmd.StringOpt("ip", "", "IP address of the floating IP to use as the main IP of this server")
 	ipv6 := cmd.BoolOpt("ipv6", false, "Assign an IPv6 subnet to this virtual machine (where available)")
 	privateNetworking := cmd.BoolOpt("private-networking", false, "Add private networking support for this virtual machine")
 	autoBackups := cmd.BoolOpt("autobackups", false, "Enable automatic backups for this virtual machine")
@@ -41,6 +42,7 @@ func serversCreate(cmd *cli.Cmd) {
 			Script:               *script,
 			Snapshot:             *snapshot,
 			SSHKey:               *sshkey,
+			ReservedIP:           *reservedIP,
 			IPV6:                 *ipv6,
 			PrivateNetworking:    *privateNetworking,
 			AutoBackups:          *autoBackups,
