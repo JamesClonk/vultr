@@ -132,3 +132,27 @@ func Test_Client_Retry(t *testing.T) {
 
 	wg.Wait()
 }
+
+// Test that body state is preserved when retrying POST requests
+func Test_Client_Retry_Post(t *testing.T) {
+	server := getTestServerThrottled(`{"SUBID":"5671234"}`)
+	defer server.Close()
+
+	options := Options{
+		Endpoint:   server.URL,
+		MaxRetries: 5,
+	}
+	client := NewClient("test-key", &options)
+
+	var wg sync.WaitGroup
+	wg.Add(10)
+	for i := 0; i < 10; i++ {
+		go func() {
+			defer wg.Done()
+			_, err := client.CreateBlockStorage("delta", 33, 150)
+			assert.NoError(t, err)
+		}()
+	}
+
+	wg.Wait()
+}
