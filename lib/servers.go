@@ -354,6 +354,19 @@ func (c *Client) RenameServer(id, name string) error {
 	return nil
 }
 
+// TagServer replaces the tag on an existing virtual machine
+func (c *Client) TagServer(id, tag string) error {
+	values := url.Values{
+		"SUBID": {id},
+		"tag":   {tag},
+	}
+
+	if err := c.post(`server/tag_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
 // StartServer starts an existing virtual machine
 func (c *Client) StartServer(id string) error {
 	values := url.Values{

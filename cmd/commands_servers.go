@@ -85,6 +85,19 @@ func serversRename(cmd *cli.Cmd) {
 	}
 }
 
+func serversTag(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -t"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	tag := cmd.StringOpt("t tag", "", "new tag for virtual machine")
+
+	cmd.Action = func() {
+		if err := GetClient().TagServer(*id, *tag); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine tagged with: %v\n", *tag)
+	}
+}
+
 func serversStart(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cmd.Action = func() {

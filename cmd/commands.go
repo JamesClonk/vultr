@@ -73,6 +73,7 @@ func (c *CLI) RegisterCommands() {
 	c.Command("server", "modify virtual machines", func(cmd *cli.Cmd) {
 		cmd.Command("create", "create a new virtual machine", serversCreate)
 		cmd.Command("rename", "rename a virtual machine", serversRename)
+		cmd.Command("tag", "tag a virtual machine", serversTag)
 		cmd.Command("start", "start a virtual machine (restart if already running)", serversStart)
 		cmd.Command("halt", "halt a virtual machine (hard power off)", serversHalt)
 		cmd.Command("reboot", "reboot a virtual machine (hard reboot)", serversReboot)
