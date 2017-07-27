@@ -61,6 +61,40 @@ func Test_IP_ListIPv4_OK(t *testing.T) {
 	}
 }
 
+func Test_IP_CreateIPv4_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.CreateIPv4("123456789", true)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_IP_CreateIPv4_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.CreateIPv4("123456789", true))
+}
+
+func Test_IP_DeleteIPv4_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.DeleteIPv4("123456789", "123.123.123.123")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_IP_DeleteIPv4_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.DeleteIPv4("123456789", "123.123.123.123"))
+}
+
 func Test_IP_ListIPv6_Error(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
 	defer server.Close()

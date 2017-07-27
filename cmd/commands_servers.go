@@ -382,6 +382,32 @@ func ipv4List(cmd *cli.Cmd) {
 	}
 }
 
+func ipv4Create(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	reboot := cmd.BoolOpt("r reboot", false, "reboot virtual machine after attaching IPv4 address")
+
+	cmd.Action = func() {
+		if err := GetClient().CreateIPv4(*id, *reboot); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("IPv4 address attached to virtual machine")
+	}
+}
+
+func ipv4Delete(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID IP"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	ip := cmd.StringArg("IP", "", "IPv4 of virtual machine (see <list-ipv4>)")
+
+	cmd.Action = func() {
+		if err := GetClient().DeleteIPv4(*id, *ip); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("IPv4 address deleted")
+	}
+}
+
 func ipv6List(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cmd.Action = func() {
