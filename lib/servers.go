@@ -487,6 +487,24 @@ func (c *Client) DeleteServer(id string) error {
 	return nil
 }
 
+// SetFirewallGroup adds a virtual machine to a firewall group
+func (c *Client) SetFirewallGroup(id, firewallgroup string) error {
+	values := url.Values{
+		"SUBID":           {id},
+		"FIREWALLGROUPID": {firewallgroup},
+	}
+
+	if err := c.post(`server/firewall_group_set`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// UnsetFirewallGroup removes a virtual machine from a firewall group
+func (c *Client) UnsetFirewallGroup(id string) error {
+	return c.SetFirewallGroup(id, "0")
+}
+
 // BandwidthOfServer retrieves the bandwidth used by a virtual machine
 func (c *Client) BandwidthOfServer(id string) (bandwidth []map[string]string, err error) {
 	var bandwidthMap map[string][][]string

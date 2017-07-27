@@ -106,6 +106,9 @@ func (c *CLI) RegisterCommands() {
 			cmd.Command("delete-ipv6", "delete IPv6 reverse DNS entry", reverseIpv6Delete)
 			cmd.Command("list-ipv6", "list IPv6 reverse DNS entries of a virtual machine", reverseIpv6List)
 		})
+		// firewall groups
+		cmd.Command("set-firewall-group", "set firewall group of a virtual machine", serversSetFirewallGroup)
+		cmd.Command("unset-firewall-group", "remove virtual machine from firewall group", serversUnsetFirewallGroup)
 	})
 	c.Command("servers", "list all active or pending virtual machines on current account", serversList)
 
