@@ -41,6 +41,21 @@ func firewallGroupDelete(cmd *cli.Cmd) {
 	}
 }
 
+func firewallGroupSetDescription(cmd *cli.Cmd) {
+	cmd.Spec = "GROUP_ID DESCRIPTION"
+
+	gid := cmd.StringArg("GROUP_ID", "", "Firewall group ID")
+	desc := cmd.StringArg("DESCRIPTION", "", "New description for the firewall group")
+
+	cmd.Action = func() {
+		if err := GetClient().SetFirewallGroupDescription(*gid, *desc); err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Set description for firewall group %s: %s\n", *gid, *desc)
+	}
+}
+
 func firewallGroupList(cmd *cli.Cmd) {
 	cmd.Action = func() {
 		groups, err := GetClient().GetFirewallGroups()

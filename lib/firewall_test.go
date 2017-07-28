@@ -89,6 +89,23 @@ func Test_Firewall_DeleteGroup_Ok(t *testing.T) {
 	}
 }
 
+func Test_Firewall_SetGroupDescription_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.SetFirewallGroupDescription("123456789", "new description")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Firewall_SetGroupDescription_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.SetFirewallGroupDescription("123456789", "new description"))
+}
+
 func Test_Firewall_GetRules_Fail(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusNotAcceptable, ``)
 	defer server.Close()
