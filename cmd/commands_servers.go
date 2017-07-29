@@ -98,6 +98,31 @@ func serversTag(cmd *cli.Cmd) {
 	}
 }
 
+func serversSetFirewallGroup(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID GROUP_ID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	gid := cmd.StringArg("GROUP_ID", "", "Firewall group ID (see <firewall group list>)")
+
+	cmd.Action = func() {
+		if err := GetClient().SetFirewallGroup(*id, *gid); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine added to firewall group: %v\n", *gid)
+	}
+}
+
+func serversUnsetFirewallGroup(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+
+	cmd.Action = func() {
+		if err := GetClient().UnsetFirewallGroup(*id); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Virtual machine removed from firewall group")
+	}
+}
+
 func serversStart(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cmd.Action = func() {
