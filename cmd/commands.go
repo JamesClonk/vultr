@@ -98,6 +98,8 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("show", "show detailed information of a virtual machine", serversShow)
 		// ip information
 		cmd.Command("list-ipv4", "list IPv4 information of a virtual machine", ipv4List)
+		cmd.Command("create-ipv4", "add a new IPv4 address to a virtual machine", ipv4Create)
+		cmd.Command("delete-ipv4", "remove IPv4 address from a virtual machine", ipv4Delete)
 		cmd.Command("list-ipv6", "list IPv6 information of a virtual machine", ipv6List)
 		// reverse dns
 		cmd.Command("reverse-dns", "modify reverse DNS entries", func(cmd *cli.Cmd) {
