@@ -30,6 +30,7 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("group", "show and change firewall groups", func(cmd *cli.Cmd) {
 			cmd.Command("create", "create a firewall group", firewallGroupCreate)
 			cmd.Command("delete", "delete a firewall group", firewallGroupDelete)
+			cmd.Command("set-description", "set firewall group description", firewallGroupSetDescription)
 			cmd.Command("list", "list all firewall groups", firewallGroupList)
 		})
 		cmd.Command("rule", "show and change firewall rules", func(cmd *cli.Cmd) {
