@@ -136,6 +136,10 @@ func Test_Firewall_GetRules_Ok(t *testing.T) {
     "2":{
         "rulenumber":2,"action":"accept","protocol": "tcp","port": "80",
         "subnet": "10.234.22.0","subnet_size": 24
+    },
+    "3":{
+        "rulenumber":3,"action":"accept","protocol": "tcp","port": "80",
+	"subnet": "::","subnet_size": 0
     }}`)
 	defer server.Close()
 
@@ -144,7 +148,7 @@ func Test_Firewall_GetRules_Ok(t *testing.T) {
 		t.Error(err)
 	}
 	if assert.NotNil(t, rules) {
-		assert.Equal(t, 2, len(rules))
+		assert.Equal(t, 3, len(rules))
 
 		assert.Equal(t, rules[0].RuleNumber, 1)
 		assert.Equal(t, rules[0].Action, "accept")
@@ -159,6 +163,13 @@ func Test_Firewall_GetRules_Ok(t *testing.T) {
 		assert.Equal(t, rules[1].Port, "80")
 		_, netw, _ = net.ParseCIDR("10.234.22.0/24")
 		assert.Equal(t, rules[1].Network, netw)
+
+		assert.Equal(t, rules[2].RuleNumber, 3)
+		assert.Equal(t, rules[2].Action, "accept")
+		assert.Equal(t, rules[2].Protocol, "tcp")
+		assert.Equal(t, rules[2].Port, "80")
+		_, netw, _ = net.ParseCIDR("::/0")
+		assert.Equal(t, rules[2].Network, netw)
 	}
 }
 
