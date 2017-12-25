@@ -126,13 +126,6 @@ func apiPath(path string) string {
 	return fmt.Sprintf("/%s/%s", APIVersion, path)
 }
 
-func apiKeyPath(path, apiKey string) string {
-	if strings.Contains(path, "?") {
-		return path + "&api_key=" + apiKey
-	}
-	return path + "?api_key=" + apiKey
-}
-
 func (c *Client) get(path string, data interface{}) error {
 	req, err := c.newRequest("GET", apiPath(path), nil)
 	if err != nil {
@@ -155,7 +148,7 @@ func (c *Client) OnRequestCompleted(rc RequestCompletionCallback) {
 }
 
 func (c *Client) newRequest(method string, path string, body io.Reader) (*http.Request, error) {
-	relPath, err := url.Parse(apiKeyPath(path, c.APIKey))
+	relPath, err := url.Parse(path)
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +160,7 @@ func (c *Client) newRequest(method string, path string, body io.Reader) (*http.R
 		return nil, err
 	}
 
+	req.Header.Add("API-Key", c.APIKey)
 	req.Header.Add("User-Agent", c.UserAgent)
 	req.Header.Add("Accept", mediaType)
 
