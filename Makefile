@@ -6,7 +6,6 @@ all: prepare lint vet test build
 prepare:
 	go get -v github.com/golang/lint/golint
 	go get -v github.com/Masterminds/glide
-	go get -v github.com/goreleaser/goreleaser
 	glide install
 
 build:
@@ -35,6 +34,7 @@ test:
 check: lint vet test
 
 release:
+	go get -v github.com/goreleaser/goreleaser
 	goreleaser
 
 .PHONY: all prepare build lint vet test check release
