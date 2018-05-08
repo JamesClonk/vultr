@@ -475,6 +475,32 @@ func (c *Client) GetISOStatusofServer(id string) (isoStatus ISOStatus, err error
 	return isoStatus, nil
 }
 
+// RestoreBackup restore the specified backup to the virtual machine
+func (c *Client) RestoreBackup(id, backupID string) error {
+	values := url.Values{
+		"SUBID":    {id},
+		"BACKUPID": {backupID},
+	}
+
+	if err := c.post(`server/restore_backup`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// RestoreSnapshot restore the specified snapshot to the virtual machine
+func (c *Client) RestoreSnapshot(id, snapshotID string) error {
+	values := url.Values{
+		"SUBID":      {id},
+		"SNAPSHOTID": {snapshotID},
+	}
+
+	if err := c.post(`server/restore_snapshot`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
 // DeleteServer deletes an existing virtual machine
 func (c *Client) DeleteServer(id string) error {
 	values := url.Values{
