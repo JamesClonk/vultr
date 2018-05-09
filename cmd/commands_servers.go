@@ -219,6 +219,32 @@ func serversStatusISO(cmd *cli.Cmd) {
 	}
 }
 
+func serversRestoreBackup(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -b"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	backupID := cmd.StringOpt("b backup", "", "BACKUPID of backups")
+
+	cmd.Action = func() {
+		if err := GetClient().RestoreBackup(*id, *backupID); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine restored, server will be reboot: %v\n", *id)
+	}
+}
+
+func serversRestoreSnapshot(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -s"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	snapshotID := cmd.StringOpt("s snapshot", "", "SNAPSHOTID of snapshots")
+
+	cmd.Action = func() {
+		if err := GetClient().RestoreSnapshot(*id, *snapshotID); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine restored, server will be reboot: %v\n", *id)
+	}
+}
+
 func serversListOS(cmd *cli.Cmd) {
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cmd.Action = func() {

@@ -92,6 +92,10 @@ func (c *CLI) RegisterCommands() {
 			cmd.Command("detach", "detach ISO from a virtual machine (server will hard reboot)", serversDetachISO)
 			cmd.Command("status", "show status of ISO attached to a virtual machine", serversStatusISO)
 		})
+		cmd.Command("restore", "restore from backup/snapshot", func(cmd *cli.Cmd) {
+			cmd.Command("backup", "restore from backup (any data already on the server will be lost)", serversRestoreBackup)
+			cmd.Command("snapshot", "restore from snapshot (any data already on the server will be lost)", serversRestoreSnapshot)
+		})
 		cmd.Command("delete", "delete a virtual machine", serversDelete)
 		cmd.Command("bandwidth", "list bandwidth used by a virtual machine", serversBandwidth)
 		cmd.Command("list", "list all active or pending virtual machines on current account", serversList)
