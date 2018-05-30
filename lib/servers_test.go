@@ -619,3 +619,83 @@ func Test_Servers_ListApplicationsforServer_OK(t *testing.T) {
 		assert.Equal(t, "WordPress on CentOS 6 x64", apps[1].DeployName)
 	}
 }
+
+func Test_Servers_ListPrivateNetworksForServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	nets, err := client.ListPrivateNetworksForServer("123456789")
+	assert.Nil(t, nets)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ListPrivateNetworksForServer_NoOS(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	nets, err := client.ListPrivateNetworksForServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, nets)
+}
+
+func Test_Servers_ListPrivateNetworksForServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{
+"net53962b0f2341f": {"NETWORKID": "net53962b0f2341f","mac_address": "5a01.0000.24e9","ip_address": "0.0.0.0"},
+"net539626f0798d7": {"NETWORKID": "net539626f0798d7","mac_address": "5a02.0000.24e9","ip_address": "10.99.0.3"}
+}`)
+	defer server.Close()
+
+	nets, err := client.ListPrivateNetworksForServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, nets) {
+		assert.Equal(t, 2, len(nets))
+
+		assert.Equal(t, "net53962b0f2341f", nets[0].ID)
+		assert.Equal(t, "5a01.0000.24e9", nets[0].MACAddress)
+		assert.Equal(t, "0.0.0.0", nets[0].IPAddress)
+
+		assert.Equal(t, "net539626f0798d7", nets[1].ID)
+		assert.Equal(t, "5a02.0000.24e9", nets[1].MACAddress)
+		assert.Equal(t, "10.99.0.3", nets[1].IPAddress)
+	}
+}
+
+func Test_Servers_DisablePrivateNetworkForServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.DisablePrivateNetworkForServer("123456789", "foo")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_DisablePrivateNetworkForServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.DisablePrivateNetworkForServer("123456789", "foo"))
+}
+
+func Test_Servers_EnablePrivateNetworkForServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.EnablePrivateNetworkForServer("123456789", "foo")
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_EnablePrivateNetworkForServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.EnablePrivateNetworkForServer("123456789", "foo"))
+}
