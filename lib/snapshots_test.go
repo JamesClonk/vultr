@@ -32,9 +32,9 @@ func Test_Snapshots_GetSnapshots_NoSnapshots(t *testing.T) {
 func Test_Snapshots_GetSnapshots_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{
 "5359435d28b9a": {"SNAPSHOTID": "5359435d28b9a","date_created": "2014-04-18 12:40:40",
-    "description": "test snapshot","size": "42949672960","status": "complete"},
+"description": "test snapshot","size": "42949672960","status": "complete","OSID": "127","APPID": "0"},
 "5359435dc1df3": {"SNAPSHOTID": "5359435dc1df3","date_created": "2014-04-22 16:11:46",
-    "description": "a","size": "10000000","status": "incomplete"}}`)
+    "description": "a","size": "10000000","status": "incomplete","OSID": "186","APPID": "1"}}`)
 	defer server.Close()
 
 	snapshots, err := client.GetSnapshots()
@@ -49,12 +49,16 @@ func Test_Snapshots_GetSnapshots_OK(t *testing.T) {
 		assert.Equal(t, "10000000", snapshots[0].Size)
 		assert.Equal(t, "incomplete", snapshots[0].Status)
 		assert.Equal(t, "2014-04-22 16:11:46", snapshots[0].Created)
+		assert.Equal(t, "186", snapshots[0].OSID)
+		assert.Equal(t, "1", snapshots[0].AppID)
 
 		assert.Equal(t, "5359435d28b9a", snapshots[1].ID)
 		assert.Equal(t, "test snapshot", snapshots[1].Description)
 		assert.Equal(t, "42949672960", snapshots[1].Size)
 		assert.Equal(t, "complete", snapshots[1].Status)
 		assert.Equal(t, "2014-04-18 12:40:40", snapshots[1].Created)
+		assert.Equal(t, "127", snapshots[1].OSID)
+		assert.Equal(t, "0", snapshots[1].AppID)
 	}
 }
 
