@@ -12,8 +12,8 @@ import (
 func connectSSH(user, host, key string, port int) {
 	args := []string{
 		"-p", fmt.Sprintf("%d", port),
-		"-o", "UserKnownHostsFile=/dev/null",
-		"-o", "StrictHostKeyChecking=no",
+		// "-o", "UserKnownHostsFile=/dev/null",
+		// "-o", "StrictHostKeyChecking=no",
 		"-o", "LogLevel=quiet",
 		fmt.Sprintf("%s@%s", user, host),
 	}
