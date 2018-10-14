@@ -28,16 +28,27 @@ type Backup struct {
 
 type backups []Backup
 
+func (s backups) Len() int      { return len(s) }
+func (s backups) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+func (s backups) Less(i, j int) bool {
+	return strings.ToLower(s[i].Name) < strings.ToLower(s[j].Name)
+}
+
 // GetBackups retrieves a list of all backups on Vultr account
-func (c *Client) GetBackups() (backupList []BackupSchedule, err error) {
-	var backupSchedulesMap map[string]BackupSchedule
-	if err := c.get(`backup/list`, &backupSchedulesMap); err != nil {
+func (c *Client) GetBackups(id string, backupid string) (backupList []BackupSchedule, err error) {
+	var backupMap map[string]Backup
+	values := url.Values{
+		"SUBID":    {id},
+		"BACKUPID": {backupid},
+	}
+
+	if err := c.post(`backup/list`, values, &backupMap); err != nil {
 		return nil, err
 	}
 
-	for _, backup := range backupSchedulesMap {
-		backupList = append(backupList, backup)
+	for _, backup := range backupMap {
+		backups = append(backups, backup)
 	}
-	sort.Sort(backups(backupList))
-	return backupList, nil
+	sort.Sort(backups(backups))
+	return backups, nil
 }
