@@ -4,7 +4,7 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 all: prepare lint vet test build
 
 prepare:
-	go get -v github.com/golang/lint/golint
+	go get -v golang.org/x/lint/golint
 	go get -v github.com/Masterminds/glide
 	glide install
 
