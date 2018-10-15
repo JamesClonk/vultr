@@ -6,17 +6,6 @@ import (
 	"strings"
 )
 
-// BackupSchedule represents a scheduled backup on a server
-// see: server/backup_set_schedule, server/backup_get_schedule
-type BackupSchedule struct {
-	Enabled              bool   `json:"enabled"`
-	CronType             string `json:"cron_type"`
-	NextScheduledTimeUtc string `json:"next_scheduled_time_utc"`
-	Hour                 int    `json:"hour"`
-	Dow                  int    `json:"dow"`
-	Dom                  int    `json:"dom"`
-}
-
 // Backup of a virtual machine
 type Backup struct {
 	ID          string `json:"BACKUPID"`
@@ -35,7 +24,7 @@ func (s backups) Less(i, j int) bool {
 }
 
 // GetBackups retrieves a list of all backups on Vultr account
-func (c *Client) GetBackups(id string, backupid string) (backupList []BackupSchedule, err error) {
+func (c *Client) GetBackups(id string, backupid string) (backups []Backup, err error) {
 	var backupMap map[string]Backup
 	values := url.Values{
 		"SUBID":    {id},
