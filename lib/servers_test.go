@@ -699,3 +699,58 @@ func Test_Servers_EnablePrivateNetworkForServer_OK(t *testing.T) {
 
 	assert.Nil(t, client.EnablePrivateNetworkForServer("123456789", "foo"))
 }
+
+func Test_Servers_BackupGetSchedule_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{
+    "enabled": true,
+    "cron_type": "weekly",
+    "next_scheduled_time_utc": "2016-05-07 08:00:00",
+    "hour": 8,
+    "dow": 6,
+    "dom": 0
+}`)
+	defer server.Close()
+
+	backupSchedule, err := client.BackupGetSchedule("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, backupSchedule) {
+		assert.Equal(t, true, backupSchedule.Enabled)
+		assert.Equal(t, "weekly", backupSchedule.CronType)
+		assert.Equal(t, "2016-05-07 08:00:00", backupSchedule.NextScheduledTimeUtc)
+		assert.Equal(t, 8, backupSchedule.Hour)
+		assert.Equal(t, 6, backupSchedule.Dow)
+		assert.Equal(t, 0, backupSchedule.Dom)
+
+	}
+
+}
+
+func Test_Servers_BackupSetSchedule_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.BackupSetSchedule("123456789", BackupSchedule{}))
+}
+
+func Test_Servers_BackupGetSchedule_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	backupSchedule, err := client.BackupGetSchedule("123456789")
+	assert.Nil(t, backupSchedule)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_BackupSetSchedule_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.BackupSetSchedule("123456789", BackupSchedule{})
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
