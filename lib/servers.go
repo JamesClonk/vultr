@@ -656,12 +656,13 @@ type BackupSchedule struct {
 	Dom                  int    `json:"dom"`
 }
 
+// BackupScheduleResponse details about a virtual machines backup schedule
 type BackupScheduleResponse struct {
 	Enabled bool `json:"enabled"`
 	BackupSchedule
 }
 
-// BackupGetSchedule
+// BackupGetSchedule returns a virtual machines backup schedule
 func (c *Client) BackupGetSchedule(id string) (BackupScheduleResponse, error) {
 	values := url.Values{
 		"SUBID": {id},
@@ -673,7 +674,7 @@ func (c *Client) BackupGetSchedule(id string) (BackupScheduleResponse, error) {
 	return bsr, nil
 }
 
-// BackupSetSchedule
+// BackupSetSchedule sets the backup schedule given a BackupSchedule struct
 func (c *Client) BackupSetSchedule(id string, bs BackupSchedule) error {
 	values := url.Values{
 		"SUBID":     {id},
