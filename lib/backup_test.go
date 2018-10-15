@@ -26,23 +26,34 @@ func Test_Backups_GetBackups_OK(t *testing.T) {
 }`)
 	defer server.Close()
 
-	snapshots, err := client.GetBackups("123456789", "1")
+	backups, err := client.GetBackups("123456789", "asdf")
 	if err != nil {
 		t.Error(err)
 	}
-	if assert.NotNil(t, snapshots) {
-		assert.Equal(t, 2, len(snapshots))
+	if assert.NotNil(t, backups) {
+		assert.Equal(t, 2, len(backups))
 
-		assert.Equal(t, "543d34149403a", snapshots[0].ID)
-		assert.Equal(t, "2014-10-14 12:40:40", snapshots[0].Created)
-		assert.Equal(t, "Automatic server backup", snapshots[0].Description)
-		assert.Equal(t, "42949672960", snapshots[0].Size)
-		assert.Equal(t, "complete", snapshots[0].Status)
+		assert.Equal(t, "543d34149403a", backups[0].ID)
+		assert.Equal(t, "2014-10-14 12:40:40", backups[0].Created)
+		assert.Equal(t, "Automatic server backup", backups[0].Description)
+		assert.Equal(t, "42949672960", backups[0].Size)
+		assert.Equal(t, "complete", backups[0].Status)
 
-		assert.Equal(t, "543d340f6dbce", snapshots[1].ID)
-		assert.Equal(t, "2014-10-13 16:11:46", snapshots[1].Created)
-		assert.Equal(t, "a", snapshots[1].Description)
-		assert.Equal(t, "10000000", snapshots[1].Size)
-		assert.Equal(t, "complete", snapshots[1].Status)
+		assert.Equal(t, "543d340f6dbce", backups[1].ID)
+		assert.Equal(t, "2014-10-13 16:11:46", backups[1].Created)
+		assert.Equal(t, "a", backups[1].Description)
+		assert.Equal(t, "10000000", backups[1].Size)
+		assert.Equal(t, "complete", backups[1].Status)
+	}
+}
+
+func Test_Servers_Backups_GetBackups_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	backups, err := client.GetBackups("123456789", "asdf")
+	assert.Nil(t, backups)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
 	}
 }

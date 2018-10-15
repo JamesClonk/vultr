@@ -663,13 +663,13 @@ type BackupScheduleResponse struct {
 }
 
 // BackupGetSchedule returns a virtual machines backup schedule
-func (c *Client) BackupGetSchedule(id string) (BackupScheduleResponse, error) {
+func (c *Client) BackupGetSchedule(id string) (*BackupScheduleResponse, error) {
+	var bsr = &BackupScheduleResponse{}
 	values := url.Values{
 		"SUBID": {id},
 	}
-	var bsr BackupScheduleResponse
 	if err := c.post(`server/backup_get_schedule`, values, &bsr); err != nil {
-		return bsr, err
+		return nil, err
 	}
 	return bsr, nil
 }

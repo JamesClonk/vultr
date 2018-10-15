@@ -733,3 +733,24 @@ func Test_Servers_BackupSetSchedule_OK(t *testing.T) {
 
 	assert.Nil(t, client.BackupSetSchedule("123456789", BackupSchedule{}))
 }
+
+func Test_Servers_BackupGetSchedule_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	backupSchedule, err := client.BackupGetSchedule("123456789")
+	assert.Nil(t, backupSchedule)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_BackupSetSchedule_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.BackupSetSchedule("123456789", BackupSchedule{})
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
