@@ -76,7 +76,7 @@ func serversBackupGetSchedule(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 
-	server, err := GetClient().BackupSetSchedule(*id)
+	server, err := GetClient().BackupGetSchedule(*id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,11 +92,16 @@ func serversBackupSetSchedule(cmd *cli.Cmd) {
 
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
 	cronType := cmd.StringArg("C cronType", "", "Backup cron type. Can be one of (daily, weekly, monthly, daily_alt_even, daily_alt_odd)")
-	hour := cmd.StringArg("H hour", "", "(optional) Hour value (0-23). Applicable to crons: daily, weekly, monthly, daily_alt_even, daily_alt_odd")
-	dayOfWeek := cmd.StringArg("w dow", "", "(optional) Day-of-week value (0-6). Applicable to crons: weekly")
-	dayOfMonth := cmd.StringArg("m dom", "", "(optional) Day-of-month value (1-28). Applicable to crons: monthly")
-
-	server, err := GetClient().BackupSetSchedule(*id, *cronType, *hour, *dayOfWeek, *dayOfMonth)
+	hour := cmd.IntOpt("H hour", 0, "(optional) Hour value (0-23). Applicable to crons: daily, weekly, monthly, daily_alt_even, daily_alt_odd")
+	dayOfWeek := cmd.IntOpt("w dow", 0, "(optional) Day-of-week value (0-6). Applicable to crons: weekly")
+	dayOfMonth := cmd.IntOpt("m dom", 0, "(optional) Day-of-month value (1-28). Applicable to crons: monthly")
+	bs := vultr.BackupSchedule{
+		CronType: *cronType,
+		Hour:     *hour,
+		Dow:      *dayOfWeek,
+		Dom:      *dayOfMonth,
+	}
+	err := GetClient().BackupSetSchedule(*id, bs)
 	if err != nil {
 		log.Fatal(err)
 	}

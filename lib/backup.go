@@ -1,9 +1,10 @@
 package lib
 
 import (
+	"fmt"
 	"net/url"
 	"sort"
-	"strings"
+	"time"
 )
 
 // Backup of a virtual machine
@@ -17,14 +18,19 @@ type Backup struct {
 
 type backups []Backup
 
-func (s backups) Len() int      { return len(s) }
-func (s backups) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
-func (s backups) Less(i, j int) bool {
-	return strings.ToLower(s[i].Name) < strings.ToLower(s[j].Name)
+func (bs backups) Len() int      { return len(bs) }
+func (bs backups) Swap(i, j int) { bs[i], bs[j] = bs[j], bs[i] }
+
+// sort by most recent
+func (bs backups) Less(i, j int) bool {
+	timeLayout := "2006-01-02 15:04:05" // oh my : https://golang.org/src/time/format.go
+	t1, _ := time.Parse(timeLayout, bs[i].Created)
+	t2, _ := time.Parse(timeLayout, bs[j].Created)
+	return t1.After(t2)
 }
 
 // GetBackups retrieves a list of all backups on Vultr account
-func (c *Client) GetBackups(id string, backupid string) (backups []Backup, err error) {
+func (c *Client) GetBackups(id string, backupid string) ([]Backup, error) {
 	var backupMap map[string]Backup
 	values := url.Values{
 		"SUBID":    {id},
@@ -35,9 +41,11 @@ func (c *Client) GetBackups(id string, backupid string) (backups []Backup, err e
 		return nil, err
 	}
 
-	for _, backup := range backupMap {
-		backups = append(backups, backup)
+	var backup []Backup
+	for _, b := range backupMap {
+		fmt.Println(b)
+		backup = append(backup, b)
 	}
-	sort.Sort(backups(backups))
-	return backups, nil
+	sort.Sort(backups(backup))
+	return backup, nil
 }

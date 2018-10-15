@@ -712,17 +712,16 @@ func Test_Servers_BackupGetSchedule_OK(t *testing.T) {
 	defer server.Close()
 
 	backupSchedule, err := client.BackupGetSchedule("123456789")
-	if err {
+	if err != nil {
 		t.Error(err)
 	}
 	if assert.NotNil(t, backupSchedule) {
-		assert.Equal(t, 1, len(backupSchedule))
-		assert.Equal(t, true, backupSchedule[0].Enabled)
-		assert.Equal(t, "weekly", backupSchedule[0].CronType)
-		assert.Equal(t, "2016-05-07 08:00:00", backupSchedule[0].NextScheduledTimeUtc)
-		assert.Equal(t, "8", backupSchedule[0].Hour)
-		assert.Equal(t, "6", backupSchedule[0].Dow)
-		assert.Equal(t, "0", backupSchedule[0].Dom)
+		assert.Equal(t, true, backupSchedule.Enabled)
+		assert.Equal(t, "weekly", backupSchedule.CronType)
+		assert.Equal(t, "2016-05-07 08:00:00", backupSchedule.NextScheduledTimeUtc)
+		assert.Equal(t, 8, backupSchedule.Hour)
+		assert.Equal(t, 6, backupSchedule.Dow)
+		assert.Equal(t, 0, backupSchedule.Dom)
 
 	}
 
@@ -732,5 +731,5 @@ func Test_Servers_BackupSetSchedule_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
 	defer server.Close()
 
-	assert.Nil(t, client.BackupSetSchedule("123456789"))
+	assert.Nil(t, client.BackupSetSchedule("123456789", BackupSchedule{}))
 }
