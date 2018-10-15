@@ -645,3 +645,34 @@ func (c *Client) EnablePrivateNetworkForServer(id, networkID string) error {
 
 	return c.post(`server/private_network_enable`, values, nil)
 }
+
+// BackupSchedule represents a scheduled backup on a server
+// see: server/backup_set_schedule, server/backup_get_schedule
+type BackupSchedule struct {
+	Enabled              bool   `json:"enabled"`
+	CronType             string `json:"cron_type"`
+	NextScheduledTimeUtc string `json:"next_scheduled_time_utc"`
+	Hour                 int    `json:"hour"`
+	Dow                  int    `json:"dow"`
+	Dom                  int    `json:"dom"`
+}
+
+// BackupGetSchedule
+func (c *Client) BackupGetSchedule(id string) (BackupSchedule, error) {
+	values := url.Values{
+		"SUBID": {id},
+	}
+	return c.post(`server/backup_get_schedule`, values, nil)
+}
+
+// BackupSetSchedule
+func (c *Client) BackupSetSchedule(id string, cronType string, hour int, dayOfWeek int, dayOfMonth int) error {
+	values := url.Values{
+		"SUBID":     {id},
+		"cron_type": {cronType},
+		"hour":      {hour},
+		"dow":       {dayOfWeek},
+		"dom":       {dayOfMonth},
+	}
+	return c.post(`server/backup_set_schedule`, values, nil)
+}
