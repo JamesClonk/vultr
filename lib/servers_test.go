@@ -727,3 +727,10 @@ func Test_Servers_BackupGetSchedule_OK(t *testing.T) {
 	}
 
 }
+
+func Test_Servers_BackupSetSchedule_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.BackupSetSchedule("123456789"))
+}
