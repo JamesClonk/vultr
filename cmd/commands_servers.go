@@ -468,13 +468,14 @@ func ipv4List(cmd *cli.Cmd) {
 			return
 		}
 
-		lengths := []int{24, 24, 24, 32, 48}
-		tabsPrint(columns{"IP", "NETMASK", "GATEWAY", "TYPE", "REVERSE DNS"}, lengths)
+		lengths := []int{24, 24, 24, 24, 32, 48}
+		tabsPrint(columns{"IP", "NETMASK", "GATEWAY", "MAC", "TYPE", "REVERSE DNS"}, lengths)
 		for _, ip := range list {
 			tabsPrint(columns{
 				ip.IP,
 				ip.Netmask,
 				ip.Gateway,
+				ip.MAC,
 				ip.Type,
 				ip.ReverseDNS,
 			}, lengths)
