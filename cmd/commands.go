@@ -5,7 +5,7 @@ import (
 	"runtime"
 
 	vultr "github.com/JamesClonk/vultr/lib"
-	"github.com/jawher/mow.cli"
+	cli "github.com/jawher/mow.cli"
 )
 
 // RegisterCommands registers all CLI commands
@@ -86,6 +86,7 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("app", "show and change application on a virtual machine", func(cmd *cli.Cmd) {
 			cmd.Command("change", "change application of virtual machine (all data will be lost)", serversChangeApplication)
 			cmd.Command("list", "show a list of available applications to which can be changed to", serversListApplications)
+			cmd.Command("info", "retrieves application information of virtual machine", serversAppInfo)
 		})
 		cmd.Command("iso", "attach/detach ISO of a virtual machine", func(cmd *cli.Cmd) {
 			cmd.Command("attach", "attach ISO to a virtual machine (server will hard reboot)", serversAttachISO)

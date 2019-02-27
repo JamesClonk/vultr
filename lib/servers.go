@@ -77,6 +77,11 @@ func (s servers) Less(i, j int) bool {
 	return s[i].MainIP < s[j].MainIP
 }
 
+// AppInfo represents the application information of a Vultr server
+type AppInfo struct {
+	Info string `json:"app_info"`
+}
+
 // V6Network represents a IPv6 network of a Vultr server
 type V6Network struct {
 	Network     string `json:"v6_network"`
@@ -591,6 +596,14 @@ func (c *Client) ListApplicationsforServer(id string) (apps []Application, err e
 	}
 	sort.Sort(applications(apps))
 	return apps, nil
+}
+
+// GetApplicationInfo retrieves the application information for the existing virtual machine
+func (c *Client) GetApplicationInfo(id string) (appInfo AppInfo, err error) {
+	if err := c.get(`server/get_app_info?SUBID=`+id, &appInfo); err != nil {
+		return AppInfo{}, err
+	}
+	return appInfo, nil
 }
 
 // PrivateNetwork on Vultr
