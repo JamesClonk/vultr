@@ -72,6 +72,43 @@ func serversCreate(cmd *cli.Cmd) {
 	}
 }
 
+func serversBackupGetSchedule(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+
+	server, err := GetClient().BackupGetSchedule(*id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	lengths := []int{4, 14, 32, 2, 1, 1}
+	tabsPrint(columns{"Enabled", "CronType", "NextScheduledTimeUtc", "Hour", "Dow", "Dom"}, lengths)
+	tabsPrint(columns{server.Enabled, server.CronType, server.NextScheduledTimeUtc, server.Hour, server.Dow, server.Dom}, lengths)
+	tabsFlush()
+
+}
+func serversBackupSetSchedule(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID -C [-H -w -m]"
+
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cronType := cmd.StringArg("C cronType", "", "Backup cron type. Can be one of (daily, weekly, monthly, daily_alt_even, daily_alt_odd)")
+	hour := cmd.IntOpt("H hour", 0, "(optional) Hour value (0-23). Applicable to crons: daily, weekly, monthly, daily_alt_even, daily_alt_odd")
+	dayOfWeek := cmd.IntOpt("w dow", 0, "(optional) Day-of-week value (0-6). Applicable to crons: weekly")
+	dayOfMonth := cmd.IntOpt("m dom", 0, "(optional) Day-of-month value (1-28). Applicable to crons: monthly")
+	bs := vultr.BackupSchedule{
+		CronType: *cronType,
+		Hour:     *hour,
+		Dow:      *dayOfWeek,
+		Dom:      *dayOfMonth,
+	}
+	err := GetClient().BackupSetSchedule(*id, bs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Backup schedule set\n\n")
+}
+
 func serversRename(cmd *cli.Cmd) {
 	cmd.Spec = "SUBID -n"
 	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
@@ -431,13 +468,14 @@ func ipv4List(cmd *cli.Cmd) {
 			return
 		}
 
-		lengths := []int{24, 24, 24, 32, 48}
-		tabsPrint(columns{"IP", "NETMASK", "GATEWAY", "TYPE", "REVERSE DNS"}, lengths)
+		lengths := []int{24, 24, 24, 24, 32, 48}
+		tabsPrint(columns{"IP", "NETMASK", "GATEWAY", "MAC", "TYPE", "REVERSE DNS"}, lengths)
 		for _, ip := range list {
 			tabsPrint(columns{
 				ip.IP,
 				ip.Netmask,
 				ip.Gateway,
+				ip.MAC,
 				ip.Type,
 				ip.ReverseDNS,
 			}, lengths)

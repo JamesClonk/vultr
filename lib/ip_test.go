@@ -33,7 +33,7 @@ func Test_IP_ListIPv4_OK(t *testing.T) {
 	server, client := getTestServerAndClient(http.StatusOK, `{"576965":[
 {"ip":"123.123.123.124","netmask":"255.255.255.248","gateway":"123.123.123.1","type":"secondary_ip","reverse":"host2.example.com"},
 {"ip":"10.99.0.10","netmask":"255.255.0.0","gateway":"","type":"private","reverse":""},
-{"ip":"123.123.123.123","netmask":"255.255.255.248","gateway":"123.123.123.1","type":"main_ip","reverse":"host1.example.com"}]}`)
+{"ip":"123.123.123.123","netmask":"255.255.255.248","gateway":"123.123.123.1","type":"main_ip","reverse":"host1.example.com","mac_address":"56:00:01:ce:dc:0f"}]}`)
 	defer server.Close()
 
 	list, err := client.ListIPv4("123456789")
@@ -45,17 +45,20 @@ func Test_IP_ListIPv4_OK(t *testing.T) {
 
 		assert.Equal(t, "123.123.123.123", list[0].IP)
 		assert.Equal(t, "255.255.255.248", list[0].Netmask)
+		assert.Equal(t, "56:00:01:ce:dc:0f", list[0].MAC)
 		assert.Equal(t, "main_ip", list[0].Type)
 		assert.Equal(t, "host1.example.com", list[0].ReverseDNS)
 
 		assert.Equal(t, "10.99.0.10", list[1].IP)
 		assert.Equal(t, "255.255.0.0", list[1].Netmask)
 		assert.Equal(t, "", list[1].Gateway)
+		assert.Empty(t, "", list[1].MAC)
 		assert.Equal(t, "private", list[1].Type)
 		assert.Equal(t, "", list[1].ReverseDNS)
 
 		assert.Equal(t, "123.123.123.124", list[2].IP)
 		assert.Equal(t, "123.123.123.1", list[2].Gateway)
+		assert.Equal(t, "", list[2].MAC)
 		assert.Equal(t, "secondary_ip", list[2].Type)
 		assert.Equal(t, "host2.example.com", list[2].ReverseDNS)
 	}

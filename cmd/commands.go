@@ -10,6 +10,11 @@ import (
 
 // RegisterCommands registers all CLI commands
 func (c *CLI) RegisterCommands() {
+	// backup
+	c.Command("backup", "see most recent backups", func(cmd *cli.Cmd) {
+		cmd.Command("list", "lists backups", backupsList)
+	})
+
 	// dns
 	c.Command("dns", "modify DNS", func(cmd *cli.Cmd) {
 		cmd.Command("domain", "show and change DNS domains", func(cmd *cli.Cmd) {
@@ -72,6 +77,10 @@ func (c *CLI) RegisterCommands() {
 
 	// servers
 	c.Command("server", "modify virtual machines", func(cmd *cli.Cmd) {
+		cmd.Command("backup", "get and set backup schedules", func(cmd *cli.Cmd) {
+			cmd.Command("get", "get a backup schedule", serversBackupGetSchedule)
+			cmd.Command("set", "set a backup schedule", serversBackupSetSchedule)
+		})
 		cmd.Command("create", "create a new virtual machine", serversCreate)
 		cmd.Command("rename", "rename a virtual machine", serversRename)
 		cmd.Command("tag", "tag a virtual machine", serversTag)
