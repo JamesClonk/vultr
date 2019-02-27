@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	vultr "github.com/JamesClonk/vultr/lib"
-	"github.com/jawher/mow.cli"
+	cli "github.com/jawher/mow.cli"
 )
 
 func serversCreate(cmd *cli.Cmd) {
@@ -645,5 +645,21 @@ func serversListApplications(cmd *cli.Cmd) {
 			tabsPrint(columns{app.ID, app.Name, app.ShortName, app.DeployName, app.Surcharge}, lengths)
 		}
 		tabsFlush()
+	}
+}
+func serversAppInfo(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		app, err := GetClient().GetApplicationInfo(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if app.Info == "" {
+			fmt.Printf("Could not retrieve application information of virtual machine with SUBID %v!\n", *id)
+			return
+		}
+
+		fmt.Printf("%s", app.Info)
 	}
 }
