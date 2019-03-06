@@ -128,7 +128,7 @@ func (c *CLI) RegisterCommands() {
 		cmd.Command("unset-firewall-group", "remove virtual machine from firewall group", serversUnsetFirewallGroup)
 		// upgrade plans
 		cmd.Command("upgrade-plan", "upgrade plan of a virtual machine", func(cmd *cli.Cmd) {
-			cmd.Command("change", "change (upgrade) plan of virtual machine", serversChangePlan)
+			cmd.Command("change", "upgrade plan of virtual machine (Note: Downgrading is currently not supported. Shrinking the hard disk is not possible without risking data loss.)", serversChangePlan)
 			cmd.Command("list", "show a list of VPSPLANIDs to which a virtual machine can be upgraded to", serversListUpgradePlans)
 		})
 	})
