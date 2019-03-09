@@ -698,3 +698,25 @@ func (c *Client) BackupSetSchedule(id string, bs BackupSchedule) error {
 	}
 	return c.post(`server/backup_set_schedule`, values, nil)
 }
+
+// ChangePlanOfServer changes the virtual machine to a different plan
+func (c *Client) ChangePlanOfServer(id string, planID int) error {
+	values := url.Values{
+		"SUBID":     {id},
+		"VPSPLANID": {fmt.Sprintf("%v", planID)},
+	}
+
+	if err := c.post(`server/upgrade_plan`, values, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+// ListUpgradePlansForServer retrieves a list of the VPSPLANIDs for which a virtual machine can be upgraded.
+// An empty response means that there are currently no upgrades available
+func (c *Client) ListUpgradePlansForServer(id string) (planIDs []int, err error) {
+	if err := c.get(`server/upgrade_plan_list?SUBID=`+id, &planIDs); err != nil {
+		return nil, err
+	}
+	return
+}

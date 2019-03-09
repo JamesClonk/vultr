@@ -754,3 +754,63 @@ func Test_Servers_BackupSetSchedule_Error(t *testing.T) {
 		assert.Equal(t, `{error}`, err.Error())
 	}
 }
+
+func Test_Servers_ChangePlanOfServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	err := client.ChangePlanOfServer("123456789", 205)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ChangePlanOfServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `{no-response?!}`)
+	defer server.Close()
+
+	assert.Nil(t, client.ChangePlanOfServer("123456789", 205))
+}
+
+func Test_Servers_ListUpgradePlansForServer_Error(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusNotAcceptable, `{error}`)
+	defer server.Close()
+
+	p, err := client.ListUpgradePlansForServer("123456789")
+	assert.Nil(t, p)
+	if assert.NotNil(t, err) {
+		assert.Equal(t, `{error}`, err.Error())
+	}
+}
+
+func Test_Servers_ListUpgradePlansForServer_NoPlan(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[]`)
+	defer server.Close()
+
+	p, err := client.ListUpgradePlansForServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	assert.Nil(t, p)
+}
+
+func Test_Servers_ListUpgradePlansForServer_OK(t *testing.T) {
+	server, client := getTestServerAndClient(http.StatusOK, `[
+		29,
+		41,
+		61
+	]`)
+	defer server.Close()
+
+	p, err := client.ListUpgradePlansForServer("123456789")
+	if err != nil {
+		t.Error(err)
+	}
+	if assert.NotNil(t, p) {
+		assert.Equal(t, 3, len(p))
+
+		assert.Equal(t, 29, p[0])
+		assert.Equal(t, 41, p[1])
+		assert.Equal(t, 61, p[2])
+	}
+}

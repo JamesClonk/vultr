@@ -663,3 +663,37 @@ func serversAppInfo(cmd *cli.Cmd) {
 		fmt.Printf("%s", app.Info)
 	}
 }
+
+func serversChangePlan(cmd *cli.Cmd) {
+	cmd.Spec = "SUBID VPSPLANID"
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	planID := cmd.IntArg("VPSPLANID", 0, "Plan (VPSPLANID)")
+
+	cmd.Action = func() {
+		if err := GetClient().ChangePlanOfServer(*id, *planID); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Virtual machine plan changed to: %v\n", *planID)
+	}
+}
+func serversListUpgradePlans(cmd *cli.Cmd) {
+	id := cmd.StringArg("SUBID", "", "SUBID of virtual machine (see <servers>)")
+	cmd.Action = func() {
+		plans, err := GetClient().ListUpgradePlansForServer(*id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if len(plans) == 0 {
+			fmt.Printf("0 available plans for virtual machine with SUBID %v to upgrade to.", *id)
+			return
+		}
+
+		lengths := []int{12}
+		tabsPrint(columns{"VPSPLANID"}, lengths)
+		for _, p := range plans {
+			tabsPrint(columns{p}, lengths)
+		}
+		tabsFlush()
+	}
+}
