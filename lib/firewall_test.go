@@ -178,7 +178,7 @@ func Test_Firewall_CreateRule_Ok(t *testing.T) {
 	defer server.Close()
 
 	_, netw, _ := net.ParseCIDR("10.234.22.0/24")
-	num, err := client.CreateFirewallRule("1a", "tcp", "80", netw)
+	num, err := client.CreateFirewallRule("1a", "tcp", "80", netw, "some-example-note")
 	if err != nil {
 		t.Error(err)
 	}

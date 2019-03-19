@@ -83,7 +83,7 @@ func firewallGroupList(cmd *cli.Cmd) {
 }
 
 func firewallRuleCreate(cmd *cli.Cmd) {
-	cmd.Spec = "-g -n ((--tcp --port) | (--udp --port) | --icmp | --gre)"
+	cmd.Spec = "-g -n ((--tcp --port) | (--udp --port) | --icmp | --gre) [--notes]"
 	gid := cmd.StringOpt("g group-id", "", "Firewall group ID (see <firewall group list>)")
 	cidr := cmd.StringOpt("n network", "0.0.0.0/0", "IPv4/IPv6 network in CIDR notation")
 	tcp := cmd.BoolOpt("tcp", false, "TCP protocol")
@@ -91,6 +91,7 @@ func firewallRuleCreate(cmd *cli.Cmd) {
 	icmp := cmd.BoolOpt("icmp", false, "ICMP protocol")
 	gre := cmd.BoolOpt("gre", false, "GRE protocol")
 	port := cmd.StringOpt("port", "", "Port number or port range (TCP/UDP only)")
+	notes := cmd.StringOpt("notes", "", "Optional note")
 
 	cmd.Action = func() {
 		var protocol string
@@ -110,7 +111,7 @@ func firewallRuleCreate(cmd *cli.Cmd) {
 			log.Fatalf("Invalid network CIDR: %s", *cidr)
 		}
 
-		ruleNum, err := GetClient().CreateFirewallRule(*gid, protocol, *port, network)
+		ruleNum, err := GetClient().CreateFirewallRule(*gid, protocol, *port, network, *notes)
 		if err != nil {
 			log.Fatal(err)
 		}
