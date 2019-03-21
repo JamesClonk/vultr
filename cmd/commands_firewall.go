@@ -83,7 +83,7 @@ func firewallGroupList(cmd *cli.Cmd) {
 }
 
 func firewallRuleCreate(cmd *cli.Cmd) {
-	cmd.Spec = "-g -n ((--tcp --port) | (--udp --port) | --icmp | --gre)"
+	cmd.Spec = "-g -n ((--tcp --port) | (--udp --port) | --icmp | --gre) [--notes]"
 	gid := cmd.StringOpt("g group-id", "", "Firewall group ID (see <firewall group list>)")
 	cidr := cmd.StringOpt("n network", "0.0.0.0/0", "IPv4/IPv6 network in CIDR notation")
 	tcp := cmd.BoolOpt("tcp", false, "TCP protocol")
@@ -91,6 +91,7 @@ func firewallRuleCreate(cmd *cli.Cmd) {
 	icmp := cmd.BoolOpt("icmp", false, "ICMP protocol")
 	gre := cmd.BoolOpt("gre", false, "GRE protocol")
 	port := cmd.StringOpt("port", "", "Port number or port range (TCP/UDP only)")
+	notes := cmd.StringOpt("notes", "", "Optional note")
 
 	cmd.Action = func() {
 		var protocol string
@@ -110,15 +111,15 @@ func firewallRuleCreate(cmd *cli.Cmd) {
 			log.Fatalf("Invalid network CIDR: %s", *cidr)
 		}
 
-		ruleNum, err := GetClient().CreateFirewallRule(*gid, protocol, *port, network)
+		ruleNum, err := GetClient().CreateFirewallRule(*gid, protocol, *port, network, *notes)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		fmt.Printf("Firewall rule created\n\n")
-		lengths := []int{10, 10, 10, 12, 20}
-		tabsPrint(columns{"GROUP_ID", "RULE_NUM", "PROTOCOL", "PORT", "NETWORK"}, lengths)
-		tabsPrint(columns{*gid, ruleNum, protocol, *port, network}, lengths)
+		lengths := []int{10, 10, 10, 12, 20, 30}
+		tabsPrint(columns{"GROUP_ID", "RULE_NUM", "PROTOCOL", "PORT", "NETWORK", "NOTES"}, lengths)
+		tabsPrint(columns{*gid, ruleNum, protocol, *port, network, *notes}, lengths)
 		tabsFlush()
 	}
 }
@@ -154,8 +155,8 @@ func firewallRuleList(cmd *cli.Cmd) {
 			return
 		}
 
-		lengths := []int{10, 10, 8, 12, 20}
-		tabsPrint(columns{"RULE_NUM", "ACTION", "PROTOCOL", "PORT", "NETWORK"}, lengths)
+		lengths := []int{10, 10, 8, 12, 20, 30}
+		tabsPrint(columns{"RULE_NUM", "ACTION", "PROTOCOL", "PORT", "NETWORK", "NOTES"}, lengths)
 		for _, r := range rules {
 			tabsPrint(columns{
 				r.RuleNumber,
@@ -163,6 +164,7 @@ func firewallRuleList(cmd *cli.Cmd) {
 				r.Protocol,
 				r.Port,
 				r.Network.String(),
+				r.Notes,
 			}, lengths)
 		}
 		tabsFlush()
