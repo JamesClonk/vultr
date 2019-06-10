@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/juju/ratelimit"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/time/rate"
 )
 
 func getTestServerAndClient(code int, body string) (*httptest.Server, *Client) {
@@ -26,12 +26,12 @@ func getTestServer(code int, body string) *httptest.Server {
 }
 
 func getTestServerThrottled(body string) *httptest.Server {
-	var rateLimiter *ratelimit.Bucket
+	var rateLimiter *rate.Limiter
 	// Rate limit: 2 req/s, capacity 2
-	rateLimiter = ratelimit.NewBucket(500*time.Millisecond, 2)
+	rateLimiter = rate.NewLimiter(rate.Limit(2), 2)
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		code := 200
-		if tokens := rateLimiter.TakeAvailable(1); tokens == 0 {
+		if allowed := rateLimiter.Allow(); !allowed {
 			code = 503
 		}
 
@@ -75,7 +75,7 @@ func Test_Client_NewClient(t *testing.T) {
 
 // Test that API queries are throttled
 func Test_Client_Throttling(t *testing.T) {
-	const errorDuration = 100 * time.Millisecond
+	const errorDuration = 50 * time.Millisecond
 	const expectedDuration = 400 * time.Millisecond
 	server, _ := getTestServerAndClient(http.StatusOK, `{
 		"balance":-15.97,"pending_charges":"2.34",

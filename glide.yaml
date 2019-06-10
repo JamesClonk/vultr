@@ -2,8 +2,6 @@ package: github.com/JamesClonk/vultr
 import:
 - package: github.com/jawher/mow.cli
   version: 33e2f99c7beda006afee6bb2e39e31e4ba4e9946
-- package: github.com/juju/ratelimit
-  version: 77ed1c8a01217656d2080ad51981f6e99adaa177
 - package: github.com/stretchr/testify
   version: dab07ac62d4905d3e48d17dc549c684ac3b7c15a
   subpackages:
@@ -16,3 +14,6 @@ import:
   - ssh/agent
   - ssh/terminal
 - package: github.com/stretchr/objx
+- package: golang.org/x/time
+  subpackages:
+  - rate
