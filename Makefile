@@ -5,11 +5,9 @@ all: prepare lint vet test build
 
 prepare:
 	go get -v golang.org/x/lint/golint
-	go get -v github.com/Masterminds/glide
-	glide install
 
 build:
-	go install
+	go build
 
 lint:
 	for pkg in $(TEST); do golint $$pkg; done
