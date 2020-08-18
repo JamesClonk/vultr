@@ -30,6 +30,14 @@ Go version:             go1.10
 
 ---
 
+### Installation via `brew`
+
+[Homebrew](https://brew.sh/) users can install by:
+
+```sh
+$ brew install vultr
+```
+
 ### Installation from source
 
 * Install the latest version of [Go](https://golang.org)
