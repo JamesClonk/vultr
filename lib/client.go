@@ -21,7 +21,7 @@ import (
 
 const (
 	// Version of this library
-	Version = "2.0.2"
+	Version = "2.0.3"
 
 	// APIVersion of Vultr
 	APIVersion = "v1"
